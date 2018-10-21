@@ -5,11 +5,30 @@ import random
 
 # Script info
 SCRIPTTITLE = 'Magic Eightball'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.2'
 
 
 def magic_eightball():
-    replies = ["MY REPLY IS NO", "AS I SEE IT YES", "DON'T COUNT ON IT", "MY SOURCES SAY NO", "IT IS CERTAIN", "YES"]
+    replies = ["IT IS CERTAIN",
+                "AS I SEE IT YES",
+                "REPLY HAZY, TRY AGAIN",
+                "DON'T COUNT ON IT",
+                "IT IS DECODEDLY SO",
+                "MOST LIKELY",
+                "ASK AGAIN LATER",
+                "MY REPLY IS NO",
+                "WHITHOUT A DOUBT",
+                "OUTLOOK GOOD",
+                "BETTER NOT TELL YOU NOW",
+                "MY SOURCES SAY NO",
+                "YES - DEFINITELY",
+                "YES",
+                "CANNOT PREDICT NOW",
+                "OUTLOOK NOT SO GOOD",
+                "YOU MAY RELY ON IT",
+                "SIGN POINTS TO YES",
+                "CONCENTRATE AND ASK AGAIN",
+                "VERY DOUBTFUL"]
 
     reply = random.choice(replies)
 
