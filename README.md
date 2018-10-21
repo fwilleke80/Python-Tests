@@ -32,6 +32,8 @@ python test.py [options]
 
 * `python test.py --magiceightball "Should I buy a new synthesizer tomorrow?"`
 
+ Ask the Magic Eightball a question!
+
 ## Modules
 
 ### primenumbers
