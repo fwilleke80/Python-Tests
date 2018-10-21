@@ -20,7 +20,7 @@ python test.py [options]
 
 * `python test.py --waves --wavesparams 20.0 15.0 0.5 20.0`
 
- Draws some beautiful folded waveforms with custom parameters
+ Draws waveforms with custom parameters
 
 * `python test.py --xor "This is just some text" "Passphrase1234"`
 
