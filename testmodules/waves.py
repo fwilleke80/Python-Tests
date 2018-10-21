@@ -12,7 +12,10 @@ from colorama import Fore, Style
 
 # Script info
 SCRIPTTITLE = 'Waves'
-SCRIPTVERSION = '0.4'
+SCRIPTVERSION = '0.4.5'
+
+
+defaultParams = (15.0,10.0,0.1,30.0)
 
 
 def print_waveform_line(i, param1, param2, param3):
@@ -85,12 +88,13 @@ def print_waveform_line(i, param1, param2, param3):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-w", "--waves", type="float", dest="waves", default=None, nargs=4, help="Draw beautiful folded waveforms with parameters SPEED, SCALE1, SCALE2, and FOLD. Example: -w 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
+    parser.add_option("-w", "--waves", action="store_true", dest="waves", default=None, help="Draw beautiful folded waveforms")
+    parser.add_option("--wavesparams", type="float", dest="wavesparams", default=defaultParams, nargs=4, help="Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
 
 
 # Return True if args/options tell us to run this module
 def check_args(options):
-    return options.waves is not None and type(options.waves[0]) is float and type(options.waves[1]) is float and type(options.waves[2]) is float and type(options.waves[3]) is float and options.waves[0] > 0.0 and options.waves[1] > 0.0 and options.waves[2] > 0.0 and options.waves[3] > 0.0
+    return options.waves is not None and options.waves == True and options.wavesparams is not None and type(options.wavesparams[0]) is float and type(options.wavesparams[1]) is float and type(options.wavesparams[2]) is float and type(options.wavesparams[3]) is float and options.wavesparams[0] > 0.0 and options.wavesparams[1] > 0.0 and options.wavesparams[2] > 0.0 and options.wavesparams[3] > 0.0
 
 
 # Return module name
@@ -101,8 +105,7 @@ def get_name():
 # Calculate prime numbers op to limit
 def run(log, options):
     # Get arguments
-    # Get arguments
-    args = options.waves
+    args = options.wavesparams
     argSpeed = args[0]
     argScale1 = args[1]
     argScale2 = args[2]
@@ -112,6 +115,7 @@ def run(log, options):
 
     # Welcome
     log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    log.debug('Args: ' + str(args))
     log.info('Preparing for waveform generation...')
     print(' ')
     print('Press CTRL+C to cancel!')
@@ -119,15 +123,19 @@ def run(log, options):
     colorama.init()
 
     startTime = time.time()
+    timeUsedPure = 0.0
     lineCounter = 0
 
     try:
         while True:
+            time1 = time.time()
             print_waveform_line(lineCounter, argScale1, argScale2, argFold)
+            timeUsedPure += time.time() - time1
             lineCounter += 1
             time.sleep(speedFactor)
 
     except KeyboardInterrupt:
         print' '
         timeUsed = (time.time() - startTime)
-        log.info('Finished! Calculated ' + "{:,}".format(lineCounter) + ' steps in ' + ("%.3f" % timeUsed) + ' seconds.')
+        log.info('Finished! Been running for ' + ("%.3f" % timeUsed) + ' seconds and calculated ' + "{:,}".format(lineCounter) + ' steps!')
+        log.info('Pure calculation time: ' + ("%.3f" % timeUsedPure) + ' seconds')
