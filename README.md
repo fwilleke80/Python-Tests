@@ -14,9 +14,13 @@ python test.py [options]
 
  Calculates prime numbers up to 10000 and prints them out
 
-* `python test.py --waves 15.0 10.0 0.1 30.0`
+* `python test.py --waves`
 
  Draws some beautiful folded waveforms
+
+* `python test.py --waves --wavesparams 20.0 15.0 0.5 20.0`
+
+ Draws some beautiful folded waveforms with custom parameters
 
 * `python test.py --xor "This is just some text" "Passphrase1234"`
 
