@@ -6,21 +6,21 @@ python test.py [options]
 
 ### Examples
 
-* `python test.py -p 100000`
+* `python test.py --primenumbers 100000`
 
  Calculates prime numbers up to 10000
 
-* `python test.py -p 100000 -o`
+* `python test.py --primenumbers 100000 -o`
 
  Calculates prime numbers up to 10000 and prints them out
 
-* `python test.py -w 15.0 10.0 0.1 30.0`
+* `python test.py --waves 15.0 10.0 0.1 30.0`
 
  Draws some beautiful folded waveforms
 
-* `python test.py -x "This is just some text" "Password1234"`
+* `python test.py -xor "This is just some text" "Passphrase1234"`
 
- Encrypts "This is just some text" with key "Password1234"
+ Encrypts "This is just some text" with key "Passphrase1234"
 
 ## Modules
 
