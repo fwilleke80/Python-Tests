@@ -51,7 +51,7 @@ def print_geolocation(log):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-l", "--location", action="store_true", dest="location", help="Get information about your current location")
+    parser.add_option("-l", "--location", action="store_true", dest="location", default=None, help="Get information about your current location")
 
 
 # Return True if args/options tell us to run this module
