@@ -35,3 +35,13 @@ python test.py [options]
 * encrypt_xor
 
  Simple implementation of an XOR string encryption
+ 
+ ## Dependencies
+ 
+ * Module *waves*
+  This module is dependend on the *colorama* library.
+  
+  Get it here: https://pypi.org/project/colorama/#files
+  
+  Or install via pip: `sudo pip install colorama`
+  
