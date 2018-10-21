@@ -85,7 +85,7 @@ def print_waveform_line(i, param1, param2, param3):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-w", "--waves", type="float", dest="waves", default=None, nargs=4, help="Draw interacting waveforms with parameters SPEED, SCALE1, SCALE2, and FOLD. Example: -w 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
+    parser.add_option("-w", "--waves", type="float", dest="waves", default=None, nargs=4, help="Draw beautiful folded waveforms with parameters SPEED, SCALE1, SCALE2, and FOLD. Example: -w 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
 
 
 # Return True if args/options tell us to run this module
