@@ -122,15 +122,11 @@ def run(log, options):
     lineCounter = 0
 
     try:
-        # Clear screen
-        #print(chr(27) + "[2J")
-
-        i = 0
         while True:
-            print_waveform_line(i, argScale1, argScale2, argFold)
+            print_waveform_line(lineCounter, argScale1, argScale2, argFold)
             lineCounter += 1
             time.sleep(speedFactor)
-            i += 1
+
     except KeyboardInterrupt:
         print' '
         timeUsed = (time.time() - startTime)
