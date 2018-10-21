@@ -30,6 +30,8 @@ python test.py [options]
 
  Prints out information about current location
 
+* `python test.py --magiceightball "Should I buy a new synthesizer tomorrow?"`
+
 ## Modules
 
 ### primenumbers
@@ -51,3 +53,12 @@ Retrieves and prints geolocation information based on current IP
 This module is dependend on the *geocoder* library!  
 Get it here: https://geocoder.readthedocs.io/api.html?highlight=street#installation  
 Or install via pip: `sudo pip install geocoder`
+
+### headsortails
+Throws a coin and tells you whether it's heads or tails.
+
+### eightball
+Ask the Magic Eightball a question!
+
+### dice
+Throw a W6!
