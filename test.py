@@ -31,6 +31,7 @@ registeredModules = []
 # Set up command line argument options for main script
 def ParseArgs(parser):
     parser.add_option("-o", "--output", action="store_true", dest="printoutput", default=False, help="Print outputs (not relevant for all modules)")
+    parser.add_option("--listmodules", action="store_true", dest="listmodules", default=False, help="List registered test modules")
     options, args = parser.parse_args()
     return options, args
 
@@ -78,10 +79,20 @@ def main():
     options, args = ParseArgs(parser)
     log.debug("options: " + str(options))
 
+    # List modules
+    if options.listmodules is not None and options.listmodules == True:
+        log.info('Listing registered test modules:')
+        print('')
+        for m in registeredModules:
+            log.info(m.get_name())
+        print('')
+        log.info('End of list.')
+
     # Run modules
     for m in registeredModules:
         if m.check_args(options=options):
             m.run(options=options, log=log)
+            break
 
 
 # Kick off the shit...
