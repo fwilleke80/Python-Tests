@@ -6,6 +6,7 @@ import logging
 from testmodules import primenumbers
 from testmodules import waves
 from testmodules import encrypt_xor
+from testmodules import location
 
 
 # Script info
@@ -62,6 +63,7 @@ def main():
     registeredModules.append(primenumbers)
     registeredModules.append(waves)
     registeredModules.append(encrypt_xor)
+    registeredModules.append(location)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()

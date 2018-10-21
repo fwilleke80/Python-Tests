@@ -22,6 +22,10 @@ python test.py [options]
 
  Encrypts "This is just some text" with key "Passphrase1234"
 
+* `python test.py --location`
+
+ Prints out information about current location
+
 ## Modules
 
 ### primenumbers
@@ -30,9 +34,16 @@ Calculates all prime numbers up to a given limit
 ### waves
 Calculates folded waveforms on the basis of sine waves modulating each other.
 
-This module is dependend on the *colorama* library!    
+This module is dependend on the *colorama* library!  
 Get it here: https://pypi.org/project/colorama/#files  
 Or install via pip: `sudo pip install colorama`
 
 ### encrypt_xor
 Simple implementation of an XOR string encryption  
+
+### location
+Retrieves and prints geolocation information based on current IP
+
+This module is dependend on the *geocoder* library!  
+Get it here: https://geocoder.readthedocs.io/api.html?highlight=street#installation  
+Or install via pip: `sudo pip install geocoder`
