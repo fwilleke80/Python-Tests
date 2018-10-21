@@ -18,7 +18,7 @@ python test.py [options]
 
  Draws some beautiful folded waveforms
 
-* `python test.py -xor "This is just some text" "Passphrase1234"`
+* `python test.py --xor "This is just some text" "Passphrase1234"`
 
  Encrypts "This is just some text" with key "Passphrase1234"
 
