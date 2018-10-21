@@ -24,24 +24,17 @@ python test.py [options]
 
 ## Modules
 
-* primenumbers
+#### primenumbers
+Calculates all prime numbers up to a given limit
 
- Calculates all prime numbers up to a given limit
+#### waves
+Calculates folded waveforms on the basis of sine waves modulating each other.
 
-* waves
-
- Calculates folded waveforms on the basis of sine waves modulating each other
-
-* encrypt_xor
-
- Simple implementation of an XOR string encryption
- 
- ## Dependencies
- 
- * Module *waves*
-  This module is dependend on the *colorama* library.
+This module is dependend on the *colorama* library!
   
-  Get it here: https://pypi.org/project/colorama/#files
+Get it here: https://pypi.org/project/colorama/#files
   
-  Or install via pip: `sudo pip install colorama`
-  
+Or install via pip: `sudo pip install colorama`
+
+#### encrypt_xor
+Simple implementation of an XOR string encryption  
