@@ -1,5 +1,5 @@
 # Python-Tests
-Some test scripts to get to like Python mode
+Some test scripts to get me to like Python mode
 
 ## Usage
 python test.py [options]
