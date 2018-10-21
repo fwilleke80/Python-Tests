@@ -7,6 +7,9 @@ from testmodules import primenumbers
 from testmodules import waves
 from testmodules import encrypt_xor
 from testmodules import location
+from testmodules import eightball
+from testmodules import dice
+from testmodules import headsortails
 
 
 # Script info
@@ -64,6 +67,9 @@ def main():
     registeredModules.append(waves)
     registeredModules.append(encrypt_xor)
     registeredModules.append(location)
+    registeredModules.append(eightball)
+    registeredModules.append(dice)
+    registeredModules.append(headsortails)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
