@@ -238,15 +238,23 @@ class NameGenerator:
         return newName.title()
 
 
-    def generate(this, log, gender):
-        # Cancel on unsupported gender
+    def safe_gender(this, log, gender):
+        # Detect unsupported gender
         theGender = gender.lower()
         if theGender not in list(this.firstNameSyllables) and theGender != 'random':
-            raise AttributeError('Gender "' + gender + '" not implemented yet.')
+            log.error('Gender "' + gender + '" not implemented yet. Using random gender instead.')
+            theGender = 'random'
 
         # If random gender desired, pick an available one
         if theGender == 'random':
             theGender = random.choice(list(this.firstNameSyllables))
+
+        return theGender
+
+
+    def generate(this, log, gender):
+        # Detect unsupported gender
+        theGender = this.safe_gender(log, gender)
 
         log.debug('Gender: ' + theGender.title())
 
