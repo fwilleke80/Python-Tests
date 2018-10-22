@@ -2,7 +2,11 @@
 Some test scripts to get me to like Python mode
 
 ## Usage
-python test.py [options]
+Run it like this:  
+`python test.py [options]`
+
+Use this to get help for the command line options:  
+`python test.py -h`
 
 ### Examples
 
@@ -37,6 +41,11 @@ python test.py [options]
 * `python test.py --namegen`
  
  Generate a funny name of random gender
+
+* `python test.py --namegen --gender female --namecount 20`
+ 
+ Generate 20 funny female names
+
 
 ## Modules
 

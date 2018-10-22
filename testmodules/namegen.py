@@ -63,6 +63,7 @@ class NameGenerator:
                                     "sack", \
                                     "kack", \
                                     "jo", \
+                                    "det", \
                                     "wern"], \
                                 \
                                 ["bol", \
@@ -87,6 +88,7 @@ class NameGenerator:
                                     "hahn", \
                                     "hardt", \
                                     "ald", \
+                                    "bald", \
                                     "tav", \
                                     "lav", \
                                     "mann", \
@@ -193,6 +195,7 @@ class NameGenerator:
                             "te", \
                             "le", \
                             "pan", \
+                            "hans", \
                             "paff"]
 
 
@@ -245,7 +248,7 @@ class NameGenerator:
         if theGender == 'random':
             theGender = random.choice(list(this.firstNameSyllables))
 
-        log.info('Gender: ' + theGender.title())
+        log.debug('Gender: ' + theGender.title())
 
         return this.generate_firstname(theGender) + ' ' + this.generate_lastname()
 
@@ -278,11 +281,12 @@ class NameGenerator:
 def setup_args(parser):
     parser.add_option("--namegen", action="store_true", dest="namegen", default=None, help="Generate a super cool new name")
     parser.add_option("--gender", type="string", dest="namegen_gender", default='random', help="Specify gender of firstname ('male' or 'female' or 'random')", metavar="GENDER")
+    parser.add_option("--namecount", type="int", dest="namegen_count", default=1, help="Specify how many names should be generated with COUNT", metavar="COUNT")
 
 
 # Return True if args/options tell us to run this module
 def check_args(options):
-    return options.namegen is not None and options.namegen_gender is not None and options.namegen == True
+    return options.namegen is not None and options.namegen_gender is not None and options.namegen_count is not None and options.namegen_count > 0 and options.namegen == True
 
 
 # Return module name
@@ -298,5 +302,5 @@ def run(log, options):
 
     nameGen = NameGenerator()
 
-    log.info(nameGen.generate(log, options.namegen_gender))
-    print('')
+    for i in range(options.namegen_count):
+        log.info((str(i + 1) + '. ' if options.namegen_count > 1 else '') + nameGen.generate(log, options.namegen_gender))
