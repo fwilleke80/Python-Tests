@@ -64,3 +64,6 @@ Ask the Magic Eightball a question!
 
 ### dice
 Throw a W6!
+
+### pwgen
+Generates a pronouncable password of variable length

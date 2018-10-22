@@ -8,6 +8,23 @@ SCRIPTTITLE = 'Magic Eightball'
 SCRIPTVERSION = '0.2'
 
 
+ascii_eightball = \
+    "        ____" + "\n" + \
+    "    ,dP9CGG88@b," + "\n" +  \
+    "  ,IP  _   Y888@@b," + "\n" + \
+    " dIi  (_)   G8888@b" + "\n" + \
+    "dCII  (_)   G8888@@b" + "\n" + \
+    "GCCIi     ,GG8888@@@" + "\n" + \
+    "GGCCCCCCCGGG88888@@@" + "\n" + \
+    "GGGGCCCGGGG88888@@@@..." + "\n" + \
+    "Y8GGGGGG8888888@@@@P....." + "\n" + \
+    " Y88888888888@@@@@P......" + "\n" + \
+    " `Y8888888@@@@@@@P'......" + "\n" + \
+    "    `@@@@@@@@@P'......." + "\n" + \
+    '        """"........'
+
+
+
 def magic_eightball():
     replies = ["IT IS CERTAIN",
                 "AS I SEE IT YES",
@@ -77,10 +94,12 @@ def get_name():
 def run(log, options):
     # Welcome
     log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    print('')
+    print(ascii_eightball)
+    print('')
 
-    # Get arguments
-    inputStr = options.magic_eightball
-    log.info('Question: ' + inputStr)
+    # Here we go
+    log.info('Question: ' + options.magic_eightball)
     print('')
     log.info(magic_eightball())
     print('')

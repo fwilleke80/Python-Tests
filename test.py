@@ -10,6 +10,7 @@ from testmodules import location
 from testmodules import eightball
 from testmodules import dice
 from testmodules import headsortails
+from testmodules import pwgen
 
 
 # Script info
@@ -71,6 +72,7 @@ def main():
     registeredModules.append(eightball)
     registeredModules.append(dice)
     registeredModules.append(headsortails)
+    registeredModules.append(pwgen)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
