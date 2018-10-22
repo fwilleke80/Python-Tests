@@ -34,6 +34,10 @@ python test.py [options]
 
  Ask the Magic Eightball a question!
 
+* `python test.py --namegen`
+ 
+ Generate a funny name of random gender
+
 ## Modules
 
 ### primenumbers
@@ -67,3 +71,6 @@ Throw a W6!
 
 ### pwgen
 Generates a pronouncable password of variable length
+
+### namegen
+A funny module that I originally wrote in JS and not ported to Python. It generates interesting and totally unexceptional male and female names.

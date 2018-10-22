@@ -11,11 +11,12 @@ from testmodules import eightball
 from testmodules import dice
 from testmodules import headsortails
 from testmodules import pwgen
+from testmodules import namegen
 
 
 # Script info
 SCRIPTTITLE = 'Test Script Launcher'
-SCRIPTVERSION = '0.2.2'
+SCRIPTVERSION = '0.2.3'
 SCRIPTCOPYRIGHT = '2018 by Frank Willeke'
 
 # Logging
@@ -73,6 +74,7 @@ def main():
     registeredModules.append(dice)
     registeredModules.append(headsortails)
     registeredModules.append(pwgen)
+    registeredModules.append(namegen)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
@@ -89,12 +91,13 @@ def main():
             log.info(m.get_name())
         print('')
         log.info('End of list.')
+        return
 
     # Run modules
     for m in registeredModules:
         if m.check_args(options=options):
             m.run(options=options, log=log)
-            break
+            return
 
 
 # Kick off the shit...
