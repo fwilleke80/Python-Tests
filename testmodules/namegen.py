@@ -11,6 +11,7 @@ SCRIPTVERSION = '1.3.2'
 class NameGenerator:
     # Thresholds
     threshExtraFirstnameSyllable = 0.5
+    threshDoubleLastName = 0.2
 
     # Limits / Ranges
     minLastnameSyllables = 2
@@ -64,6 +65,8 @@ class NameGenerator:
                                     "kack", \
                                     "jo", \
                                     "det", \
+                                    "ost", \
+                                    "nord", \
                                     "wern"], \
                                 \
                                 ["bol", \
@@ -76,6 +79,7 @@ class NameGenerator:
                                     "bu", \
                                     "bi", \
                                     "is", \
+                                    "see", \
                                     "stump", \
                                     "honk", \
                                     "parz", \
@@ -89,6 +93,7 @@ class NameGenerator:
                                     "hardt", \
                                     "ald", \
                                     "bald", \
+                                    "rald", \
                                     "tav", \
                                     "lav", \
                                     "mann", \
@@ -113,33 +118,63 @@ class NameGenerator:
                                 [ \
                                     ["kuni",
                                         "berta", \
+                                        "her", \
                                         "da", \
                                         "dani", \
                                         "ker", \
                                         "klara", \
                                         "gud", \
                                         "su", \
+                                        "i", \
+                                        "a", \
+                                        "e", \
+                                        "o", \
+                                        "u", \
                                         "sa", \
                                         "bri", \
+                                        "lau", \
+                                        "chris"
                                         "eva", \
                                         "lise", \
                                         "frau", \
+                                        "manu", \
+                                        "emanu", \
+                                        "theo", \
+                                        "na", \
+                                        "cor", \
+                                        "pene", \
+                                        "jas", \
                                         "klo"], \
                                         \
                                     ["gata", \
                                         "beta", \
+                                        "trabo", \
+                                        "phe", \
+                                        "bumbo", \
+                                        "gret", \
+                                        "ta", \
                                         "bi"], \
                                         \
                                     ["gunde", \
                                         "tilde", \
+                                        "lia", \
                                         "rune", \
+                                        "lope", \
+                                        "tha", \
+                                        "min", \
                                         "run", \
+                                        "dora", \
                                         "ke", \
+                                        "elle", \
                                         "ela", \
                                         "ella", \
+                                        "na", \
                                         "bella", \
+                                        "nelia", \
                                         "stin", \
+                                        "scha", \
                                         "a", \
+                                        "mine", \
                                         "bine", \
                                         "brina", \
                                         "sanne", \
@@ -258,7 +293,14 @@ class NameGenerator:
 
         log.debug('Gender: ' + theGender.title())
 
-        return this.generate_firstname(theGender) + ' ' + this.generate_lastname()
+        firstName = this.generate_firstname(theGender)
+        lastName = this.generate_lastname()
+
+        # Double lastname?
+        if random.random() < this.threshDoubleLastName:
+            lastName += '-' + this.generate_lastname()
+
+        return firstName + ' ' + lastName
 
 
 
