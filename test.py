@@ -16,7 +16,7 @@ from testmodules import namegen
 
 # Script info
 SCRIPTTITLE = 'Test Script Launcher'
-SCRIPTVERSION = '0.2.3'
+SCRIPTVERSION = '0.2.4'
 SCRIPTCOPYRIGHT = '2018 by Frank Willeke'
 
 # Logging
@@ -57,11 +57,11 @@ def SetupLogging():
 
 def main():
     # Title
-    print('##############################')
-    print('# ' + SCRIPTTITLE + ' ' + SCRIPTVERSION)
-    print('#')
-    print('# ' + SCRIPTCOPYRIGHT)
-    print('##############################')
+    print('+-----------------------------')
+    print('| ' + SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    print('|')
+    print('| ' + SCRIPTCOPYRIGHT)
+    print('+-----------------------------')
     print(' ')
 
     # Setup logger and modules
@@ -85,7 +85,7 @@ def main():
 
     # List modules
     if options.listmodules is not None and options.listmodules == True:
-        log.info('Listing registered test modules:')
+        log.info('Listing ' + str(len(registeredModules)) + ' registered test modules:')
         print('')
         for m in registeredModules:
             log.info(m.get_name())
