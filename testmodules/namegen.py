@@ -5,7 +5,7 @@ import random
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.3.2'
+SCRIPTVERSION = '1.3.3'
 
 
 class NameGenerator:
@@ -67,6 +67,7 @@ class NameGenerator:
                                     "det", \
                                     "ost", \
                                     "nord", \
+                                    "trelle", \
                                     "wern"], \
                                 \
                                 ["bol", \
@@ -172,6 +173,7 @@ class NameGenerator:
                                         "bella", \
                                         "nelia", \
                                         "stin", \
+                                        "berta", \
                                         "scha", \
                                         "a", \
                                         "mine", \
@@ -189,6 +191,7 @@ class NameGenerator:
                             "helm", \
                             "malo", \
                             "zak", \
+                            "sack", \
                             "abo", \
                             "wonk", \
                             "kovsky", \
@@ -199,7 +202,7 @@ class NameGenerator:
                             "woll", \
                             "wolle", \
                             "wulle", \
-                            "k"+u"\u00d6"+"l", \
+                            "k"+u"\u00f6"+"l", \
                             "ratz", \
                             "wicz", \
                             "bert", \
@@ -208,6 +211,11 @@ class NameGenerator:
                             "tab", \
                             "trabo", \
                             "grump", \
+                            "porn", \
+                            "k" + u"\u00fc" + "l", \
+                            "b" + u"\u00f6" + "ck", \
+                            "k" + u"\u00e4" + "s", \
+                            "k" + u"\u00e4" + "se", \
                             "trump", \
                             "niete", \
                             "zing", \
@@ -230,7 +238,10 @@ class NameGenerator:
                             "te", \
                             "le", \
                             "pan", \
+                            "piese", \
+                            "pampel", \
                             "hans", \
+                            "tr" + u"\u00f6" + "del", \
                             "paff"]
 
 
