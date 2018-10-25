@@ -12,6 +12,7 @@ from testmodules import dice
 from testmodules import headsortails
 from testmodules import pwgen
 from testmodules import namegen
+from testmodules import fractiontests
 
 
 # Script info
@@ -75,6 +76,7 @@ def main():
     registeredModules.append(headsortails)
     registeredModules.append(pwgen)
     registeredModules.append(namegen)
+    registeredModules.append(fractiontests)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
