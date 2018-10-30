@@ -6,6 +6,7 @@ import logging
 from testmodules import primenumbers
 from testmodules import waves
 from testmodules import encrypt_xor
+from testmodules import encrypt_caesar
 from testmodules import location
 from testmodules import eightball
 from testmodules import dice
@@ -70,6 +71,7 @@ def main():
     registeredModules.append(primenumbers)
     registeredModules.append(waves)
     registeredModules.append(encrypt_xor)
+    registeredModules.append(encrypt_caesar)
     registeredModules.append(location)
     registeredModules.append(eightball)
     registeredModules.append(dice)
