@@ -48,7 +48,7 @@ def get_name():
 # Perform Encryption test
 def run(log, options):
     # Welcome
-    log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    log.info(get_name())
 
     print('')
     log.info(random.randint(1, 6))

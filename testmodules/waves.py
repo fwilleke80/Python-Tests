@@ -114,7 +114,7 @@ def run(log, options):
     speedFactor = 1.0 / max(argSpeed, 0.001)
 
     # Welcome
-    log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    log.info(get_name())
     log.debug('Args: ' + str(args))
     log.info('Preparing for waveform generation...')
     print(' ')

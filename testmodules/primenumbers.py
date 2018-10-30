@@ -73,7 +73,7 @@ def run(log, options):
     printPrimes = options.printoutput
 
     # Welcome
-    log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    log.info(get_name())
     log.info('Calculating prime numbers up to ' + "{:,}".format(limit) + '...')
 
     # Perform sieve and measure time

@@ -93,7 +93,7 @@ def get_name():
 # Perform Encryption test
 def run(log, options):
     # Welcome
-    log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    log.info(get_name())
     print('')
     print(ascii_eightball)
     print('')

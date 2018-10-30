@@ -55,7 +55,7 @@ def get_name():
 # Perform Encryption test
 def run(log, options):
     # Welcome
-    log.info(SCRIPTTITLE + ' ' + SCRIPTVERSION)
+    log.info(get_name())
 
     # Get arguments
     args = options.encrypt_xor
