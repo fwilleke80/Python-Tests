@@ -52,18 +52,23 @@ Use this to get help for the command line options:
 ### artworkprice
 Calculate a suitable price if you want to sell a painting you made
 
-### primenumbers
-Calculates all prime numbers up to a given limit
+### dice
+Throw a W6!
 
-### waves
-Calculates folded waveforms on the basis of sine waves modulating each other.
+### eightball
+Ask the Magic Eightball a question!
 
-This module is dependend on the *colorama* library!  
-Get it here: https://pypi.org/project/colorama/#files  
-Or install via pip: `sudo pip install colorama`
+### encrypt_caesar
+Simple implementation of the Caesar string encryption
 
 ### encrypt_xor
-Simple implementation of an XOR string encryption  
+Simple implementation of an XOR string encryption
+
+### fractiontest
+Perform fraction calculations
+
+### headsortails
+Throws a coin and tells you whether it's heads or tails.
 
 ### location
 Retrieves and prints geolocation information based on current IP
@@ -72,22 +77,27 @@ This module is dependend on the *geocoder* library!
 Get it here: https://geocoder.readthedocs.io/api.html?highlight=street#installation  
 Or install via pip: `sudo pip install geocoder`
 
-### headsortails
-Throws a coin and tells you whether it's heads or tails.
-
-### eightball
-Ask the Magic Eightball a question!
-
-### dice
-Throw a W6!
-
-### pwgen
-Generates a pronouncable password of variable length
-
 ### namegen
 A funny module that I originally wrote in JS and now ported to Python. It generates interesting and totally unexceptional male and female names.
 
 The names will sound funniest to german ears, I suppose.
+
+### primenumbers
+Calculates all prime numbers up to a given limit
+
+### pwgen
+Generates a pronouncable password of variable length
+
+### threading
+This module will contain a bunch of multithreaded performance tests. Currently, it's disfunct and not loaded in test.py.
+
+### waves
+Calculates folded waveforms on the basis of sine waves modulating each other.
+
+This module is dependend on the *colorama* library!  
+Get it here: https://pypi.org/project/colorama/#files  
+Or install via pip: `sudo pip install colorama`
+
 
 ## Luxury setup
 ### OSX
