@@ -76,8 +76,16 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
-    return options.pwgen is not None and options.pwgen == True and options.pwlen is not None
+def check_args(log, options):
+    return options.pwgen is not None and options.pwgen == True and check_additional_args(log, options)
+
+
+# Checks additional arguments and prints error messages
+def check_additional_args(log, options):
+    if options.pwlen is None or options.pwlen < 1:
+        log.error('LENGTH must be > 1')
+        return False
+    return True
 
 
 # Return module name

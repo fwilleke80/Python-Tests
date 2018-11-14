@@ -58,7 +58,7 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
+def check_args(log, options):
     return options.encrypt_caesar is not None and options.encrypt_caesar[0] != '' and options.encrypt_caesar[1] != ''
 
 

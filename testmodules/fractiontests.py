@@ -63,7 +63,7 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
+def check_args(log, options):
     return options.fraction is not None and len(options.fraction) == 3
 
 

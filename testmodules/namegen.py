@@ -346,8 +346,16 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
-    return options.namegen is not None and options.namegen_gender is not None and options.namegen_count is not None and options.namegen_count > 0 and options.namegen == True
+def check_args(log, options):
+    return options.namegen is not None and options.namegen == True and check_Additional_args(log, options)
+
+
+# Checks additional arguments and prints error messages
+def check_additional_args(log, options):
+    if options.namegen_gender is None or options.namegen_count is None or options.namegen_count < 1:
+        log.error('Invalid name generator arguments!')
+        return False
+    return True
 
 
 # Return module name

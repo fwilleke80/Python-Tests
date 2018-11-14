@@ -55,7 +55,7 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
+def check_args(log, options):
     return options.location is not None and options.location == True
 
 

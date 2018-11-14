@@ -57,8 +57,16 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
-    return options.primenumbers is not None and options.primenumbers > 0
+def check_args(log, options):
+    return options.primenumbers is not None and check_additional_args(log, options)
+
+
+# Checks additional arguments and prints error messages
+def check_additional_args(log, options):
+    if options.primenumbers <= 2:
+        log.error('LIMIT must be > 2')
+        return False
+    return True
 
 
 # Return module name

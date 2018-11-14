@@ -14,11 +14,12 @@ from testmodules import headsortails
 from testmodules import pwgen
 from testmodules import namegen
 from testmodules import fractiontests
+from testmodules import artworkprice
 
 
 # Script info
-SCRIPTTITLE = 'Test Script Launcher'
-SCRIPTVERSION = '0.2.4'
+SCRIPTTITLE = 'Tool Script Launcher'
+SCRIPTVERSION = '0.2.5'
 SCRIPTCOPYRIGHT = '2018 by Frank Willeke'
 
 # Logging
@@ -79,6 +80,7 @@ def main():
     registeredModules.append(pwgen)
     registeredModules.append(namegen)
     registeredModules.append(fractiontests)
+    registeredModules.append(artworkprice)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
@@ -99,10 +101,9 @@ def main():
 
     # Run modules
     for m in registeredModules:
-        if m.check_args(options=options):
+        if m.check_args(options=options, log=log):
             m.run(options=options, log=log)
             return
-
 
 # Kick off the shit...
 if __name__=='__main__':

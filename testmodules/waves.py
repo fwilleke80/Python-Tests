@@ -12,10 +12,10 @@ from colorama import Fore, Style
 
 # Script info
 SCRIPTTITLE = 'Waves'
-SCRIPTVERSION = '0.4.5'
+SCRIPTVERSION = '0.4.6'
 
 
-defaultParams = (15.0,10.0,0.1,30.0)
+defaultParams = (15.0, 10.0, 0.1, 30.0)
 
 
 def print_waveform_line(i, param1, param2, param3):
@@ -93,8 +93,33 @@ def setup_args(parser):
 
 
 # Return True if args/options tell us to run this module
-def check_args(options):
-    return options.waves is not None and options.waves == True and options.wavesparams is not None and type(options.wavesparams[0]) is float and type(options.wavesparams[1]) is float and type(options.wavesparams[2]) is float and type(options.wavesparams[3]) is float and options.wavesparams[0] > 0.0 and options.wavesparams[1] > 0.0 and options.wavesparams[2] > 0.0 and options.wavesparams[3] > 0.0
+def check_args(log, options):
+    return options.waves is not None and check_additional_args(log, options)
+
+
+# Checks additional arguments and prints error messages
+def check_additional_args(log, options):
+    if options.wavesparams is None:
+        log.error('No wave parameters provided!')
+        return False
+
+    if type(options.wavesparams[0]) is not float or options.wavesparams[0] <= 0.0:
+        log.error('SPEED must be a float value > 0.0')
+        return False
+
+    if type(options.wavesparams[1]) is not float or options.wavesparams[1] <= 0.0:
+        log.error('SCALE1 must be a float value > 0.0')
+        return False
+
+    if type(options.wavesparams[2]) is not float or options.wavesparams[2] <= 0.0:
+        log.error('SCALE2 must be a float value > 0.0')
+        return False
+
+    if type(options.wavesparams[3]) is not float or options.wavesparams[3] <= 0.0:
+        log.error('FOLD must be a float value > 0.0')
+        return False
+
+    return True
 
 
 # Return module name
