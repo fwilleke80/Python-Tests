@@ -85,7 +85,7 @@ Throw a W6!
 Generates a pronouncable password of variable length
 
 ### namegen
-A funny module that I originally wrote in JS and not ported to Python. It generates interesting and totally unexceptional male and female names.
+A funny module that I originally wrote in JS and now ported to Python. It generates interesting and totally unexceptional male and female names.
 
 The names will sound funniest to german ears, I suppose.
 
