@@ -49,6 +49,9 @@ Use this to get help for the command line options:
 
 ## Modules
 
+### artworkprice
+Calculate a suitable price if you want to sell a painting you made
+
 ### primenumbers
 Calculates all prime numbers up to a given limit
 
@@ -85,3 +88,19 @@ Generates a pronouncable password of variable length
 A funny module that I originally wrote in JS and not ported to Python. It generates interesting and totally unexceptional male and female names.
 
 The names will sound funniest to german ears, I suppose.
+
+## Luxury setup
+### OSX
+* Open Terminal:  
+    Press `CMD+SPACE`  
+    Type `Terminal`
+* Navigate to your home folder:  
+    Type `cd ~`
+* Edit your bash profile:  
+    Type `nano .bash_profile`
+* Add an alias to the test.py call:  
+    Add line: `alias [ALIASNAME]="python [PATH TO TEST.PY]"`  
+    Example: `alias ftools="python ~/Documents/_Projects/Python\ Tests/test.py"`
+* Exit NANO editor and save changes
+* Reload bash profile:  
+    Type `source ~/.bash_profile`
