@@ -34,9 +34,15 @@ registeredModules = []
 
 
 # Set up command line argument options for main script
+def SetupArgs(parser):
+    optGroup = optparse.OptionGroup(parser, 'General options', 'Not specific to any module')
+    optGroup.add_option("-o", "--output", action="store_true", dest="printoutput", default=False, help="Print outputs (not relevant for all modules)")
+    optGroup.add_option("--listmodules", action="store_true", dest="listmodules", default=False, help="List registered test modules")
+    parser.add_option_group(optGroup)
+
+
+# Parse provided command line arguments
 def ParseArgs(parser):
-    parser.add_option("-o", "--output", action="store_true", dest="printoutput", default=False, help="Print outputs (not relevant for all modules)")
-    parser.add_option("--listmodules", action="store_true", dest="listmodules", default=False, help="List registered test modules")
     options, args = parser.parse_args()
     return options, args
 
@@ -84,6 +90,7 @@ def main():
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
+    SetupArgs(parser)
     for m in registeredModules:
         m.setup_args(parser)
     options, args = ParseArgs(parser)
@@ -91,12 +98,12 @@ def main():
 
     # List modules
     if options.listmodules is not None and options.listmodules == True:
-        log.info('Listing ' + str(len(registeredModules)) + ' registered test modules:')
+        log.info('Listing ' + str(len(registeredModules)) + ' registered tool modules:')
         print('')
         for m in registeredModules:
             log.info(m.get_name())
-        print('')
-        log.info('End of list.')
+            log.info('        ' + m.get_info())
+            print('')
         return
 
     # Run modules
