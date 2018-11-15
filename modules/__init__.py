@@ -1,7 +1,8 @@
 import pkgutil
 
-# List of modules to exclude
-excludeModules = ['threadingtests']
+# Modules to exclude
+excludeModules = []
+excludeModules.append('threadingtests')
 
 # Build list of all modules in package
 __all__ = []
