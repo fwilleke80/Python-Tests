@@ -34,7 +34,7 @@ SCRIPTINFO = 'Use this to throw a W6.'
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-d", "--dice", action="store_true", dest="dice", default=None, help="Roll a W6!")
+    parser.add_option('-d', '--dice', action='store_true', dest='dice', default=None, help='Roll a W6!')
 
 
 # Return True if args/options tell us to run this module

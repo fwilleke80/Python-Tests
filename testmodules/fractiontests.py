@@ -20,7 +20,7 @@ SIMPLYFYRESULT_NEW = 2
 
 def simplify(a, b):
     if b == 0:
-        return "Division by 0 - result undefined"
+        return 'Division by 0 - result undefined'
 
     # Remove greatest common divisor:
     gcd = fractions.gcd(a, b)
@@ -28,11 +28,11 @@ def simplify(a, b):
     # Note that reduced_den > 0 as documented in the gcd function.
 
     if reduced_den == 1:
-        return (SIMPLIFYRESULT_WHOLENUMBER, "(%d / %d) is simplified to %d" % (a, b, reduced_num), reduced_num)
+        return (SIMPLIFYRESULT_WHOLENUMBER, '(%d / %d) is simplified to %d' % (a, b, reduced_num), reduced_num)
     elif gcd == 1:
-        return (SIMPLIFYRESULT_UNCHANGED, "(%d / %d) is already at most simplified state." % (a, b), a, b)
+        return (SIMPLIFYRESULT_UNCHANGED, '(%d / %d) is already at most simplified state.' % (a, b), a, b)
     else:
-        return (SIMPLYFYRESULT_NEW, "(%d / %d) is simplified to (%d / %d)" % (a, b, reduced_num, reduced_den), reduced_num, reduced_den)
+        return (SIMPLYFYRESULT_NEW, '(%d / %d) is simplified to (%d / %d)' % (a, b, reduced_num, reduced_den), reduced_num, reduced_den)
 
 
 #####################################
@@ -60,7 +60,7 @@ def simplify(a, b):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("--fraction", type="string", dest="fraction", nargs=3, default=None, help="Calculate F from a fraction (A / B). Possible values for F: [gcd, lcm, simplify]", metavar="F A B")
+    parser.add_option('--fraction', type='string', dest='fraction', nargs=3, default=None, help='Calculate F from a fraction (A / B). Possible values for F: [gcd, lcm, simplify]', metavar='F A B')
 
 
 # Return True if args/options tell us to run this module
@@ -107,4 +107,4 @@ def run(log, options):
         log.error('Unknown fraction function: ' + fractFunc)
         return
 
-    log.info(fractFunc + '(' + str(a) + ' / ' + str(b) + ') = ' + "{0:.5f}".format(result))
+    log.info(fractFunc + '(' + str(a) + ' / ' + str(b) + ') = ' + '{0:.5f}'.format(result))

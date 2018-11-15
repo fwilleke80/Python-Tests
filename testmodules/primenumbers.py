@@ -54,7 +54,7 @@ def sieve_of_eratosthenes(limit):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-p", "--primenumbers", type="int", dest="primenumbers", default=None, help="Perform prime number test up to LIMIT", metavar="LIMIT")
+    parser.add_option('-p', '--primenumbers', type='int', dest='primenumbers', default=None, help='Perform prime number test up to LIMIT', metavar='LIMIT')
 
 
 # Return True if args/options tell us to run this module
@@ -88,7 +88,7 @@ def run(log, options):
 
     # Welcome
     log.info(get_name())
-    log.info('Calculating prime numbers up to ' + "{:,}".format(limit) + '...')
+    log.info('Calculating prime numbers up to ' + '{:,}'.format(limit) + '...')
 
     # Perform sieve and measure time
     timeStart = time.time()
@@ -103,7 +103,7 @@ def run(log, options):
         print(' ')
 
     # Diagnostic information
-    log.info('Found ' + "{:,}".format(len(primeNumbers)) + ' prime numbers!!!')
+    log.info('Found ' + '{:,}'.format(len(primeNumbers)) + ' prime numbers!!!')
     if timePassed > 1.5:
         log.info('Finished in ' + str(timePassed) + ' sec')
     else:

@@ -36,8 +36,8 @@ registeredModules = []
 # Set up command line argument options for main script
 def SetupArgs(parser):
     optGroup = optparse.OptionGroup(parser, 'General options', 'Not specific to any module')
-    optGroup.add_option("-o", "--output", action="store_true", dest="printoutput", default=False, help="Print outputs (not relevant for all modules)")
-    optGroup.add_option("--listmodules", action="store_true", dest="listmodules", default=False, help="List registered test modules")
+    optGroup.add_option('-o', '--output', action='store_true', dest='printoutput', default=False, help='Print outputs (not relevant for all modules)')
+    optGroup.add_option('--listmodules', action='store_true', dest='listmodules', default=False, help='List registered test modules')
     parser.add_option_group(optGroup)
 
 
@@ -94,7 +94,7 @@ def main():
     for m in registeredModules:
         m.setup_args(parser)
     options, args = ParseArgs(parser)
-    log.debug("options: " + str(options))
+    log.debug('options: ' + str(options))
 
     # List modules
     if options.listmodules is not None and options.listmodules == True:

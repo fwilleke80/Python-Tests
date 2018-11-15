@@ -10,12 +10,12 @@ SCRIPTVERSION = '0.1.1'
 SCRIPTINFO = 'Encrypt a string using the ancient Caesar cypher'
 
 
-L2I = dict(zip("ABCDEFGHIJKLMNOPQRSTUVWXYZ",range(26)))
-I2L = dict(zip(range(26),"ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+L2I = dict(zip('ABCDEFGHIJKLMNOPQRSTUVWXYZ',range(26)))
+I2L = dict(zip(range(26),'ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
 
 # Encrypt msg with shiftVal using Caesar
 def caesar_encrypt(msg, shiftVal):
-    cyptherText = ""
+    cyptherText = ''
     for c in msg.upper():
         if c.isalpha(): cyptherText += I2L[ (L2I[c] + shiftVal)%26 ]
         else: cyptherText += c
@@ -23,7 +23,7 @@ def caesar_encrypt(msg, shiftVal):
 
 # Decrypt msg with shiftVal using Caesar
 def caesar_decrypt(msg, shiftVal):
-    cyptherText = ""
+    cyptherText = ''
     for c in msg.upper():
         if c.isalpha(): cyptherText += I2L[ (L2I[c] - shiftVal)%26 ]
         else: cyptherText += c
@@ -55,7 +55,7 @@ def caesar_decrypt(msg, shiftVal):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-c", "--caesar", type="string", dest="encrypt_caesar", nargs=2, help="Encrypt MSG with SHIFT using Caesar encryption", metavar="MSG SHIFT")
+    parser.add_option('-c', '--caesar', type='string', dest='encrypt_caesar', nargs=2, help='Encrypt MSG with SHIFT using Caesar encryption', metavar='MSG SHIFT')
 
 
 # Return True if args/options tell us to run this module

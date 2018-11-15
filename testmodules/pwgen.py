@@ -36,7 +36,7 @@ final_consonants = (set(string.ascii_lowercase) - set('aeiou')
 vowels = 'aeiou' # we'll keep this simple
 
 
-# each syllable is consonant-vowel-consonant "pronounceable"
+# each syllable is consonant-vowel-consonant 'pronounceable'
 syllables = map(''.join, itertools.product(initial_consonants, 
                                            vowels, 
                                            final_consonants))
@@ -73,8 +73,8 @@ def gibberish(wordcount, wordlist=syllables):
 # Add command line arguments for this script to args parser
 def setup_args(parser):
     optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for generating a pronouncable password')
-    optGroup.add_option("--pwgen", action="store_true", dest="pwgen", default=None, help=SCRIPTINFO)
-    optGroup.add_option("--pwlen", type="int", dest="pwlen", default=0, help="Length of pronouncable password", metavar="LENGTH")
+    optGroup.add_option('--pwgen', action='store_true', dest='pwgen', default=None, help=SCRIPTINFO)
+    optGroup.add_option('--pwlen', type='int', dest='pwlen', default=0, help='Length of pronouncable password', metavar='LENGTH')
     parser.add_option_group(optGroup)
 
 

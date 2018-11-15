@@ -38,7 +38,7 @@ def print_waveform_line(i, param1, param2, param3):
     # Start line with something geeky
     sys.stdout.write(Style.BRIGHT)
     sys.stdout.write('%s' % Fore.WHITE)
-    sys.stdout.write(("%02d" % xPos1) + 'x' + ("%02d" % random.randint(0, 9)) + '   ')
+    sys.stdout.write(('%02d' % xPos1) + 'x' + ('%02d' % random.randint(0, 9)) + '   ')
     sys.stdout.write(Style.NORMAL)
 
     for col in range(5):
@@ -94,8 +94,8 @@ def print_waveform_line(i, param1, param2, param3):
 # Add command line arguments for this script to args parser
 def setup_args(parser):
     optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for the waveform generation')
-    optGroup.add_option("-w", "--waves", action="store_true", dest="waves", default=None, help=SCRIPTINFO)
-    optGroup.add_option("--wavesparams", type="float", dest="wavesparams", default=defaultParams, nargs=4, help="Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
+    optGroup.add_option('-w', '--waves', action='store_true', dest='waves', default=None, help=SCRIPTINFO)
+    optGroup.add_option('--wavesparams', type='float', dest='wavesparams', default=defaultParams, nargs=4, help='Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0', metavar='SPEED SCALE1 SCALE2 FOLD')
     parser.add_option_group(optGroup)
 
 
@@ -174,5 +174,5 @@ def run(log, options):
     except KeyboardInterrupt:
         print' '
         timeUsed = (time.time() - startTime)
-        log.info('Finished! Been running for ' + ("%.3f" % timeUsed) + ' seconds and calculated ' + "{:,}".format(lineCounter) + ' steps!')
-        log.info('Pure calculation time: ' + ("%.3f" % timeUsedPure) + ' seconds')
+        log.info('Finished! Been running for ' + ('%.3f' % timeUsed) + ' seconds and calculated ' + '{:,}'.format(lineCounter) + ' steps!')
+        log.info('Pure calculation time: ' + ('%.3f' % timeUsedPure) + ' seconds')

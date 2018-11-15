@@ -22,229 +22,229 @@ class NameGenerator:
     # Syllable lists
     firstNameSyllables = { 'male' : \
                             [ \
-                                ["kno", \
-                                    "ro", \
-                                    "hu", \
-                                    "schnurr", \
-                                    "knurr", \
-                                    "bern", \
-                                    "rein", \
-                                    "bro", \
-                                    "hab", \
-                                    "brot", \
-                                    "bratz", \
-                                    "knack", \
-                                    "her", \
-                                    "brumm", \
-                                    "volk", \
-                                    "ha", \
-                                    "lad", \
-                                    "brat", \
-                                    "atz", \
-                                    "horst", \
-                                    "christ", \
-                                    "det", \
-                                    "krumm", \
-                                    "pups", \
-                                    "knall", \
-                                    "ekko", \
-                                    "mal", \
-                                    "mar", \
-                                    "gram", \
-                                    "dussel", \
-                                    "d"+u"\u00fc"+"mpel", \
-                                    "gronko", \
-                                    "gro", \
-                                    "jan", \
-                                    "bums", \
-                                    "niete", \
-                                    "brom", \
-                                    "brumm", \
-                                    "step", \
-                                    "ali", \
-                                    "schno", \
-                                    "sack", \
-                                    "kack", \
-                                    "jo", \
-                                    "det", \
-                                    "ost", \
-                                    "nord", \
-                                    "trelle", \
-                                    "wern"], \
+                                ['kno', \
+                                    'ro', \
+                                    'hu', \
+                                    'schnurr', \
+                                    'knurr', \
+                                    'bern', \
+                                    'rein', \
+                                    'bro', \
+                                    'hab', \
+                                    'brot', \
+                                    'bratz', \
+                                    'knack', \
+                                    'her', \
+                                    'brumm', \
+                                    'volk', \
+                                    'ha', \
+                                    'lad', \
+                                    'brat', \
+                                    'atz', \
+                                    'horst', \
+                                    'christ', \
+                                    'det', \
+                                    'krumm', \
+                                    'pups', \
+                                    'knall', \
+                                    'ekko', \
+                                    'mal', \
+                                    'mar', \
+                                    'gram', \
+                                    'dussel', \
+                                    'd'+u'\u00fc'+'mpel', \
+                                    'gronko', \
+                                    'gro', \
+                                    'jan', \
+                                    'bums', \
+                                    'niete', \
+                                    'brom', \
+                                    'brumm', \
+                                    'step', \
+                                    'ali', \
+                                    'schno', \
+                                    'sack', \
+                                    'kack', \
+                                    'jo', \
+                                    'det', \
+                                    'ost', \
+                                    'nord', \
+                                    'trelle', \
+                                    'wern'], \
                                 \
-                                ["bol", \
-                                    "bul", \
-                                    "bom", \
-                                    "bart", \
-                                    "o", \
-                                    "ba", \
-                                    "bo", \
-                                    "bu", \
-                                    "bi", \
-                                    "is", \
-                                    "see", \
-                                    "stump", \
-                                    "honk", \
-                                    "parz", \
-                                    "a", \
-                                    "stu", \
-                                    "hann"], \
+                                ['bol', \
+                                    'bul', \
+                                    'bom', \
+                                    'bart', \
+                                    'o', \
+                                    'ba', \
+                                    'bo', \
+                                    'bu', \
+                                    'bi', \
+                                    'is', \
+                                    'see', \
+                                    'stump', \
+                                    'honk', \
+                                    'parz', \
+                                    'a', \
+                                    'stu', \
+                                    'hann'], \
                                 \
-                                ["bert", \
-                                    "bart", \
-                                    "hahn", \
-                                    "hardt", \
-                                    "ald", \
-                                    "bald", \
-                                    "rald", \
-                                    "tav", \
-                                    "lav", \
-                                    "mann", \
-                                    "er", \
-                                    "ius", \
-                                    "kus", \
-                                    "os", \
-                                    "lev", \
-                                    "belli", \
-                                    "zahn", \
-                                    "gar", \
-                                    "bold", \
-                                    "trutz", \
-                                    "fried", \
-                                    "bi", \
-                                    "en", \
-                                    "rich", \
-                                    "er"] \
+                                ['bert', \
+                                    'bart', \
+                                    'hahn', \
+                                    'hardt', \
+                                    'ald', \
+                                    'bald', \
+                                    'rald', \
+                                    'tav', \
+                                    'lav', \
+                                    'mann', \
+                                    'er', \
+                                    'ius', \
+                                    'kus', \
+                                    'os', \
+                                    'lev', \
+                                    'belli', \
+                                    'zahn', \
+                                    'gar', \
+                                    'bold', \
+                                    'trutz', \
+                                    'fried', \
+                                    'bi', \
+                                    'en', \
+                                    'rich', \
+                                    'er'] \
                             ], \
                             \
                             'female' : \
                                 [ \
-                                    ["kuni",
-                                        "berta", \
-                                        "her", \
-                                        "da", \
-                                        "dani", \
-                                        "ker", \
-                                        "klara", \
-                                        "gud", \
-                                        "su", \
-                                        "i", \
-                                        "a", \
-                                        "e", \
-                                        "o", \
-                                        "u", \
-                                        "sa", \
-                                        "bri", \
-                                        "lau", \
-                                        "chris"
-                                        "eva", \
-                                        "lise", \
-                                        "frau", \
-                                        "manu", \
-                                        "emanu", \
-                                        "theo", \
-                                        "na", \
-                                        "cor", \
-                                        "pene", \
-                                        "jas", \
-                                        "klo"], \
+                                    ['kuni',
+                                        'berta', \
+                                        'her', \
+                                        'da', \
+                                        'dani', \
+                                        'ker', \
+                                        'klara', \
+                                        'gud', \
+                                        'su', \
+                                        'i', \
+                                        'a', \
+                                        'e', \
+                                        'o', \
+                                        'u', \
+                                        'sa', \
+                                        'bri', \
+                                        'lau', \
+                                        'chris'
+                                        'eva', \
+                                        'lise', \
+                                        'frau', \
+                                        'manu', \
+                                        'emanu', \
+                                        'theo', \
+                                        'na', \
+                                        'cor', \
+                                        'pene', \
+                                        'jas', \
+                                        'klo'], \
                                         \
-                                    ["gata", \
-                                        "beta", \
-                                        "trabo", \
-                                        "phe", \
-                                        "bumbo", \
-                                        "gret", \
-                                        "ta", \
-                                        "bi"], \
+                                    ['gata', \
+                                        'beta', \
+                                        'trabo', \
+                                        'phe', \
+                                        'bumbo', \
+                                        'gret', \
+                                        'ta', \
+                                        'bi'], \
                                         \
-                                    ["gunde", \
-                                        "tilde", \
-                                        "lia", \
-                                        "rune", \
-                                        "lope", \
-                                        "tha", \
-                                        "min", \
-                                        "run", \
-                                        "dora", \
-                                        "ke", \
-                                        "elle", \
-                                        "ela", \
-                                        "ella", \
-                                        "na", \
-                                        "bella", \
-                                        "nelia", \
-                                        "stin", \
-                                        "berta", \
-                                        "scha", \
-                                        "a", \
-                                        "mine", \
-                                        "bine", \
-                                        "brina", \
-                                        "sanne", \
-                                        "gitte", \
-                                        "lotte", \
-                                        "hilde"]
+                                    ['gunde', \
+                                        'tilde', \
+                                        'lia', \
+                                        'rune', \
+                                        'lope', \
+                                        'tha', \
+                                        'min', \
+                                        'run', \
+                                        'dora', \
+                                        'ke', \
+                                        'elle', \
+                                        'ela', \
+                                        'ella', \
+                                        'na', \
+                                        'bella', \
+                                        'nelia', \
+                                        'stin', \
+                                        'berta', \
+                                        'scha', \
+                                        'a', \
+                                        'mine', \
+                                        'bine', \
+                                        'brina', \
+                                        'sanne', \
+                                        'gitte', \
+                                        'lotte', \
+                                        'hilde']
                                 ] \
                             }
 
-    lastNameSyllables = ["knu", \
-                            "per", \
-                            "helm", \
-                            "malo", \
-                            "zak", \
-                            "sack", \
-                            "abo", \
-                            "wonk", \
-                            "kovsky", \
-                            "hump", \
-                            "ski", \
-                            "mann", \
-                            "boff", \
-                            "woll", \
-                            "wolle", \
-                            "wulle", \
-                            "k"+u"\u00f6"+"l", \
-                            "ratz", \
-                            "wicz", \
-                            "bert", \
-                            "horst", \
-                            "kotte", \
-                            "tab", \
-                            "trabo", \
-                            "grump", \
-                            "porn", \
-                            "k" + u"\u00fc" + "l", \
-                            "b" + u"\u00f6" + "ck", \
-                            "k" + u"\u00e4" + "s", \
-                            "k" + u"\u00e4" + "se", \
-                            "trump", \
-                            "niete", \
-                            "zing", \
-                            "koc", \
-                            "will", \
-                            "eke", \
-                            "merkel", \
-                            "bums", \
-                            "ak", \
-                            "krach", \
-                            "kel", \
-                            "hel", \
-                            "sin", \
-                            "ra", \
-                            "tu", \
-                            "meier", \
-                            "fan", \
-                            "ler", \
-                            "kug", \
-                            "te", \
-                            "le", \
-                            "pan", \
-                            "piese", \
-                            "pampel", \
-                            "hans", \
-                            "tr" + u"\u00f6" + "del", \
-                            "paff"]
+    lastNameSyllables = ['knu', \
+                            'per', \
+                            'helm', \
+                            'malo', \
+                            'zak', \
+                            'sack', \
+                            'abo', \
+                            'wonk', \
+                            'kovsky', \
+                            'hump', \
+                            'ski', \
+                            'mann', \
+                            'boff', \
+                            'woll', \
+                            'wolle', \
+                            'wulle', \
+                            'k'+u'\u00f6'+'l', \
+                            'ratz', \
+                            'wicz', \
+                            'bert', \
+                            'horst', \
+                            'kotte', \
+                            'tab', \
+                            'trabo', \
+                            'grump', \
+                            'porn', \
+                            'k' + u'\u00fc' + 'l', \
+                            'b' + u'\u00f6' + 'ck', \
+                            'k' + u'\u00e4' + 's', \
+                            'k' + u'\u00e4' + 'se', \
+                            'trump', \
+                            'niete', \
+                            'zing', \
+                            'koc', \
+                            'will', \
+                            'eke', \
+                            'merkel', \
+                            'bums', \
+                            'ak', \
+                            'krach', \
+                            'kel', \
+                            'hel', \
+                            'sin', \
+                            'ra', \
+                            'tu', \
+                            'meier', \
+                            'fan', \
+                            'ler', \
+                            'kug', \
+                            'te', \
+                            'le', \
+                            'pan', \
+                            'piese', \
+                            'pampel', \
+                            'hans', \
+                            'tr' + u'\u00f6' + 'del', \
+                            'paff']
 
 
     # Generate random firstname
@@ -290,7 +290,7 @@ class NameGenerator:
         # Detect unsupported gender
         theGender = gender.lower()
         if theGender not in list(this.firstNameSyllables) and theGender != 'random':
-            log.error('Gender "' + gender + '" not implemented yet. Using random gender instead.')
+            log.error('Gender '' + gender + '' not implemented yet. Using random gender instead.')
             theGender = 'random'
 
         # If random gender desired, pick an available one
@@ -343,9 +343,9 @@ class NameGenerator:
 # Add command line arguments for this script to args parser
 def setup_args(parser):
     optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Options for the generation of funny names')
-    optGroup.add_option("--namegen", action="store_true", dest="namegen", default=None, help=SCRIPTINFO)
-    optGroup.add_option("--gender", type="string", dest="namegen_gender", default='random', help="Specify gender of firstname ('male' or 'female' or 'random')", metavar="GENDER")
-    optGroup.add_option("--namecount", type="int", dest="namegen_count", default=1, help="Specify how many names should be generated with COUNT", metavar="COUNT")
+    optGroup.add_option('--namegen', action='store_true', dest='namegen', default=None, help=SCRIPTINFO)
+    optGroup.add_option('--gender', type='string', dest='namegen_gender', default='random', help='Specify gender of firstname (''male'' or ''female'' or ''random'')', metavar='GENDER')
+    optGroup.add_option('--namecount', type='int', dest='namegen_count', default=1, help='Specify how many names should be generated with COUNT', metavar='COUNT')
     parser.add_option_group(optGroup)
 
 

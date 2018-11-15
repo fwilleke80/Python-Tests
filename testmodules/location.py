@@ -27,7 +27,7 @@ def print_geolocation(log):
         log.info('State:       ' + geo.state)
 
     except AttributeError as err:
-        log.error("Unexpected error:" + str(err))
+        log.error('Unexpected error:' + str(err))
 
 
 #####################################
@@ -55,7 +55,7 @@ def print_geolocation(log):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-l", "--location", action="store_true", dest="location", default=None, help=SCRIPTINFO)
+    parser.add_option('-l', '--location', action='store_true', dest='location', default=None, help=SCRIPTINFO)
 
 
 # Return True if args/options tell us to run this module
