@@ -105,6 +105,9 @@ def main():
             m.run(options=options, log=log)
             return
 
+    # If no module was used, print help
+    parser.print_help()
+
 # Kick off the shit...
 if __name__=='__main__':
     try:
