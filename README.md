@@ -46,11 +46,17 @@ Use this to get help for the command line options:
  
  Generate 20 funny female names
 
+* `python test.py --benchmarks --testintensity=50000 --timelimit=10 --tests=sin,matrix`
+ 
+ Perform quite intense multithreaded benchmarks with trigonometric calculations and matrix multiplications.
 
 ## Modules
 
 ### artworkprice
 Calculate a suitable price if you want to sell a painting you made
+
+### benchmarks
+Perform different benchmarks single- and multithreaded, get results, see multiprocessing speedup factor
 
 ### dice
 Throw a W6!
@@ -87,9 +93,6 @@ Calculates all prime numbers up to a given limit
 
 ### pwgen
 Generates a pronouncable password of variable length
-
-### threading
-This module will contain a bunch of multithreaded performance tests. Currently, it's disfunct and not loaded in test.py.
 
 ### waves
 Calculates folded waveforms on the basis of sine waves modulating each other.
