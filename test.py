@@ -3,18 +3,18 @@
 import optparse
 import logging
 
-from testmodules import primenumbers
-from testmodules import waves
-from testmodules import encrypt_xor
-from testmodules import encrypt_caesar
-from testmodules import location
-from testmodules import eightball
-from testmodules import dice
-from testmodules import headsortails
-from testmodules import pwgen
-from testmodules import namegen
-from testmodules import fractiontests
-from testmodules import artworkprice
+from modules import primenumbers
+from modules import waves
+from modules import encrypt_xor
+from modules import encrypt_caesar
+from modules import location
+from modules import eightball
+from modules import dice
+from modules import headsortails
+from modules import pwgen
+from modules import namegen
+from modules import fractiontests
+from modules import artworkprice
 
 
 # Script info
