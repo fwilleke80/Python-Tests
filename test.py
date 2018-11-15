@@ -22,10 +22,16 @@ log = logging.getLogger('log')
 
 # Import modules from "modules" package folder
 registeredModules = []
-def ImportModules():
+def ImportModules(log):
     import modules
+    log.debug('Loading ' + str(len(modules.__all__)) + ' modules...')
+    log.debug('Excluded modules: ' + str(modules.excludeModules))
     for m in modules.__all__:
-        registeredModules.append(importlib.import_module(m))
+        try:
+            registeredModules.append(importlib.import_module(m))
+            log.debug('Imported module ' + m)
+        except:
+            log.error('Could not import module ' + m + '!')
 
 
 # Set up command line argument options for main script
@@ -72,7 +78,7 @@ def main():
     SetupLogging()
 
     # Import modules
-    ImportModules()
+    ImportModules(log)
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
