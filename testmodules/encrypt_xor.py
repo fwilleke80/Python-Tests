@@ -7,6 +7,7 @@ from itertools import cycle, izip
 # Script info
 SCRIPTTITLE = 'XOR Encryption'
 SCRIPTVERSION = '0.2.1'
+SCRIPTINFO = 'Encrypt or decrypt a string using XOR encryption'
 
 
 # Encrypt msg with key using XOR
@@ -39,7 +40,7 @@ def xor_encrypt(msg, key):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-x", "--xor", type="string", dest="encrypt_xor", nargs=2, help="Encrypt MSG with KEY using XOR encryption", metavar="MSG KEY")
+    parser.add_option("-x", "--xor", type="string", dest="encrypt_xor", nargs=2, help='Encrypt MSG with KEY using XOR encryption', metavar="MSG KEY")
 
 
 # Return True if args/options tell us to run this module
@@ -50,6 +51,11 @@ def check_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test

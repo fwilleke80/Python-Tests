@@ -6,7 +6,8 @@ from itertools import cycle, izip
 
 # Script info
 SCRIPTTITLE = 'Caesar Cypher'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.1.1'
+SCRIPTINFO = 'Encrypt a string using the ancient Caesar cypher'
 
 
 L2I = dict(zip("ABCDEFGHIJKLMNOPQRSTUVWXYZ",range(26)))
@@ -65,6 +66,11 @@ def check_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test

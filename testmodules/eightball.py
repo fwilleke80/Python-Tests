@@ -5,7 +5,8 @@ import random
 
 # Script info
 SCRIPTTITLE = 'Magic Eightball'
-SCRIPTVERSION = '0.2'
+SCRIPTVERSION = '0.2.1'
+SCRIPTINFO = 'Need advice? Ask the Magic Eightball!'
 
 
 ascii_eightball = \
@@ -88,6 +89,11 @@ def check_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test

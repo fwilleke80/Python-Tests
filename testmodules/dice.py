@@ -5,7 +5,9 @@ import random
 
 # Script info
 SCRIPTTITLE = 'Dice'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.1.1'
+SCRIPTINFO = 'Use this to throw a W6.'
+
 
 #####################################
 #
@@ -43,6 +45,11 @@ def check_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test

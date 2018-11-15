@@ -7,6 +7,7 @@ import math
 # Script info
 SCRIPTTITLE = 'Sieve of Eratosthenes'
 SCRIPTVERSION = '0.2.6'
+SCRIPTINFO = 'Calculate prime numbers using an ancient technique'
 
 
 def sieve_of_eratosthenes(limit):
@@ -72,6 +73,11 @@ def check_additional_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Calculate prime numbers op to limit

@@ -2,12 +2,16 @@
 import logging
 import sys
 import urllib
+
+# Dependency library!
 import geocoder
  
 
 # Script info
 SCRIPTTITLE = 'Location'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.1.1'
+SCRIPTINFO = 'Get information about your current location'
+
 
 
 def print_geolocation(log):
@@ -51,7 +55,7 @@ def print_geolocation(log):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-l", "--location", action="store_true", dest="location", default=None, help="Get information about your current location")
+    parser.add_option("-l", "--location", action="store_true", dest="location", default=None, help=SCRIPTINFO)
 
 
 # Return True if args/options tell us to run this module
@@ -62,6 +66,11 @@ def check_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test
