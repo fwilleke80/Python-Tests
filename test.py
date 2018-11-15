@@ -2,25 +2,15 @@
 
 import optparse
 import logging
-
-from modules import primenumbers
-from modules import waves
-from modules import encrypt_xor
-from modules import encrypt_caesar
-from modules import location
-from modules import eightball
-from modules import dice
-from modules import headsortails
-from modules import pwgen
-from modules import namegen
-from modules import fractiontests
-from modules import artworkprice
+import pkgutil
+import importlib
 
 
 # Script info
 SCRIPTTITLE = 'Tool Script Launcher'
-SCRIPTVERSION = '0.2.5'
+SCRIPTVERSION = '0.3'
 SCRIPTCOPYRIGHT = '2018 by Frank Willeke'
+
 
 # Logging
 LOGLEVEL = logging.INFO
@@ -29,8 +19,13 @@ LOGFORMAT = '%(levelname)s: %(message)s'
 LOGFILEFORMAT = '%(asctime)s: %(levelname)s: %(message)s'
 log = logging.getLogger('log')
 
-# List of registered module
+
+# Import modules from "modules" package folder
 registeredModules = []
+def ImportModules():
+    import modules
+    for m in modules.__all__:
+        registeredModules.append(importlib.import_module(m))
 
 
 # Set up command line argument options for main script
@@ -75,18 +70,9 @@ def main():
 
     # Setup logger and modules
     SetupLogging()
-    registeredModules.append(primenumbers)
-    registeredModules.append(waves)
-    registeredModules.append(encrypt_xor)
-    registeredModules.append(encrypt_caesar)
-    registeredModules.append(location)
-    registeredModules.append(eightball)
-    registeredModules.append(dice)
-    registeredModules.append(headsortails)
-    registeredModules.append(pwgen)
-    registeredModules.append(namegen)
-    registeredModules.append(fractiontests)
-    registeredModules.append(artworkprice)
+
+    # Import modules
+    ImportModules()
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
