@@ -8,9 +8,9 @@ import multiprocessing as mp
 
 
 # Script info
-SCRIPTTITLE = 'Multithreading Test'
-SCRIPTVERSION = '0.2.4'
-SCRIPTINFO = 'Yield the full power of your machine and perform some multithreading benchmarks!'
+SCRIPTTITLE = 'Benchmarks'
+SCRIPTVERSION = '0.3.1'
+SCRIPTINFO = 'Yield the full power of your machine and perform some multithreaded benchmarks!'
 
 
 # Generate MP speedup message
@@ -44,7 +44,7 @@ def test_count(log, threadCount, timeLimit, testIntensity=100):
     proc.start()
     proc.join()
     singleCount = count.value
-    log.info('Counted ' + str(count.value) + ' values in ' + str(timeLimit) + ' seconds')
+    log.info('Counted ' + "{:,}".format(singleCount) + ' values in ' + str(timeLimit) + ' seconds')
 
     if threadCount <= 1:
         return
@@ -71,7 +71,7 @@ def test_count(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Counted ' + str(multiCount) + ' values in ' + str(timeLimit) + ' seconds')
+    log.info('Counted ' + "{:,}".format(multiCount) + ' values in ' + str(timeLimit) + ' seconds')
     log.info(speedup_msg(singleCount, multiCount))
 
 
@@ -94,7 +94,7 @@ def test_random(log, threadCount, timeLimit, testIntensity=100):
     proc.start()
     proc.join()
     singleCount = count.value
-    log.info('Calculated ' + str(count.value) + ' random numbers in ' + str(timeLimit) + ' seconds')
+    log.info('Calculated ' + "{:,}".format(singleCount) + ' random numbers in ' + str(timeLimit) + ' seconds')
 
     if threadCount <= 1:
         return
@@ -121,7 +121,7 @@ def test_random(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Calculated ' + str(multiCount) + ' random numbers in ' + str(timeLimit) + ' seconds')
+    log.info('Calculated ' + "{:,}".format(multiCount) + ' random numbers in ' + str(timeLimit) + ' seconds')
     log.info(speedup_msg(singleCount, multiCount))
 
 
@@ -133,7 +133,7 @@ def test_sin(log, threadCount, timeLimit, testIntensity=100):
         while time.time() - startTime < timeLimit.value:
             x = 1.234567
             for n in range(testIntensity):
-                x = math.atan(math.tan(math.cos(math.sin(x))))
+                x = math.sin(x)
                 i += 1
         count.value += i
 
@@ -145,7 +145,7 @@ def test_sin(log, threadCount, timeLimit, testIntensity=100):
     proc.start()
     proc.join()
     singleCount = count.value
-    log.info('Calculated ' + str(count.value) + ' sine values in ' + str(timeLimit) + ' seconds')
+    log.info('Calculated ' + "{:,}".format(singleCount) + ' sine values in ' + str(timeLimit) + ' seconds')
 
     if threadCount <= 1:
         return
@@ -172,7 +172,70 @@ def test_sin(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Calculated ' + str(multiCount) + ' sine values in ' + str(timeLimit) + ' seconds')
+    log.info('Calculated ' + "{:,}".format(multiCount) + ' sine values in ' + str(timeLimit) + ' seconds')
+    log.info(speedup_msg(singleCount, multiCount))
+
+
+# Benchmark sin() performance
+def test_matrixmultiplication(log, threadCount, timeLimit, testIntensity=100):
+
+    matrixX = [[1.2, 2.3, 3.4], [4.5, 5.6, 6.7], [7.8, 8.9, 9.1], [10.2, 11.3, 12.4]]
+    matrixY = [[1.9, 2.8, 7.6], [1.7, 2.6, 4.2], [3.5, 4.4, 7.3], [15.1, 52.2, 73.2]]
+
+    def matmult(a, b):
+        zip_b = zip(*b)
+        # uncomment next line if python 3 : 
+        # zip_b = list(zip_b)
+        return [[sum(ele_a * ele_b for ele_a, ele_b in zip(row_a, col_b)) 
+                 for col_b in zip_b] for row_a in a]
+
+    def workerMatrixMultiplication(timeLimit, count):
+        startTime = time.time()
+        i = 1
+        while time.time() - startTime < timeLimit.value:
+            for n in range(testIntensity):
+                mRes = matmult(matrixX, matrixY)
+                i += 1
+        count.value += i
+
+    # Create matrices
+    log.info('Preparing matrix multiplication test...')
+
+    log.info('Matrix multiplication test: 1 thread...')
+    timeLimitVal = mp.Value('d', timeLimit)
+    count = mp.Value('i', 0)
+    proc = mp.Process(target=workerMatrixMultiplication, args=(timeLimitVal, count))
+    proc.start()
+    proc.join()
+    singleCount = count.value
+    log.info('Multiplied ' + "{:,}".format(singleCount) + ' matrices in ' + str(timeLimit) + ' seconds')
+
+    if threadCount <= 1:
+        return
+
+    log.info('Matrix multiplication test: ' + str(threadCount) + ' threads...')
+    processes = []
+    values = []
+    multiCount = 0
+    for t in range(threadCount):
+        count = mp.Value('i', 0)
+        values.append(count)
+        proc = mp.Process(target=workerMatrixMultiplication, args=(timeLimitVal, count))
+        processes.append(proc)
+
+    # Start all
+    for proc in processes:
+        proc.start()
+        log.debug('Started process ' + str(proc.pid))
+
+    # End all
+    for i, proc in enumerate(processes):
+        proc.join()
+        val = values[i].value
+        multiCount += val
+        log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
+
+    log.info('Multiplied ' + "{:,}".format(multiCount) + ' matrices in ' + str(timeLimit) + ' seconds')
     log.info(speedup_msg(singleCount, multiCount))
 
 
@@ -182,18 +245,27 @@ tests = {}
 tests['random'] = [test_random]
 tests['sin'] = [test_sin]
 tests['count'] = [test_count]
-tests['all'] = [test_count, test_random, test_sin]
+tests['matrix'] = [test_matrixmultiplication]
+tests['all'] = [test_count, test_random, test_sin, test_matrixmultiplication]
 
 
-def perform_tests(log, threadCount, timeLimit, performTests, testIntensity=100):
-    log.info('Performing multiprocessing tests...')
+def perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity=100):
+    # Calculate number of tests to perform
+    testCount = 0
+    for testStage in performTests:
+        testCount += len(tests[testStage])
+
+    log.info('Performing benchmarks...')
     log.info('Available threads: ' + str(threadCount))
     log.info('Set time limit   : ' + str(timeLimit) + ' sec')
+    log.info('Test intensity   : ' + str(testIntensity))
+    log.info('Test stages      : ' + str(performTests))
+    log.info('Approx. duration : ' + str(timeLimit * testCount) + ' sec')
     print('')
 
     # Iterate specified test stages
-    for test in performTests:
-        funcs = tests[test]
+    for testStage in performTests:
+        funcs = tests[testStage]
         # Execute tests for each test stage
         for func in funcs:
             func(log, threadCount, timeLimit, testIntensity)
@@ -226,7 +298,7 @@ def perform_tests(log, threadCount, timeLimit, performTests, testIntensity=100):
 # Add command line arguments for this script to args parser
 def setup_args(parser):
     optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Benchmark parameters')
-    optGroup.add_option("--threading", action="store_true", dest="threadingtest", default=None, help="Perform some multithreading tests")
+    optGroup.add_option("--benchmarks", action="store_true", dest="benchmarks", default=None, help="Perform some multithreading tests")
     optGroup.add_option("--threadcount", type="int", dest="threadcount", default=0, help="Force number of threads to COUNT", metavar="COUNT")
     optGroup.add_option("--timelimit", type="float", dest="timelimit", default=2.0, help="Set time limit for benchmarks to LIMIT", metavar="LIMIT")
     optGroup.add_option("--tests", type="string", dest="threadingtests", default="all", help="Specify comma-separated list of tests to perform (possible values: " + str(tests.keys()) + ")", metavar="LIST")
@@ -236,8 +308,8 @@ def setup_args(parser):
 
 # Return True if args/options tell us to run this module
 def check_args(log, options):
-    return options.threadingtest is not None \
-            and options.threadingtest == True \
+    return options.benchmarks is not None \
+            and options.benchmarks == True \
             and check_additional_args(log, options)
 
 
@@ -293,5 +365,5 @@ def run(log, options):
     testIntensity = options.testintensity
 
     print('')
-    perform_tests(log, threadCount, timeLimit, performTests, testIntensity)
+    perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity)
     print('')
