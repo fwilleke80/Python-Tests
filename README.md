@@ -49,18 +49,26 @@ Use this to get help for the command line options:
 
 ## Modules
 
-### primenumbers
-Calculates all prime numbers up to a given limit
+### artworkprice
+Calculate a suitable price if you want to sell a painting you made
 
-### waves
-Calculates folded waveforms on the basis of sine waves modulating each other.
+### dice
+Throw a W6!
 
-This module is dependend on the *colorama* library!  
-Get it here: https://pypi.org/project/colorama/#files  
-Or install via pip: `sudo pip install colorama`
+### eightball
+Ask the Magic Eightball a question!
+
+### encrypt_caesar
+Simple implementation of the Caesar string encryption
 
 ### encrypt_xor
-Simple implementation of an XOR string encryption  
+Simple implementation of an XOR string encryption
+
+### fractiontest
+Perform fraction calculations
+
+### headsortails
+Throws a coin and tells you whether it's heads or tails.
 
 ### location
 Retrieves and prints geolocation information based on current IP
@@ -69,19 +77,40 @@ This module is dependend on the *geocoder* library!
 Get it here: https://geocoder.readthedocs.io/api.html?highlight=street#installation  
 Or install via pip: `sudo pip install geocoder`
 
-### headsortails
-Throws a coin and tells you whether it's heads or tails.
+### namegen
+A funny module that I originally wrote in JS and now ported to Python. It generates interesting and totally unexceptional male and female names.
 
-### eightball
-Ask the Magic Eightball a question!
+The names will sound funniest to german ears, I suppose.
 
-### dice
-Throw a W6!
+### primenumbers
+Calculates all prime numbers up to a given limit
 
 ### pwgen
 Generates a pronouncable password of variable length
 
-### namegen
-A funny module that I originally wrote in JS and not ported to Python. It generates interesting and totally unexceptional male and female names.
+### threading
+This module will contain a bunch of multithreaded performance tests. Currently, it's disfunct and not loaded in test.py.
 
-The names will sound funniest to german ears, I suppose.
+### waves
+Calculates folded waveforms on the basis of sine waves modulating each other.
+
+This module is dependend on the *colorama* library!  
+Get it here: https://pypi.org/project/colorama/#files  
+Or install via pip: `sudo pip install colorama`
+
+
+## Luxury setup
+### OSX
+* Open Terminal:  
+    Press `CMD+SPACE`  
+    Type `Terminal`
+* Navigate to your home folder:  
+    Type `cd ~`
+* Edit your bash profile:  
+    Type `nano .bash_profile`
+* Add an alias to the test.py call:  
+    Add line: `alias [ALIASNAME]="python [PATH TO TEST.PY]"`  
+    Example: `alias ftools="python ~/Documents/_Projects/Python\ Tests/test.py"`
+* Exit NANO editor and save changes
+* Reload bash profile:  
+    Type `source ~/.bash_profile`
