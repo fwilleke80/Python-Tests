@@ -9,8 +9,10 @@ import math
 # Script info
 SCRIPTTITLE = 'Multithreading Test'
 SCRIPTVERSION = '0.1'
+SCRIPTINFO = 'Yield the full power of your machine and perform some multithreading benchmarks!'
 
 
+# Benchmark time limit in seconds
 timeLimit = 5
 
 
@@ -90,6 +92,11 @@ def check_additional_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test
