@@ -255,12 +255,15 @@ def perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity=
     for testStage in performTests:
         testCount += len(tests[testStage])
 
+    print('=========================================')
     log.info('Performing benchmarks...')
+    print('-----------------------------------------')
     log.info('Available threads: ' + str(threadCount))
-    log.info('Set time limit   : ' + str(timeLimit) + ' sec')
+    log.info('Set time limit   : ' + str(timeLimit) + ' sec per test')
     log.info('Test intensity   : ' + str(testIntensity))
     log.info('Test stages      : ' + str(performTests))
-    log.info('Approx. duration : ' + str(timeLimit * testCount) + ' sec')
+    log.info('Approx. duration : ' + str(timeLimit * testCount * 2) + ' sec')
+    print('=========================================')
     print('')
 
     # Iterate specified test stages
@@ -366,4 +369,3 @@ def run(log, options):
 
     print('')
     perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity)
-    print('')
