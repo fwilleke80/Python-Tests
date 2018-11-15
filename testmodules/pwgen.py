@@ -3,12 +3,13 @@ import logging
 import string
 import itertools
 import random
-
+import optparse
 
 
 # Script info
 SCRIPTTITLE = 'Pronouncable Password Generator'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.1.1'
+SCRIPTINFO = 'Generate a pronouncable password'
 
 
 # Initial consonants
@@ -71,8 +72,10 @@ def gibberish(wordcount, wordlist=syllables):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("--pwgen", action="store_true", dest="pwgen", default=None, help="Generate a pronouncable password")
-    parser.add_option("--pwlen", type="int", dest="pwlen", default=0, help="Length of pronouncable password", metavar="LENGTH")
+    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for generating a pronouncable password')
+    optGroup.add_option("--pwgen", action="store_true", dest="pwgen", default=None, help=SCRIPTINFO)
+    optGroup.add_option("--pwlen", type="int", dest="pwlen", default=0, help="Length of pronouncable password", metavar="LENGTH")
+    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module
@@ -91,6 +94,11 @@ def check_additional_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test

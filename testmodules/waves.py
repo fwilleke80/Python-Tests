@@ -6,6 +6,9 @@ import time
 import math
 import sys
 import random
+import optparse
+
+# Dependency library!
 import colorama
 from colorama import Fore, Style
 
@@ -13,8 +16,10 @@ from colorama import Fore, Style
 # Script info
 SCRIPTTITLE = 'Waves'
 SCRIPTVERSION = '0.4.6'
+SCRIPTINFO = 'Draw colorful folded waveforms'
 
 
+# Default parameters
 defaultParams = (15.0, 10.0, 0.1, 30.0)
 
 
@@ -88,8 +93,10 @@ def print_waveform_line(i, param1, param2, param3):
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("-w", "--waves", action="store_true", dest="waves", default=None, help="Draw beautiful folded waveforms")
-    parser.add_option("--wavesparams", type="float", dest="wavesparams", default=defaultParams, nargs=4, help="Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
+    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for the waveform generation')
+    optGroup.add_option("-w", "--waves", action="store_true", dest="waves", default=None, help=SCRIPTINFO)
+    optGroup.add_option("--wavesparams", type="float", dest="wavesparams", default=defaultParams, nargs=4, help="Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0", metavar="SPEED SCALE1 SCALE2 FOLD")
+    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module
@@ -125,6 +132,11 @@ def check_additional_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Calculate prime numbers op to limit

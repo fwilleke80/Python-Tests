@@ -1,11 +1,13 @@
 #!/usr/bin/python
 import logging
 import random
+import optparse
 
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
 SCRIPTVERSION = '1.3.3'
+SCRIPTINFO = 'Generate a funny german name'
 
 
 class NameGenerator:
@@ -340,9 +342,11 @@ class NameGenerator:
 
 # Add command line arguments for this script to args parser
 def setup_args(parser):
-    parser.add_option("--namegen", action="store_true", dest="namegen", default=None, help="Generate a super cool new name")
-    parser.add_option("--gender", type="string", dest="namegen_gender", default='random', help="Specify gender of firstname ('male' or 'female' or 'random')", metavar="GENDER")
-    parser.add_option("--namecount", type="int", dest="namegen_count", default=1, help="Specify how many names should be generated with COUNT", metavar="COUNT")
+    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Options for the generation of funny names')
+    optGroup.add_option("--namegen", action="store_true", dest="namegen", default=None, help=SCRIPTINFO)
+    optGroup.add_option("--gender", type="string", dest="namegen_gender", default='random', help="Specify gender of firstname ('male' or 'female' or 'random')", metavar="GENDER")
+    optGroup.add_option("--namecount", type="int", dest="namegen_count", default=1, help="Specify how many names should be generated with COUNT", metavar="COUNT")
+    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module
@@ -361,6 +365,11 @@ def check_additional_args(log, options):
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
+
+
+# Return module info
+def get_info():
+    return SCRIPTINFO
 
 
 # Perform Encryption test
