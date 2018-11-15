@@ -25,7 +25,8 @@ registeredModules = []
 def ImportModules(log):
     import modules
     log.debug('Loading ' + str(len(modules.__all__)) + ' modules...')
-    log.debug('Excluded modules: ' + str(modules.excludeModules))
+    if len(modules.excludedModules) > 0:
+        log.debug('Excluded modules: ' + str(modules.excludedModules))
     for m in modules.__all__:
         try:
             registeredModules.append(importlib.import_module(m))
