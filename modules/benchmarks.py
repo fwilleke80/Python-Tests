@@ -9,7 +9,7 @@ import multiprocessing as mp
 
 # Script info
 SCRIPTTITLE = 'Benchmarks'
-SCRIPTVERSION = '0.3.1'
+SCRIPTVERSION = '0.3.2'
 SCRIPTINFO = 'Yield the full power of your machine and perform some multithreaded benchmarks!'
 
 
@@ -71,7 +71,7 @@ def test_count(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Counted ' + "{:,}".format(multiCount) + ' values in ' + str(timeLimit) + ' seconds')
+    log.info('Counted ' + "{:,}".format(multiCount) + ' values in ' + str(timeLimit) + ' seconds (' + "{:,}".format(multiCount / threadCount) + ' per thread)')
     log.info(speedup_msg(singleCount, multiCount))
 
 
@@ -121,7 +121,7 @@ def test_random(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Calculated ' + "{:,}".format(multiCount) + ' random numbers in ' + str(timeLimit) + ' seconds')
+    log.info('Calculated ' + "{:,}".format(multiCount) + ' random numbers in ' + str(timeLimit) + ' seconds (' + "{:,}".format(multiCount / threadCount) + ' per thread)')
     log.info(speedup_msg(singleCount, multiCount))
 
 
@@ -172,7 +172,7 @@ def test_sin(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Calculated ' + "{:,}".format(multiCount) + ' sine values in ' + str(timeLimit) + ' seconds')
+    log.info('Calculated ' + "{:,}".format(multiCount) + ' sine values in ' + str(timeLimit) + ' seconds (' + "{:,}".format(multiCount / threadCount) + ' per thread)')
     log.info(speedup_msg(singleCount, multiCount))
 
 
@@ -235,7 +235,7 @@ def test_matrixmultiplication(log, threadCount, timeLimit, testIntensity=100):
         multiCount += val
         log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
 
-    log.info('Multiplied ' + "{:,}".format(multiCount) + ' matrices in ' + str(timeLimit) + ' seconds')
+    log.info('Multiplied ' + "{:,}".format(multiCount) + ' matrices in ' + str(timeLimit) + ' seconds (' + "{:,}".format(multiCount / threadCount) + ' per thread)')
     log.info(speedup_msg(singleCount, multiCount))
 
 
