@@ -20,9 +20,9 @@ def speedup_msg(countSingle, countMulti):
 
     speedupVal = float(countMulti) / float(countSingle)
     if speedupVal <= 1.0:
-        assessment = "performance LOSS"
+        assessment = "performance *LOSS*"
     else:
-        assessment = "performance gain"
+        assessment = "performance *GAIN*"
     return 'MP speedup: ' + "%1.4f" % (speedupVal) + 'x ' + assessment
 
 
@@ -31,9 +31,13 @@ def test_count(log, threadCount, timeLimit, testIntensity=100):
     def workerCount(timeLimit, count):
         startTime = time.time()
         i = 1
-        while time.time() - startTime < timeLimit.value:
+        keepRunning = True
+        while keepRunning:
             for n in range(testIntensity):
                 i += 1
+                if time.time() - startTime >= timeLimit.value:
+                    keepRunning = False
+                    break
         count.value += i
 
 
@@ -80,10 +84,14 @@ def test_random(log, threadCount, timeLimit, testIntensity=100):
     def workerRandom(timeLimit, count):
         startTime = time.time()
         i = 1
-        while time.time() - startTime < timeLimit.value:
+        keepRunning = True
+        while keepRunning:
             for n in range(testIntensity):
                 x = random.random()
                 i += 1
+                if time.time() - startTime >= timeLimit.value:
+                    keepRunning = False
+                    break
         count.value += i
 
 
@@ -125,16 +133,74 @@ def test_random(log, threadCount, timeLimit, testIntensity=100):
     log.info(speedup_msg(singleCount, multiCount))
 
 
+# Benchmark integer counting performance
+def test_float(log, threadCount, timeLimit, testIntensity=100):
+    def workerFloat(timeLimit, count):
+        startTime = time.time()
+        i = 1
+        keepRunning = True
+        while keepRunning:
+            for n in range(testIntensity):
+                y = math.pi / float(i)
+                i += 1
+                if time.time() - startTime >= timeLimit.value:
+                    keepRunning = False
+                    break
+        count.value += i
+
+
+    log.info('Float test: 1 thread...')
+    timeLimitVal = mp.Value('d', timeLimit)
+    count = mp.Value('i', 0)
+    proc = mp.Process(target=workerFloat, args=(timeLimitVal, count))
+    proc.start()
+    proc.join()
+    singleCount = count.value
+    log.info('Divided ' + "{:,}".format(singleCount) + ' float values in ' + str(timeLimit) + ' seconds')
+
+    if threadCount <= 1:
+        return
+
+    log.info('Float test: ' + str(threadCount) + ' threads...')
+    processes = []
+    values = []
+    multiCount = 0
+    for t in range(threadCount):
+        count = mp.Value('i', 0)
+        values.append(count)
+        proc = mp.Process(target=workerFloat, args=(timeLimitVal, count))
+        processes.append(proc)
+
+    # Start all
+    for proc in processes:
+        proc.start()
+        log.debug('Started process ' + str(proc.pid))
+
+    # End all
+    for i, proc in enumerate(processes):
+        proc.join()
+        val = values[i].value
+        multiCount += val
+        log.debug('Process ' + str(proc.pid) + ' calculated ' + str(val) + ' values')
+
+    log.info('Divided ' + "{:,}".format(multiCount) + ' float values in ' + str(timeLimit) + ' seconds (' + "{:,}".format(multiCount / threadCount) + ' per thread)')
+    log.info(speedup_msg(singleCount, multiCount))
+
+
 # Benchmark sin() performance
 def test_sin(log, threadCount, timeLimit, testIntensity=100):
     def workerSin(timeLimit, count):
         startTime = time.time()
         i = 1
-        while time.time() - startTime < timeLimit.value:
+        keepRunning = True
+        while keepRunning:
             x = 1.234567
             for n in range(testIntensity):
                 x = math.sin(x)
                 i += 1
+                if time.time() - startTime >= timeLimit.value:
+                    keepRunning = False
+                    break
         count.value += i
 
 
@@ -192,10 +258,14 @@ def test_matrixmultiplication(log, threadCount, timeLimit, testIntensity=100):
     def workerMatrixMultiplication(timeLimit, count):
         startTime = time.time()
         i = 1
-        while time.time() - startTime < timeLimit.value:
+        keepRunning = True
+        while keepRunning:
             for n in range(testIntensity):
                 mRes = matmult(matrixX, matrixY)
                 i += 1
+                if time.time() - startTime >= timeLimit.value:
+                    keepRunning = False
+                    break
         count.value += i
 
     # Create matrices
@@ -242,11 +312,12 @@ def test_matrixmultiplication(log, threadCount, timeLimit, testIntensity=100):
 # List of available tests
 # Associated test function name(s) to test stage
 tests = {}
+tests['count'] = [test_count]
 tests['random'] = [test_random]
 tests['sin'] = [test_sin]
-tests['count'] = [test_count]
+tests['float'] = [test_float]
 tests['matrix'] = [test_matrixmultiplication]
-tests['all'] = [test_count, test_random, test_sin, test_matrixmultiplication]
+tests['all'] = [test_count, test_random, test_sin, test_float, test_matrixmultiplication]
 
 
 def perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity=100):
