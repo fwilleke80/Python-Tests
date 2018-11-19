@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import logging
 import os
 import binascii
 import time

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import logging
 import string
 import itertools
 import random

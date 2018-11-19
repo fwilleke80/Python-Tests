@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import logging
 import os
 from itertools import cycle, izip
 

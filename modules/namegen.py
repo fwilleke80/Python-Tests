@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import logging
 import random
 import optparse
 

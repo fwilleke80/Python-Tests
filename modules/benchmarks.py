@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import logging
 import time
 import random
 import math
