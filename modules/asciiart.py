@@ -102,11 +102,9 @@ def WriteOutputFile(filename, ascii, log):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for ASCII art generation')
+def setup_args(optGroup):
     optGroup.add_option('--asciiart', type='string', dest='asciiart', default=None, help=SCRIPTINFO, metavar='INPUTFILE')
     optGroup.add_option('--asciifile', type='string', dest='asciifile', default=None, help='Write ASCII art to this file', metavar='OUTPUTFILE')
-    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module

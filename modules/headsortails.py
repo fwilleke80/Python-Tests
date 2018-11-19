@@ -32,8 +32,8 @@ SCRIPTINFO = 'Heads or Tails? Get help with your decision.'
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('-t', '--headsortails', action='store_true', dest='headsortails', default=None, help='Heads or Tails?')
+def setup_args(optGroup):
+    optGroup.add_option('--headsortails', action='store_true', dest='headsortails', default=None, help='Heads or Tails?')
 
 
 # Return True if args/options tell us to run this module

@@ -1,6 +1,5 @@
 #!/usr/bin/python
 import random
-import optparse
 
 
 # Script info
@@ -340,12 +339,10 @@ class NameGenerator:
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Options for the generation of funny names')
+def setup_args(optGroup):
     optGroup.add_option('--namegen', action='store_true', dest='namegen', default=None, help=SCRIPTINFO)
     optGroup.add_option('--gender', type='string', dest='namegen_gender', default='random', help='Specify gender of firstname (''male'' or ''female'' or ''random'')', metavar='GENDER')
     optGroup.add_option('--namecount', type='int', dest='namegen_count', default=1, help='Specify how many names should be generated with COUNT', metavar='COUNT')
-    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module

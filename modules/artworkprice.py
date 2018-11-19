@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import optparse
 
 
 # Script info
@@ -95,12 +94,10 @@ def calculate_price(log, width, height, factor):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for calculating a reasonable artwork price')
+def setup_args(optGroup):
     optGroup.add_option('--artworkprice', action='store_true', dest='artworkprice', help=SCRIPTINFO)
     optGroup.add_option('--dimensions', type='string', dest='artworkdimensions', help='Size of the artwork (e.g. ''29x21'' or ''A3'')', metavar='DIMENSIONS')
     optGroup.add_option('--artfactor', type='float', dest='artworkfactor', default='6.0', help='Artwork price factor (beginners: 5..10, )', metavar='FACTOR')
-    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module

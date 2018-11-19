@@ -53,8 +53,8 @@ def print_geolocation(log):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('-l', '--location', action='store_true', dest='location', default=None, help=SCRIPTINFO)
+def setup_args(optGroup):
+    optGroup.add_option('--location', action='store_true', dest='location', default=None, help=SCRIPTINFO)
 
 
 # Return True if args/options tell us to run this module

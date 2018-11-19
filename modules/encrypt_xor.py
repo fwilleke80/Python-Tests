@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import os
 from itertools import cycle, izip
 
 
@@ -38,8 +37,8 @@ def xor_encrypt(msg, key):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('-x', '--xor', type='string', dest='encrypt_xor', nargs=2, help='Encrypt MSG with KEY using XOR encryption', metavar='MSG KEY')
+def setup_args(optGroup):
+    optGroup.add_option('--xor', type='string', dest='encrypt_xor', nargs=2, help='Encrypt MSG with KEY using XOR encryption', metavar='MSG KEY')
 
 
 # Return True if args/options tell us to run this module

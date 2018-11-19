@@ -2,7 +2,6 @@
 import time
 import random
 import math
-import optparse
 import multiprocessing as mp
 
 
@@ -369,14 +368,12 @@ def perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity=
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Benchmark parameters')
+def setup_args(optGroup):
     optGroup.add_option("--benchmarks", action="store_true", dest="benchmarks", default=None, help="Perform some multithreading tests")
     optGroup.add_option("--threadcount", type="int", dest="threadcount", default=0, help="Force number of threads to COUNT", metavar="COUNT")
     optGroup.add_option("--timelimit", type="float", dest="timelimit", default=2.0, help="Set time limit for benchmarks to LIMIT", metavar="LIMIT")
     optGroup.add_option("--tests", type="string", dest="threadingtests", default="all", help="Specify comma-separated list of tests to perform (possible values: " + str(tests.keys()) + ")", metavar="LIST")
     optGroup.add_option("--testintensity", type="int", dest="testintensity", default=100, help="Test intensity", metavar="INTENSITY")
-    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module

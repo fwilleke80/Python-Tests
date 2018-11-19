@@ -58,8 +58,8 @@ def simplify(a, b):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('--fraction', type='string', dest='fraction', nargs=3, default=None, help='Calculate F from a fraction (A / B). Possible values for F: [gcd, lcm, simplify]', metavar='F A B')
+def setup_args(optGroup):
+    optGroup.add_option('--fraction', type='string', dest='fraction', nargs=3, default=None, help='Calculate F from a fraction (A / B). Possible values for F: [gcd, lcm, simplify]', metavar='F A B')
 
 
 # Return True if args/options tell us to run this module

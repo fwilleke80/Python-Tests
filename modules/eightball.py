@@ -76,8 +76,8 @@ def magic_eightball():
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('-m', '--magiceightball', type='string', dest='magic_eightball', help='Ask the Magic Eightball a QUESTION!', metavar='QUESTION')
+def setup_args(optGroup):
+    optGroup.add_option('--magiceightball', type='string', dest='magic_eightball', help='Ask the Magic Eightball a QUESTION!', metavar='QUESTION')
 
 
 # Return True if args/options tell us to run this module

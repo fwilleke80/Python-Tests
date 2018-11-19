@@ -2,7 +2,6 @@
 import string
 import itertools
 import random
-import optparse
 
 
 # Script info
@@ -70,11 +69,9 @@ def gibberish(wordcount, wordlist=syllables):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    optGroup = optparse.OptionGroup(parser, SCRIPTTITLE + ' options', 'Parameters for generating a pronouncable password')
+def setup_args(optGroup):
     optGroup.add_option('--pwgen', action='store_true', dest='pwgen', default=None, help=SCRIPTINFO)
     optGroup.add_option('--pwlen', type='int', dest='pwlen', default=0, help='Length of pronouncable password', metavar='LENGTH')
-    parser.add_option_group(optGroup)
 
 
 # Return True if args/options tell us to run this module

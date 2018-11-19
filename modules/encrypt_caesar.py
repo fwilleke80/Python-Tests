@@ -1,5 +1,4 @@
 #!/usr/bin/python
-import os
 from itertools import cycle, izip
 
 
@@ -53,13 +52,22 @@ def caesar_decrypt(msg, shiftVal):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('-c', '--caesar', type='string', dest='encrypt_caesar', nargs=2, help='Encrypt MSG with SHIFT using Caesar encryption', metavar='MSG SHIFT')
+def setup_args(optGroup):
+    optGroup.add_option('--caesar', type='string', dest='encrypt_caesar', nargs=2, help='Encrypt MSG with SHIFT using Caesar encryption', metavar='MSG SHIFT')
 
 
 # Return True if args/options tell us to run this module
 def check_args(log, options):
-    return options.encrypt_caesar is not None and options.encrypt_caesar[0] != '' and options.encrypt_caesar[1] != ''
+    return options.encrypt_caesar is not None and options.encrypt_caesar[0] != '' and options.encrypt_caesar[1] != '' and check_additional_args(log, options)
+
+
+# Checks additional arguments and prints error messages
+def check_additional_args(log, options):
+    shiftVal = unicode(options.encrypt_caesar[1], 'utf-8')
+    if shiftVal.isnumeric() == False:
+        log.error('SHIFT must be a number!')
+        return False
+    return True
 
 
 # Return module name

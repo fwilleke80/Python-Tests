@@ -52,8 +52,8 @@ def sieve_of_eratosthenes(limit):
 
 
 # Add command line arguments for this script to args parser
-def setup_args(parser):
-    parser.add_option('-p', '--primenumbers', type='int', dest='primenumbers', default=None, help='Perform prime number test up to LIMIT', metavar='LIMIT')
+def setup_args(optGroup):
+    optGroup.add_option('--primenumbers', type='int', dest='primenumbers', default=None, help='Perform prime number test up to LIMIT', metavar='LIMIT')
 
 
 # Return True if args/options tell us to run this module

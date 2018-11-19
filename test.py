@@ -1,5 +1,4 @@
 #!/usr/bin/python
-
 import optparse
 import logging
 import pkgutil
@@ -37,10 +36,8 @@ def ImportModules(log):
 
 # Set up command line argument options for main script
 def SetupArgs(parser):
-    optGroup = optparse.OptionGroup(parser, 'General options', 'Not specific to any module')
-    optGroup.add_option('-o', '--output', action='store_true', dest='printoutput', default=False, help='Print outputs (not relevant for all modules)')
-    optGroup.add_option('--listmodules', action='store_true', dest='listmodules', default=False, help='List registered test modules')
-    parser.add_option_group(optGroup)
+    parser.add_option('-o', '--output', action='store_true', dest='printoutput', default=False, help='Print outputs (not relevant for all modules)')
+    parser.add_option('-l', '--listmodules', action='store_true', dest='listmodules', default=False, help='List registered test modules')
 
 
 # Parse provided command line arguments
@@ -84,8 +81,10 @@ def main():
     # Setup args for all modules, then parse
     parser = optparse.OptionParser()
     SetupArgs(parser)
-    for m in registeredModules:
-        m.setup_args(parser)
+    for module in registeredModules:
+        optGroup = optparse.OptionGroup(parser, module.get_name(), module.get_info())
+        module.setup_args(optGroup)
+        parser.add_option_group(optGroup)
     options, args = ParseArgs(parser)
     log.debug('options: ' + str(options))
 
