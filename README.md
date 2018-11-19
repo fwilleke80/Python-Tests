@@ -55,6 +55,13 @@ Use this to get help for the command line options:
 ### artworkprice
 Calculate a suitable price if you want to sell a painting you made
 
+### asciiart
+Generate ASCII art from image files
+
+This module is dependend on the *Pillow* library!  
+Get it here: https://python-pillow.org  
+Or install via pip: `sudo pip install Pillow`
+
 ### benchmarks
 Perform different benchmarks single- and multithreaded, get results, see multiprocessing speedup factor
 
