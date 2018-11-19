@@ -71,7 +71,7 @@ def handle_image_conversion(image_filepath):
 
 def WriteOutputFile(filename, ascii, log):
     try:
-        with open('data_new.txt', 'w') as f:
+        with open(filename, 'w') as f:
             f.write(ascii)
             f.close()
     except:
