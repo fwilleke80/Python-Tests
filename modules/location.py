@@ -13,14 +13,19 @@ SCRIPTINFO = 'Get information about your current location'
 
 
 
-def print_geolocation(log):
-    geo = geocoder.ip('me')
+def print_geolocation(log, ip='me'):
+    geo = geocoder.ip(ip)
+
+    if geo.ok == False:
+        log.info('Didn''t find anything for IP ' + ip)
 
     try:
         if geo.ip is not None and geo.ip != '':
             log.info('IP:          ' + geo.ip)
-        if geo.latlng is not None and geo.latlng != '':
+        if geo.latlng is not None and geo.latlng != '' and len(geo.latlng) != 0:
             log.info('GPS:         ' + str(geo.latlng))
+        if geo.address is not None and geo.address != '':
+            log.info('Address:     ' + geo.address)
         if geo.street is not None and geo.street != '':
             log.info('Street:      ' + geo.street)
         if geo.housenumber is not None and geo.housenumber != '':
@@ -31,6 +36,8 @@ def print_geolocation(log):
             log.info('City:        ' + geo.city)
         if geo.state is not None and geo.state != '':
             log.info('State:       ' + geo.state)
+        if geo.country is not None and geo.country != '':
+            log.info('Country:     ' + geo.country)
 
     except AttributeError as err:
         log.error('Unexpected error:' + str(err))
@@ -61,12 +68,12 @@ def print_geolocation(log):
 
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
-    optGroup.add_option('--location', action='store_true', dest='location', default=None, help=SCRIPTINFO)
+    optGroup.add_option('--location', type='string', dest='location', default=None, help='Get location information about an IP (either specify an IPv4 address, or simply use "me" to use your own)', metavar='IP')
 
 
 # Return True if args/options tell us to run this module
 def check_args(log, options):
-    return options.location is not None and options.location == True
+    return options.location is not None and options.location != ''
 
 
 # Return module name
@@ -85,4 +92,5 @@ def run(log, options):
     log.info(get_name())
     log.info('Getting geolocation info...')
     print('')
-    print_geolocation(log)
+    ip = options.location
+    print_geolocation(log, ip)
