@@ -17,13 +17,20 @@ def print_geolocation(log):
     geo = geocoder.ip('me')
 
     try:
-        log.info('IP:          ' + geo.ip)
-        log.info('GPS:         ' + str(geo.latlng))
-        log.info('Street:      ' + geo.street)
-        log.info('Housenumber: ' + geo.housenumber)
-        log.info('Postal:      ' + geo.postal)
-        log.info('City:        ' + geo.city)
-        log.info('State:       ' + geo.state)
+        if geo.ip is not None and geo.ip != '':
+            log.info('IP:          ' + geo.ip)
+        if geo.latlng is not None and geo.latlng != '':
+            log.info('GPS:         ' + str(geo.latlng))
+        if geo.street is not None and geo.street != '':
+            log.info('Street:      ' + geo.street)
+        if geo.housenumber is not None and geo.housenumber != '':
+            log.info('Housenumber: ' + geo.housenumber)
+        if geo.postal is not None and geo.postal != '':
+            log.info('Postal:      ' + geo.postal)
+        if geo.city is not None and geo.city != '':
+            log.info('City:        ' + geo.city)
+        if geo.state is not None and geo.state != '':
+            log.info('State:       ' + geo.state)
 
     except AttributeError as err:
         log.error('Unexpected error:' + str(err))
