@@ -58,7 +58,7 @@ Use this to get help for the command line options:
  
  Calculate an MD5 hash of the String "Hello World"
 
-* `python test.py --hash sha256 "/Users/somebody/Desktop/testfile.txt"
+* `python test.py --hash sha256 "/Users/somebody/Desktop/testfile.txt"`
  
  Calculate an SHA256 hash of the contents of a file.
 
