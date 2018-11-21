@@ -62,7 +62,7 @@ Use this to get help for the command line options:
  
  Calculate an SHA256 hash of the contents of a file.
 
-* `python test.py --translate "Hallo Welt"
+* `python test.py --translate "Hallo Welt"`
  
  Translate a sentence to English, using Google Translate.
 
