@@ -62,6 +62,10 @@ Use this to get help for the command line options:
  
  Calculate an SHA256 hash of the contents of a file.
 
+* `python test.py --translate "Hallo Welt"
+ 
+ Translate a sentence to English, using Google Translate.
+
 ## Modules
 The whole project is grouped into a launcher (test.py) and modules that are wrapped in a Python package (folder "modules"). The launcher script is set up in a way that it does not have to be changed when adding a new module to the package.
 
@@ -94,6 +98,13 @@ Simple implementation of an XOR string encryption
 
 ### fractiontest
 Perform fraction calculations
+
+### googletranslate
+Translate texts from one language to another.
+
+This module is dependend on the *googletrans* library!  
+Get it here: https://pypi.org/project/googletrans/ 
+Or install via pip: `sudo pip install googletrans`
 
 ### hash
 Compute different hashes from strings or files.
