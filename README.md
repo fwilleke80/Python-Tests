@@ -121,6 +121,7 @@ Or install via pip: `sudo pip install colorama`
 
 
 ## Luxury setup
+How to make using the scripts even easier...
 ### OSX
 * Open Terminal:  
     Press `CMD+SPACE`  
@@ -135,3 +136,5 @@ Or install via pip: `sudo pip install colorama`
 * Exit NANO editor and save changes
 * Reload bash profile:  
     Type `source ~/.bash_profile`
+* Now you can run the script form anywhere like this:  
+    Type `ftools --hash md5 "Hello World"`
