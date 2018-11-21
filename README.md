@@ -50,6 +50,14 @@ Use this to get help for the command line options:
  
  Perform quite intense multithreaded benchmarks with trigonometric calculations and matrix multiplications.
 
+* `python test.py --hash md5 "Hello World"`
+ 
+ Calculate an MD5 hash of the String "Hello World"
+
+* `python test.py --hash sha256 "/Users/somebody/Desktop/testfile.txt"
+ 
+ Calculate an SHA256 hash of the contents of a file.
+
 ## Modules
 
 ### artworkprice
@@ -79,6 +87,9 @@ Simple implementation of an XOR string encryption
 
 ### fractiontest
 Perform fraction calculations
+
+### hash
+Compute different hashes from strings or files.
 
 ### headsortails
 Throws a coin and tells you whether it's heads or tails.
