@@ -82,6 +82,7 @@ def main():
     parser = optparse.OptionParser()
     SetupArgs(parser)
     for module in registeredModules:
+        log.debug(str(module))
         optGroup = optparse.OptionGroup(parser, module.get_name(), module.get_info())
         module.setup_args(optGroup)
         parser.add_option_group(optGroup)
