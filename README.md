@@ -30,9 +30,13 @@ Use this to get help for the command line options:
 
  Encrypts "This is just some text" with key "Passphrase1234"
 
-* `python test.py --location`
+* `python test.py --location me`
 
- Prints out information about current location
+ Prints out information about my current location
+
+* `python test.py --location 216.58.223.9`
+ 
+ Prints out information about the location of a Google server
 
 * `python test.py --magiceightball "Should I buy a new synthesizer tomorrow?"`
 
