@@ -59,6 +59,9 @@ Use this to get help for the command line options:
  Calculate an SHA256 hash of the contents of a file.
 
 ## Modules
+The whole project is grouped into a launcher (test.py) and modules that are wrapped in a Python package (folder "modules"). The launcher script is set up in a way that it does not have to be changed when adding a new module to the package.
+
+Here is a list of the included modules:
 
 ### artworkprice
 Calculate a suitable price if you want to sell a painting you made
