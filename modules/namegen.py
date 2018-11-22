@@ -10,8 +10,8 @@ SCRIPTINFO = 'Generate a funny german name'
 
 class NameGenerator:
     # Thresholds
-    threshExtraFirstnameSyllable = 0.5
-    threshDoubleLastName = 0.2
+    threshExtraFirstnameSyllable = 0.7
+    threshDoubleLastName = 0.82
 
     # Limits / Ranges
     minLastnameSyllables = 2
@@ -138,6 +138,7 @@ class NameGenerator:
                                         'eva', \
                                         'lise', \
                                         'frau', \
+                                        'wieb', \
                                         'manu', \
                                         'emanu', \
                                         'theo', \
@@ -145,6 +146,7 @@ class NameGenerator:
                                         'cor', \
                                         'pene', \
                                         'jas', \
+                                        'kuni', \
                                         'klo'], \
                                         \
                                     ['gata', \
@@ -170,6 +172,7 @@ class NameGenerator:
                                         'ela', \
                                         'ella', \
                                         'na', \
+                                        'ra', \
                                         'bella', \
                                         'nelia', \
                                         'stin', \
@@ -182,6 +185,7 @@ class NameGenerator:
                                         'sanne', \
                                         'gitte', \
                                         'lotte', \
+                                        'grunde', \
                                         'hilde']
                                 ] \
                             }
@@ -212,8 +216,11 @@ class NameGenerator:
                             'trabo', \
                             'grump', \
                             'porn', \
+                            'bl' + u'\u00fc' + 'mel', \
                             'k' + u'\u00fc' + 'l', \
+                            'k' + u'\u00fc' + 'bl', \
                             'b' + u'\u00f6' + 'ck', \
+                            'g' + u'\u00f6' + 'bel', \
                             'k' + u'\u00e4' + 's', \
                             'k' + u'\u00e4' + 'se', \
                             'trump', \
@@ -223,6 +230,7 @@ class NameGenerator:
                             'will', \
                             'eke', \
                             'merkel', \
+                            'kohl', \
                             'bums', \
                             'ak', \
                             'krach', \
@@ -232,14 +240,24 @@ class NameGenerator:
                             'ra', \
                             'tu', \
                             'meier', \
+                            'meyer',  \
+                            'mayer', \
+                            'bronko' \
+                            'trelle', \
+                            'born', \
                             'fan', \
                             'ler', \
+                            'bumper', \
+                            'schlimper', \
+                            'schiefel', \
+                            'bein', \
                             'kug', \
                             'te', \
                             'le', \
                             'pan', \
                             'piese', \
                             'pampel', \
+                            'burg', \
                             'hans', \
                             'tr' + u'\u00f6' + 'del', \
                             'paff']
@@ -308,7 +326,7 @@ class NameGenerator:
         lastName = this.generate_lastname()
 
         # Double lastname?
-        if random.random() < this.threshDoubleLastName:
+        if random.random() > this.threshDoubleLastName:
             lastName += '-' + this.generate_lastname()
 
         return firstName + ' ' + lastName
