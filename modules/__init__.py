@@ -2,7 +2,8 @@ import pkgutil
 
 # Modules to exclude
 excludedModules = []
-#excludedModules.append('benchmarks')
+excludedModules.append('maths')
+excludedModules.append('timetrack')
 
 # Build list of all modules in package
 __all__ = []
