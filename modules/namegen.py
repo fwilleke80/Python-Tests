@@ -1,18 +1,20 @@
 #!/usr/bin/python
 import sys
+import time
 import random
 
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.4'
+SCRIPTVERSION = '1.4.2'
 SCRIPTINFO = 'Generate a funny german name'
 
 
 class NameGenerator:
     # Thresholds
-    threshExtraFirstnameSyllable = 0.7
+    threshExtraFirstnameSyllable = 0.68
     threshDoubleLastName = 0.82
+    threshLongerLastName = 0.7
 
     # Limits / Ranges
     minLastnameSyllables = 2
@@ -45,6 +47,7 @@ class NameGenerator:
                                     'det', \
                                     'krumm', \
                                     'pups', \
+                                    'stink', \
                                     'knall', \
                                     'ekko', \
                                     'mal', \
@@ -112,6 +115,7 @@ class NameGenerator:
                                     'bold', \
                                     'trutz', \
                                     'fried', \
+                                    'sack', \
                                     'bi', \
                                     'en', \
                                     'rich', \
@@ -390,7 +394,12 @@ class NameGenerator:
 
     # Generate random lastname
     def generate_lastname(this):
-        numberOfSyllables = random.randrange(this.minLastnameSyllables, this.maxLastnameSyllables)
+        # Determine lengh of lastname
+        if random.random() > this.threshLongerLastName:
+            numberOfSyllables = random.randrange(this.minLastnameSyllables, this.maxLastnameSyllables)
+        else:
+            numberOfSyllables = this.minLastnameSyllables
+
         lastSyllableIndex = -1
         newName = ''
 
@@ -504,6 +513,9 @@ def run(log, options):
 
     # Create new NameGenerator object
     nameGen = NameGenerator()
+
+    # Seed random generator
+    random.seed(time.time())
 
     # Print stats
     printStats = options.namegen_stats
