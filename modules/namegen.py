@@ -1,10 +1,11 @@
 #!/usr/bin/python
+import sys
 import random
 
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.3.3'
+SCRIPTVERSION = '1.4'
 SCRIPTINFO = 'Generate a funny german name'
 
 
@@ -64,6 +65,7 @@ class NameGenerator:
                                     'sack', \
                                     'kack', \
                                     'jo', \
+                                    'ru', \
                                     'det', \
                                     'ost', \
                                     'nord', \
@@ -99,6 +101,7 @@ class NameGenerator:
                                     'lav', \
                                     'mann', \
                                     'er', \
+                                    'beus', \
                                     'ius', \
                                     'kus', \
                                     'os', \
@@ -121,9 +124,12 @@ class NameGenerator:
                                         'berta', \
                                         'her', \
                                         'da', \
+                                        'ba', \
+                                        'na', \
                                         'dani', \
                                         'ker', \
                                         'klara', \
+                                        'ju', \
                                         'gud', \
                                         'su', \
                                         'i', \
@@ -131,6 +137,7 @@ class NameGenerator:
                                         'e', \
                                         'o', \
                                         'u', \
+                                        'her', \
                                         'sa', \
                                         'bri', \
                                         'lau', \
@@ -142,27 +149,39 @@ class NameGenerator:
                                         'manu', \
                                         'emanu', \
                                         'theo', \
+                                        'lena', \
+                                        'ol', \
                                         'na', \
                                         'cor', \
                                         'pene', \
+                                        'mag', \
+                                        'magda', \
                                         'jas', \
-                                        'kuni', \
+                                        'alex', \
+                                        'bar', \
                                         'klo'], \
                                         \
                                     ['gata', \
                                         'beta', \
                                         'trabo', \
                                         'phe', \
+                                        'ba', \
+                                        'da', \
                                         'bumbo', \
+                                        'braba', \
                                         'gret', \
                                         'ta', \
+                                        'mi', \
                                         'bi'], \
                                         \
                                     ['gunde', \
                                         'tilde', \
                                         'lia', \
+                                        'lena', \
                                         'rune', \
                                         'lope', \
+                                        'bette', \
+                                        'andra', \
                                         'tha', \
                                         'min', \
                                         'run', \
@@ -171,14 +190,19 @@ class NameGenerator:
                                         'elle', \
                                         'ela', \
                                         'ella', \
+                                        'scha', \
+                                        'ga', \
                                         'na', \
+                                        'ne', \
                                         'ra', \
                                         'bella', \
+                                        'maria', \
                                         'nelia', \
                                         'stin', \
                                         'berta', \
                                         'scha', \
                                         'a', \
+                                        'e', \
                                         'mine', \
                                         'bine', \
                                         'brina', \
@@ -186,6 +210,7 @@ class NameGenerator:
                                         'gitte', \
                                         'lotte', \
                                         'grunde', \
+                                        'lia', \
                                         'hilde']
                                 ] \
                             }
@@ -198,8 +223,10 @@ class NameGenerator:
                             'sack', \
                             'abo', \
                             'wonk', \
+                            'hag', \
                             'kovsky', \
                             'hump', \
+                            'rid', \
                             'ski', \
                             'mann', \
                             'boff', \
@@ -261,6 +288,88 @@ class NameGenerator:
                             'hans', \
                             'tr' + u'\u00f6' + 'del', \
                             'paff']
+
+
+    # Compute number of possible names
+    def compute_stats(this):
+        # Number of possible male firstnames
+        numberOfMaleFirstnames_short = len(this.firstNameSyllables['male'][0]) * len(this.firstNameSyllables['male'][2])
+        numberOfMaleFirstnames_long = len(this.firstNameSyllables['male'][0]) * len(this.firstNameSyllables['male'][1]) * len(this.firstNameSyllables['male'][2])
+        numberOfMaleFirstnames = numberOfMaleFirstnames_short + numberOfMaleFirstnames_long
+
+        # Number of possible female firstnames
+        numberOfFemaleFirstnames_short = len(this.firstNameSyllables['female'][0]) * len(this.firstNameSyllables['female'][2])
+        numberOfFemaleFirstnames_long = len(this.firstNameSyllables['female'][0]) * len(this.firstNameSyllables['female'][1]) * len(this.firstNameSyllables['female'][2])
+        numberOfFemaleFirstnames = numberOfFemaleFirstnames_short + numberOfFemaleFirstnames_long
+
+        numberOfFirstNames = numberOfFemaleFirstnames + numberOfMaleFirstnames
+
+        # Number of possible lastnames
+        numberOfLastNames_short = len(this.lastNameSyllables) ** 2
+        numberOfLastNames_long = len(this.lastNameSyllables) ** 3
+        numberOfLastnames = numberOfLastNames_short + numberOfLastNames_long
+
+        # Total number of firstname/lastname combinations
+        numberOfMaleNames = numberOfMaleFirstnames * numberOfLastnames
+        numberOfFemaleNames = numberOfFemaleFirstnames * numberOfLastnames
+        numberOfNames = numberOfMaleNames + numberOfFemaleNames
+
+        # Now build dictionary
+        resultStats = {
+            'firstnames' : {
+                'female' : {
+                    'short' : numberOfFemaleFirstnames_short,
+                    'long'  : numberOfFemaleFirstnames_long,
+                    'total' : numberOfFemaleFirstnames
+                },
+                'male'   : {
+                    'short' : numberOfMaleFirstnames_short,
+                    'long'  : numberOfMaleFirstnames_long,
+                    'total' : numberOfMaleFirstnames
+                },
+                'total'  : numberOfFirstNames
+            },
+            'lastnames' : {
+                'short' : numberOfLastNames_short,
+                'long'  : numberOfLastNames_long,
+                'total' : numberOfLastnames
+            },
+            'female': numberOfFemaleNames,
+            'male'  : numberOfMaleNames,
+            'total' : numberOfNames
+        }
+
+        return resultStats
+
+
+    # Print statistics from resultStats dictionary
+    def print_statistics(this, log, stats):
+        log.info('Database statistics')
+        print('=========================')
+        print('')
+        log.info('Firstnames:')
+        print('-----------------')
+        log.info('Female short names   : ' + "{:8,}".format(stats['firstnames']['female']['short']))
+        log.info('Female long names    : ' + "{:8,}".format(stats['firstnames']['female']['long']))
+        log.info('Female names in total: ' + "{:8,}".format(stats['firstnames']['female']['total']))
+        print('')
+        log.info('Male short names     : ' + "{:8,}".format(stats['firstnames']['male']['short']))
+        log.info('Male long names      : ' + "{:8,}".format(stats['firstnames']['male']['long']))
+        log.info('Male names in total  : ' + "{:8,}".format(stats['firstnames']['male']['total']))
+        print('')
+        log.info('Firstnames in total  : ' + "{:8,}".format(stats['firstnames']['total']))
+        print('')
+        log.info('Lastnames:')
+        print('----------------')
+        log.info('Short lastnames      : ' + "{:8,}".format(stats['lastnames']['short']))
+        log.info('Long lastnames       : ' + "{:8,}".format(stats['lastnames']['long']))
+        log.info('Lastnames in total   : ' + "{:8,}".format(stats['lastnames']['total']))
+        print('')
+        log.info('Total:')
+        print('------------')
+        log.info('Female name combinations  : ' + "{:15,}".format(stats['female']))
+        log.info('Male name combinations    : ' + "{:15,}".format(stats['male']))
+        log.info('Name combinations in total: ' + "{:15,}".format(stats['total']))
 
 
     # Generate random firstname
@@ -361,6 +470,7 @@ def setup_args(optGroup):
     optGroup.add_option('--namegen', action='store_true', dest='namegen', default=None, help=SCRIPTINFO)
     optGroup.add_option('--gender', type='string', dest='namegen_gender', default='random', help='Specify gender of firstname (''male'' or ''female'' or ''random'')', metavar='GENDER')
     optGroup.add_option('--namecount', type='int', dest='namegen_count', default=1, help='Specify how many names should be generated with COUNT', metavar='COUNT')
+    optGroup.add_option('--stats', action='store_true', dest='namegen_stats', default=None, help='Show statistics about the possible name combinations')
 
 
 # Return True if args/options tell us to run this module
@@ -392,7 +502,16 @@ def run(log, options):
     log.info(get_name())
     print('')
 
+    # Create new NameGenerator object
     nameGen = NameGenerator()
 
+    # Print stats
+    printStats = options.namegen_stats
+    if printStats is not None and printStats == True:
+        nameGen.print_statistics(log, nameGen.compute_stats())
+        print('')
+        sys.exit()
+
+    # Generate name(s)
     for i in range(options.namegen_count):
         log.info((str(i + 1) + '. ' if options.namegen_count > 1 else '') + nameGen.generate(log, options.namegen_gender))
