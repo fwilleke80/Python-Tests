@@ -93,8 +93,16 @@ def WriteOutputFile(filename, ascii, log):
 # get_name()
 #    Return the module's name
 #
-# check_args(options)
+# get_info()
+#    Return the module's info string
+#
+# check_args(log, options)
 #    Return True if main function can be run, depending on the command line arguments. If not dependent on any arguments, just return True
+#    logger object and command line options dictionary are passed
+#
+# check_additional_args(log, options)
+#    Return True if all arguments are not only set, but also make sense
+#    logger object and command line options dictionary are passed
 #
 # run(log, options)
 #    Main function where all the magic's happening.
@@ -109,7 +117,7 @@ def setup_args(optGroup):
 
 # Return True if args/options tell us to run this module
 def check_args(log, options):
-    return options.asciiart is not None and options.asciiart != '' and check_additional_args(log, options)
+    return options.asciiart is not None and options.asciiart != ''
 
 
 # Checks additional arguments and prints error messages

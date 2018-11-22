@@ -72,7 +72,7 @@ def setup_args(optGroup):
 
 # Return True if args/options tell us to run this module
 def check_args(log, options):
-    return options.googletranslate is not None and options.googletranslate != '' and check_additional_args(log, options)
+    return options.googletranslate is not None and options.googletranslate != ''
 
 
 # Checks additional arguments and prints error messages

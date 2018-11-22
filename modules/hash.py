@@ -115,7 +115,7 @@ def setup_args(optGroup):
 
 # Return True if args/options tell us to run this module
 def check_args(log, options):
-    return options.hash is not None and len(options.hash) == 2 and check_additional_args(log, options)
+    return options.hash is not None and len(options.hash) == 2
 
 
 # Checks additional arguments and prints error messages

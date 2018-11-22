@@ -58,8 +58,16 @@ def print_geolocation(log, ip='me'):
 # get_name()
 #    Return the module's name
 #
-# check_args(options)
+# get_info()
+#    Return the module's info string
+#
+# check_args(log, options)
 #    Return True if main function can be run, depending on the command line arguments. If not dependent on any arguments, just return True
+#    logger object and command line options dictionary are passed
+#
+# check_additional_args(log, options)
+#    Return True if all arguments are not only set, but also make sense
+#    logger object and command line options dictionary are passed
 #
 # run(log, options)
 #    Main function where all the magic's happening.
@@ -74,6 +82,11 @@ def setup_args(optGroup):
 # Return True if args/options tell us to run this module
 def check_args(log, options):
     return options.location is not None and options.location != ''
+
+
+# Checks additional arguments and prints error messages
+def check_additional_args(log, options):
+    return True
 
 
 # Return module name
