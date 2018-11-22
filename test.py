@@ -7,8 +7,9 @@ import importlib
 
 # Script info
 SCRIPTTITLE = 'Tool Script Launcher'
-SCRIPTVERSION = '0.3'
+SCRIPTVERSION = '0.3.2'
 SCRIPTCOPYRIGHT = '2018 by Frank Willeke'
+SCRIPTUSAGE = "usage: %prog --option1 arg1 arg2 --option2 arg"
 
 
 # Logging
@@ -79,7 +80,7 @@ def main():
     ImportModules(log)
 
     # Setup args for all modules, then parse
-    parser = optparse.OptionParser()
+    parser = optparse.OptionParser(SCRIPTUSAGE)
     SetupArgs(parser)
     for module in registeredModules:
         log.debug(str(module))
@@ -102,8 +103,9 @@ def main():
     # Run modules
     for m in registeredModules:
         if m.check_args(options=options, log=log):
-            m.run(options=options, log=log)
-            return
+            if m.check_additional_args(options=options, log=log):
+                m.run(options=options, log=log)
+                return
 
     # If no module was used, print help
     parser.print_help()
