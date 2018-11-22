@@ -2,11 +2,12 @@
 import string
 import itertools
 import random
+import time
 
 
 # Script info
 SCRIPTTITLE = 'Pronouncable Password Generator'
-SCRIPTVERSION = '0.1.1'
+SCRIPTVERSION = '0.1.3'
 SCRIPTINFO = 'Generate a pronouncable password'
 
 
@@ -79,7 +80,7 @@ def gibberish(wordcount, wordlist=syllables):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--pwgen', action='store_true', dest='pwgen', default=None, help=SCRIPTINFO)
-    optGroup.add_option('--pwlen', type='int', dest='pwlen', default=0, help='Length of pronouncable password', metavar='LENGTH')
+    optGroup.add_option('--pwlen', type='int', dest='pwlen', default=4, help='Length of pronouncable password', metavar='LENGTH')
 
 
 # Return True if args/options tell us to run this module
@@ -112,6 +113,9 @@ def run(log, options):
 
     # Get args
     pwLen = options.pwlen
+
+    # Seed random generator
+    random.seed(time.time())
 
     if pwLen == 0:
       pwLen = random.randrange(3, 5)
