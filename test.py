@@ -7,7 +7,7 @@ import importlib
 
 # Script info
 SCRIPTTITLE = 'Tool Script Launcher'
-SCRIPTVERSION = '0.3.2'
+SCRIPTVERSION = '0.3.5'
 SCRIPTCOPYRIGHT = '2018 by Frank Willeke'
 SCRIPTUSAGE = "usage: %prog --option1 arg1 arg2 --option2 arg"
 
@@ -37,8 +37,9 @@ def ImportModules(log):
 
 # Set up command line argument options for main script
 def SetupArgs(parser):
-    parser.add_option('-o', '--output', action='store_true', dest='printoutput', default=False, help='Print outputs (not relevant for all modules)')
+    parser.add_option('-v', '--verbose', action='store_true', dest='printoutput', default=False, help='Print verbose outputs (not relevant for all modules)')
     parser.add_option('-l', '--listmodules', action='store_true', dest='listmodules', default=False, help='List registered test modules')
+    parser.add_option('-f', '--logfile', action='store_true', dest='logfile', default=False, help='Create log file')
 
 
 # Parse provided command line arguments
@@ -57,6 +58,9 @@ def SetupLogging():
     logHandler.setFormatter(logFormat)
     log.addHandler(logHandler)
 
+
+# Set log preferences
+def SetupFileLogging():
     logFileHandler = logging.FileHandler(LOGFILE)
     logFileHandler.setLevel(LOGLEVEL)
     logFormat = logging.Formatter(LOGFILEFORMAT)
@@ -88,6 +92,8 @@ def main():
         module.setup_args(optGroup)
         parser.add_option_group(optGroup)
     options, args = ParseArgs(parser)
+    if options.logfile:
+        SetupFileLogging()
     log.debug('options: ' + str(options))
 
     # List modules
