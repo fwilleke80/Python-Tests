@@ -65,12 +65,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.primenumbers is not None
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     if options.primenumbers <= 2:
         log.error('LIMIT must be > 2')
         return False
@@ -88,7 +88,7 @@ def get_info():
 
 
 # Calculate prime numbers op to limit
-def run(log, options):
+def run(log, options, args):
     # Get arguments
     limit = options.primenumbers
     printPrimes = options.printoutput

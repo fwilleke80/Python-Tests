@@ -65,12 +65,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.encrypt_caesar is not None and options.encrypt_caesar[0] != '' and options.encrypt_caesar[1] != ''
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     shiftVal = unicode(options.encrypt_caesar[1], 'utf-8')
     if shiftVal.isnumeric() == False:
         log.error('SHIFT must be a number!')
@@ -89,7 +89,7 @@ def get_info():
 
 
 # Perform Encryption test
-def run(log, options):
+def run(log, options, args):
     # Welcome
     log.info(get_name())
 

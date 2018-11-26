@@ -89,12 +89,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.magic_eightball is not None and options.magic_eightball != ''
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     return True
 
 
@@ -109,7 +109,7 @@ def get_info():
 
 
 # Perform Encryption test
-def run(log, options):
+def run(log, options, args):
     # Welcome
     log.info(get_name())
     print('')

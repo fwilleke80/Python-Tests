@@ -483,12 +483,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.namegen is not None and options.namegen == True and check_additional_args(log, options)
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     if options.namegen_gender is None or options.namegen_count is None or options.namegen_count < 1:
         log.error('Invalid name generator arguments!')
         return False
@@ -506,7 +506,7 @@ def get_info():
 
 
 # Perform Encryption test
-def run(log, options):
+def run(log, options, args):
     # Welcome
     log.info(get_name())
     print('')

@@ -116,12 +116,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.asciiart is not None and options.asciiart != ''
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     if options.asciifile is not None and options.asciifile == '':
         log.error('When using --asciifile, you need to specify a filename!')
         return False
@@ -139,7 +139,7 @@ def get_info():
 
 
 # Perform Encryption test
-def run(log, options):
+def run(log, options, args):
     # Welcome
     log.info(get_name())
     print('')

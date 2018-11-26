@@ -104,12 +104,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.waves is not None
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     if options.wavesparams is None:
         log.error('No wave parameters provided!')
         return False
@@ -144,7 +144,7 @@ def get_info():
 
 
 # Calculate prime numbers op to limit
-def run(log, options):
+def run(log, options, args):
     # Get arguments
     args = options.wavesparams
     argSpeed = args[0]

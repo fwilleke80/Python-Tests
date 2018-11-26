@@ -95,6 +95,7 @@ def main():
     if options.logfile:
         SetupFileLogging()
     log.debug('options: ' + str(options))
+    log.debug('args   : ' + str(args))
 
     # List modules
     if options.listmodules is not None and options.listmodules == True:
@@ -108,9 +109,9 @@ def main():
 
     # Run modules
     for m in registeredModules:
-        if m.check_args(options=options, log=log):
-            if m.check_additional_args(options=options, log=log):
-                m.run(options=options, log=log)
+        if m.check_args(options=options, args=args, log=log):
+            if m.check_additional_args(options=options, args=args, log=log):
+                m.run(options=options, args=args, log=log)
                 return
 
     # If no module was used, print help

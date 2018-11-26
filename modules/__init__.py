@@ -3,7 +3,7 @@ import pkgutil
 # Modules to exclude
 excludedModules = []
 excludedModules.append('maths')
-excludedModules.append('timetrack')
+#excludedModules.append('timetrack')
 
 # Build list of all modules in package
 __all__ = []

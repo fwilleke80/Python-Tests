@@ -114,12 +114,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.hash is not None and len(options.hash) == 2
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     if options.hash[0] not in hashModes.keys():
         log.error('Mode ' + options.hash[0] + ' is not supported!')
         log.error('Use one of the following modes: ' + str(hashModes.keys()))
@@ -138,7 +138,7 @@ def get_info():
 
 
 # Perform
-def run(log, options):
+def run(log, options, args):
     # Welcome
     log.info(get_name())
     print('')

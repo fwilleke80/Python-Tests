@@ -385,12 +385,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options):
+def check_args(log, options, args):
     return options.benchmarks is not None and options.benchmarks == True 
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options):
+def check_additional_args(log, options, args):
     if options.threadcount is None or options.threadcount < 0:
         log.error('Invalid threadcount specified!')
         return False
@@ -421,7 +421,7 @@ def get_info():
 
 
 # Perform Encryption test
-def run(log, options):
+def run(log, options, args):
     # Welcome
     log.info(get_name())
 
