@@ -64,11 +64,11 @@ def gibberish(wordcount, wordlist=syllables):
 # get_info()
 #    Return the module's info string
 #
-# check_args(log, options)
+# check_options(log, options)
 #    Return True if main function can be run, depending on the command line arguments. If not dependent on any arguments, just return True
 #    logger object and command line options dictionary are passed
 #
-# check_additional_args(log, options)
+# check_additional_options(log, options)
 #    Return True if all arguments are not only set, but also make sense
 #    logger object and command line options dictionary are passed
 #
@@ -84,12 +84,12 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options, args):
+def check_options(log, options, args):
     return options.pwgen is not None and options.pwgen == True
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options, args):
+def check_additional_options(log, options, args):
     if options.pwlen is None or options.pwlen < 1:
         log.error('LENGTH must be > 1')
         return False
