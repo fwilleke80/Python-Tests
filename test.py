@@ -36,14 +36,14 @@ def ImportModules(log):
 
 
 # Set up command line argument options for main script
-def SetupArgs(parser):
+def SetupOptions(parser):
     parser.add_option('-v', '--verbose', action='store_true', dest='printoutput', default=False, help='Print verbose outputs (not relevant for all modules)')
     parser.add_option('-l', '--listmodules', action='store_true', dest='listmodules', default=False, help='List registered test modules')
     parser.add_option('-f', '--logfile', action='store_true', dest='logfile', default=False, help='Create log file')
 
 
 # Parse provided command line arguments
-def ParseArgs(parser):
+def ParseOptions(parser):
     options, args = parser.parse_args()
     return options, args
 
@@ -85,13 +85,13 @@ def main():
 
     # Setup args for all modules, then parse
     parser = optparse.OptionParser(SCRIPTUSAGE)
-    SetupArgs(parser)
+    SetupOptions(parser)
     for module in registeredModules:
         log.debug(str(module))
         optGroup = optparse.OptionGroup(parser, module.get_name(), module.get_info())
         module.setup_args(optGroup)
         parser.add_option_group(optGroup)
-    options, args = ParseArgs(parser)
+    options, args = ParseOptions(parser)
     if options.logfile:
         SetupFileLogging()
     log.debug('options: ' + str(options))
@@ -109,8 +109,8 @@ def main():
 
     # Run modules
     for m in registeredModules:
-        if m.check_args(options=options, args=args, log=log):
-            if m.check_additional_args(options=options, args=args, log=log):
+        if m.check_options(options=options, args=args, log=log):
+            if m.check_additional_options(options=options, args=args, log=log):
                 m.run(options=options, args=args, log=log)
                 return
 
