@@ -126,6 +126,12 @@ Generates a pronouncable password of variable length
 Example:  
 `python test.py --pwgen`
 
+### readability
+Analyzes a plain text file and computes some statistics about it, including different readability indices.
+
+Example:
+`python test.py --readability /Users/somebody/Desktop/haensel_und_gretel.txt`
+
 ### waves
 Calculates folded waveforms on the basis of sine waves modulating each other.
 
