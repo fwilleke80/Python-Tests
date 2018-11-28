@@ -323,10 +323,10 @@ def analyze_text(log, text):
     es = (len(words) / words_with_only_one_syllable)
     wsf = compute_wiener_sachtextformel(MS=ms, SL=asl, IW=iw, ES=es)
 
-    results['Wiener Sachtextformel 1'] = wsf[0]
-    results['Wiener Sachtextformel 2'] = wsf[1]
-    results['Wiener Sachtextformel 3'] = wsf[2]
-    results['Wiener Sachtextformel 4'] = wsf[3]
+    results['Wiener Sachtextformel 1 (DE)'] = wsf[0]
+    results['Wiener Sachtextformel 2 (DE)'] = wsf[1]
+    results['Wiener Sachtextformel 3 (DE)'] = wsf[2]
+    results['Wiener Sachtextformel 4 (DE)'] = wsf[3]
 
     return results
 
