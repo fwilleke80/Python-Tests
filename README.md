@@ -129,7 +129,7 @@ Example:
 ### readability
 Analyzes a plain text file and computes some statistics about it, including different readability indices.
 
-Example:
+Example:  
 `python test.py --readability /Users/somebody/Desktop/haensel_und_gretel.txt`
 
 ### waves
