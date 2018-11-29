@@ -65,17 +65,20 @@ def print_list(lst):
 
 
 # Print results dictionary
-def print_results(log, results):
+def print_results(log, results, excludeKeys=[]):
     # Prerun to determine max width of keys
     maxLen = 0
     for key in results.keys():
         maxLen = max(maxLen, len(key))
 
     for key in sorted(results.keys()):
+        if key in excludeKeys:
+            continue
+
         result = results[key]
         if type(result) == dict:
             log.info(key + ':')
-            print_results(log, result)
+            print_results(log, result, excludeKeys)
         else:
             margin = maxLen - len(key)
             if type(result) == float:
@@ -446,4 +449,4 @@ def run(log, options, args):
     jsonFilename = pre + '_meta.json'
     write_results(results, jsonFilename, log)
 
-    print_results(log, results)
+    print_results(log, results, excludeKeys=['tables'])
