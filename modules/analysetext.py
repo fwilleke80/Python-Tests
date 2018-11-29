@@ -49,7 +49,10 @@ def load_file(log, path):
 
 # Write results dictionary to a JSON file
 def write_results(results, filename, log):
-    log.info('Writin JSON file to: ' + filename)
+    log.info('Writing JSON file to: ' + filename)
+    with open(filename, 'w') as jsonFile:
+        jsonFile.write(json.dumps(results, indent=4, sort_keys=True))
+        jsonFile.close()
 
 
 ############################################################
