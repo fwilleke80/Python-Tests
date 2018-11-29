@@ -404,12 +404,12 @@ def analyze_text(log, text):
 
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
-    optGroup.add_option('--readability', type="string", dest='readability', default=None, help='Analyze a text file for readability.', metavar='FILE')
+    optGroup.add_option('--analysetext', type="string", dest='analysetext', default=None, help='Analyze a text file', metavar='FILE')
 
 
 # Return True if args/options tell us to run this module
 def check_options(log, options, args):
-    return options.readability is not None and options.readability != ''
+    return options.analysetext is not None and options.analysetext != ''
 
 
 # Checks additional arguments and prints error messages
@@ -434,7 +434,7 @@ def run(log, options, args):
     print('')
 
     # Get args
-    filename = options.readability
+    filename = options.analysetext
 
     # Load file
     text = load_file(log, filename)
