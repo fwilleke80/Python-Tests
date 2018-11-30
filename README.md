@@ -16,6 +16,12 @@ The whole project is grouped into a launcher (test.py) and modules that are wrap
 
 Here is a list of the included modules:
 
+### analysetext
+Analyzes a plain text file and computes some statistics about it, including different readability indices, and word frequency table.
+
+Example:  
+`python test.py --analysetext /Users/somebody/Desktop/haensel_und_gretel.txt`
+
 ### artworkprice
 Calculate a suitable price if you want to sell a painting you made
 
@@ -125,12 +131,6 @@ Generates a pronouncable password of variable length
 
 Example:  
 `python test.py --pwgen`
-
-### readability
-Analyzes a plain text file and computes some statistics about it, including different readability indices.
-
-Example:  
-`python test.py --readability /Users/somebody/Desktop/haensel_und_gretel.txt`
 
 ### waves
 Calculates folded waveforms on the basis of sine waves modulating each other.

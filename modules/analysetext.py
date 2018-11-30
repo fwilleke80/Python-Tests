@@ -3,12 +3,15 @@
 import os
 import sys
 import string
+import operator
+import json
+import time
 
 
 # Script info
-SCRIPTTITLE = 'Readability statistics'
-SCRIPTVERSION = '0.1'
-SCRIPTINFO = 'Analyze texts for readability'
+SCRIPTTITLE = 'Text statistics'
+SCRIPTVERSION = '0.2'
+SCRIPTINFO = 'Analyze text files'
 
 
 ############################################################
@@ -17,10 +20,38 @@ SCRIPTINFO = 'Analyze texts for readability'
 #
 ############################################################
 
-sentenceDelimiters = ['.', '!', '?', ':', '"'] # , '\n']
-umlauts = ['ö', 'ä', 'ü', 'Ö', 'Ä', 'Ü', 'ß']
-whitespaces = string.whitespace
+sentenceDelimiters = '.!?:"'
+umlauts = 'öäüÖÄÜß'
 vowels = 'aeiouy'
+whitespaces = string.whitespace
+
+
+resultLabels = {
+    'paragraphs' : 'Number of paragraphs',
+    'sentences'  : 'Number of sentences',
+    'words'      : 'Number of words',
+    'letters'    : 'Number of letters',
+    'words-with-at-least-3-syllables' : 'Number of words with at least 3 syllables',
+    'words-with-at-least-6-letters'   : 'Number of words with at least 6 letters',
+    'words-with-only-1-syllable'      : 'Number of words with only 1 syllable',
+    'words-per-sentence'      : 'Average words per sentence',
+    'sentences-per-paragraph' : 'Average sentences per paragraph',
+    'word-length'             : 'Average word length',
+    'syllables-per-word'      : 'Average syllables per word',
+    'fre-index'      : 'Flesch-Reading-Ease (DE) Index',
+    'fre-assessment' : 'Flesch-Reading-Ease (DE) Assessment',
+    'fgkl'           : 'Flesch-Kincaid Grade Level (US)',
+    'gfi'            : 'Gunning-Fog Index (US)',
+    'wstf-1'         : 'Erste Wiener Sachtextformel (DE)',
+    'wstf-2'         : 'Zweite Wiener Sachtextformel (DE)',
+    'wstf-3'         : 'Dritte Wiener Sachtextformel (DE)',
+    'wstf-4'         : 'Vierte Wiener Sachtextformel (DE)',
+    'word-frequencies' : 'Word frequencies',
+    'count'       : 'Count',
+    'average'     : 'Average',
+    'readability' : 'Readability',
+    'tables'      : 'Tables'
+}
 
 
 ############################################################
@@ -45,6 +76,26 @@ def load_file(log, path):
     return content
 
 
+# Write results dictionary to a JSON file
+def write_results(results, filename, log):
+    try:
+        with open(filename, 'w') as jsonFile:
+            jsonFile.write(json.dumps(results, indent=4, sort_keys=True))
+            jsonFile.close()
+    except:
+        log.error('Couldn''t write file ' + filename)
+
+
+# Inject label strings into results dictionary
+def add_labels(results):
+    for key in results:
+        value = results[key]
+        results[key] = [resultLabels[key], value]
+        # Recurse into sub dictionaries
+        if type(value) == dict:
+            add_labels(value)
+
+
 ############################################################
 #
 # Custom print functions
@@ -58,24 +109,33 @@ def print_list(lst):
 
 
 # Print results dictionary
-def print_results(log, results):
+def print_results(log, results, excludeKeys=[]):
     # Prerun to determine max width of keys
     maxLen = 0
     for key in results.keys():
-        maxLen = max(maxLen, len(key))
+        maxLen = max(maxLen, len(resultLabels[key]))
 
     for key in sorted(results.keys()):
-        result = results[key]
-        margin = maxLen - len(key)
-        if type(result) == float:
-            resultStr = "{:10.3f}".format(result)
-        elif type(result) == int:
-            resultStr = "%6o"% (result)
-        else:
-            resultStr = str(result)
+        if key in excludeKeys:
+            continue
 
-        line = key + (" " * margin) + ': ' + resultStr
-        log.info(line)
+        result = results[key]
+        label = resultLabels[key]
+        if type(result) == dict:
+
+            log.info(label + ':')
+            print_results(log, result, excludeKeys)
+        else:
+            margin = maxLen - len(label)
+            if type(result) == float:
+                resultStr = "{:10.3f}".format(result)
+            elif type(result) == int:
+                resultStr = "%6o"% (result)
+            else:
+                resultStr = str(result)
+
+            line = label + (" " * margin) + ': ' + resultStr
+            log.info(line)
 
 
 ############################################################
@@ -158,89 +218,13 @@ def split_into_paragraphs(text):
 #
 ############################################################
 
-# 
-def compute_average_word_length(words):
-    wordLength = 0
-    for word in words:
-        wordLength += len(word)
-    return float(wordLength) / float(len(words))
-
-
-# 
-def compute_average_wordcount_per_string(strings):
-    wordCount = 0
-    for s in strings:
-        wordCount += len(split_into_words(s))
-    return float(wordCount) / float(len(strings))
-
-
-# 
-def compute_average_sentencecount_per_string(strings):
-    sentenceCount = 0
-    for s in strings:
-        sentenceCount += len(split_into_sentences(s))
-    return float(sentenceCount) / float(len(strings))
-
-
-#
-def compute_average_syllables_per_word(words):
-    syllableCount = 0
-    for word in words:
-        syllableCount += count_syllables(word)
-    return float(syllableCount) / float(len(words))
-
-
-# 
-def compute_flesch_reading_ease(asl, asw):
-    return 180.0 - asl - (58.5 * asw)
-
-
-# 
-def assess_flesch_reading_ease(fre):
-    if fre < 0.0:
-        return 'Invalid FRE index'
-    elif fre <= 30.0:
-        return 'very difficult'
-    elif fre <= 50.0:
-        return 'difficult'
-    elif fre <= 60.0:
-        return 'medium difficult'
-    elif fre <= 70.0:
-        return 'medium'
-    elif fre <= 80.0:
-        return 'medium easy'
-    elif fre <= 90.0:
-        return 'easy'
-    elif fre <= 100.0:
-        return 'very easy'
-
-
-# 
-def compute_flesch_kincaid_grade_level(asl, asw):
-    return (0.39 * asl) + (11.8 * asw) - 15.59
-
-
-#
-def compute_gunning_fog_index(words, w, s, d):
-    return ((w / s) + d) * 0.4
-
-
-# Erste Wiener Sachtextformel
-def compute_wiener_sachtextformel(MS, SL, IW, ES):
-    wstf1 = 0.1935 * MS + 0.1672 * SL + 0.1297 * IW - 0.0327 * ES - 0.875
-    wstf2 = 0.2007 * MS + 0.1682 * SL + 0.1373 * IW - 2.779
-    wstf3 = 0.2963 * MS + 0.1905 * SL - 1.1144
-    wstf4 = 0.2656 * SL + 0.2744 * MS - 1.693
-    return (wstf1, wstf2, wstf3, wstf4)
-
-
 # Count letters in text, omitting anything that is not a letter or umlaut
 def count_letters(text):
     pureText = ''.join(ch for ch in text if (ch in string.letters or ch in umlauts))
     return len(pureText)
 
 
-#
+# Count syllables in a word
 def count_syllables(word):
 #referred from stackoverflow.com/questions/14541303/count-the-number-of-syllables-in-a-word
     count = 0
@@ -264,70 +248,175 @@ def count_syllables(word):
     return count
 
 
+# Average word length
+def compute_average_word_length(words):
+    wordLength = 0
+    for word in words:
+        wordLength += len(word)
+    return float(wordLength) / float(len(words))
+
+
+# Average number of words per string
+def compute_average_wordcount_per_string(strings):
+    wordCount = 0
+    for s in strings:
+        wordCount += len(split_into_words(s))
+    return float(wordCount) / float(len(strings))
+
+
+# Average number of sentences per string
+def compute_average_sentencecount_per_string(strings):
+    sentenceCount = 0
+    for s in strings:
+        sentenceCount += len(split_into_sentences(s))
+    return float(sentenceCount) / float(len(strings))
+
+
+# Average number of syllables per word
+def compute_average_syllables_per_word(words):
+    syllableCount = 0
+    for word in words:
+        syllableCount += count_syllables(word)
+    return float(syllableCount) / float(len(words))
+
+
+# Flesch-Reading-Eass Index (DE)
+def compute_flesch_reading_ease(asl, asw):
+    return 180.0 - asl - (58.5 * asw)
+
+
+# Flasch-Reading-Ease Assessment
+def assess_flesch_reading_ease(fre):
+    if fre < 0.0:
+        return 'Invalid FRE index'
+    elif fre <= 30.0:
+        return 'very difficult'
+    elif fre <= 50.0:
+        return 'difficult'
+    elif fre <= 60.0:
+        return 'medium difficult'
+    elif fre <= 70.0:
+        return 'medium'
+    elif fre <= 80.0:
+        return 'medium easy'
+    elif fre <= 90.0:
+        return 'easy'
+    elif fre <= 100.0:
+        return 'very easy'
+
+
+# Flesch-Kincaid Grade Level (US)
+def compute_flesch_kincaid_grade_level(asl, asw):
+    return (0.39 * asl) + (11.8 * asw) - 15.59
+
+
+# Gunning-Fog Index (US)
+def compute_gunning_fog_index(words, w, s, d):
+    return ((w / s) + d) * 0.4
+
+
+# Wiener Sachtextformel (DE)
+def compute_wiener_sachtextformel(MS, SL, IW, ES):
+    wstf1 = 0.1935 * MS + 0.1672 * SL + 0.1297 * IW - 0.0327 * ES - 0.875
+    wstf2 = 0.2007 * MS + 0.1682 * SL + 0.1373 * IW - 2.779
+    wstf3 = 0.2963 * MS + 0.1905 * SL - 1.1144
+    wstf4 = 0.2656 * SL + 0.2744 * MS - 1.693
+    return (wstf1, wstf2, wstf3, wstf4)
+
+
+# Build table of word frequency
+def build_word_frequency_table(words):
+    wordFrequencies = {}
+    for word in words:
+        wordFrequencies[word] = wordFrequencies.get(word, 0) + 1
+    return wordFrequencies
+
+
 # Analyze a text, return dictionary with results
 def analyze_text(log, text):
+    # Results dictionaries
     results = {}
+    countResults = {}
+    averageResults = {}
+    readabilityResults = {}
+    tableResults = {}
 
-    # Get separate paragraphs
+    # Get token lists
     paragraphs = split_into_paragraphs(text)
-
-    # Get separate sentences
     sentences = split_into_sentences(text)
-
-    # Get separate words
     words = split_into_words(text)
 
-    # Build results dictionary
-    results['Total paragraphs'] = len(paragraphs)
-    results['Total sentences'] = len(sentences)
-    results['Total words'] = len(words)
-    results['Total letters'] = count_letters(text)
+    # Count
+    countResults['paragraphs'] = len(paragraphs)
+    countResults['sentences'] = len(sentences)
+    countResults['words'] = len(words)
+    countResults['letters'] = count_letters(text)
 
+    # Compute averages
     asl = compute_average_wordcount_per_string(sentences)
     asw = compute_average_syllables_per_word(words)
+    averageResults['words-per-sentence'] = asl
+    averageResults['sentences-per-paragraph'] = compute_average_sentencecount_per_string(paragraphs)
+    averageResults['word-length'] = compute_average_word_length(words)
+    averageResults['syllables-per-word'] = asw
 
-    results['Average words p. sentence'] = asl
-    results['Average sentences p. paragraph'] = compute_average_sentencecount_per_string(paragraphs)
-    results['Average word length'] = compute_average_word_length(words)
-    results['Average syllables p. word'] = asw
-
+    # Compute Flesch-Reading-Ease
     fre = compute_flesch_reading_ease(asl=asl, asw=asw)
-    results['Flesch-Reading-Ease (DE) Index'] = fre
-    results['Flesch-Reading-Ease (DE) Assessment'] = assess_flesch_reading_ease(fre).upper()
+    readabilityResults['fre-index'] = fre
+    readabilityResults['fre-assessment'] = assess_flesch_reading_ease(fre).upper()
 
+    # Compute Flesch-Kincaid Grade Level
     fkgl = compute_flesch_kincaid_grade_level(asl=asl, asw=asw)
-    results['Flesch-Kincaid-Grade-Level (US)'] = fkgl
+    readabilityResults['fgkl'] = fkgl
 
     # Count words with at least 3 syllables
     words_with_at_least_3_syllables = 0
     for word in words:
         if count_syllables(word) >= 3:
             words_with_at_least_3_syllables += 1
+    countResults['words-with-at-least-3-syllables'] = words_with_at_least_3_syllables
 
-
+    # Compute Gunning-Fog Index
     gfi = compute_gunning_fog_index(words, w=len(words), s=len(sentences), d=words_with_at_least_3_syllables)
-    results['Gunning-Fog-Index (US)'] = gfi
+    readabilityResults['gfi'] = gfi
 
+    # Count words with at least 6 letters
     words_with_at_least_6_letters = 0
     for word in words:
         if count_letters(word) >= 6:
             words_with_at_least_6_letters += 1
+    countResults['words-with-at-least-6-letters'] = words_with_at_least_6_letters
 
+    # Count words with only one syllable
     words_with_only_one_syllable = 0
     for word in words:
         if count_syllables(word) == 1:
             words_with_only_one_syllable += 1
+    countResults['words-with-only-1-syllable'] = words_with_only_one_syllable
 
-    ms = (len(words) / words_with_at_least_3_syllables)
-    iw = (len(words) / words_with_at_least_6_letters)
-    es = (len(words) / words_with_only_one_syllable)
+    # Compute Wiener Sachtextformel
+    ms = len(words) / words_with_at_least_3_syllables
+    iw = len(words) / words_with_at_least_6_letters
+    es = len(words) / words_with_only_one_syllable
     wsf = compute_wiener_sachtextformel(MS=ms, SL=asl, IW=iw, ES=es)
+    readabilityResults['wstf-1'] = wsf[0]
+    readabilityResults['wstf-2'] = wsf[1]
+    readabilityResults['wstf-3'] = wsf[2]
+    readabilityResults['wstf-4'] = wsf[3]
 
-    results['Wiener Sachtextformel 1 (DE)'] = wsf[0]
-    results['Wiener Sachtextformel 2 (DE)'] = wsf[1]
-    results['Wiener Sachtextformel 3 (DE)'] = wsf[2]
-    results['Wiener Sachtextformel 4 (DE)'] = wsf[3]
+    # Compute word frequency table
+    wordFrequencies = build_word_frequency_table(words)
+    sortedWordFrequencies = sorted(wordFrequencies.items(), key=operator.itemgetter(1))
+    sortedWordFrequencies.reverse()
+    tableResults['word-frequencies'] = sortedWordFrequencies
 
+    # Assemble complete results dictionary
+    results['count'] = countResults
+    results['average'] = averageResults
+    results['readability'] = readabilityResults
+    results['tables'] = tableResults
+
+    # Return results dictionary
     return results
 
 
@@ -364,12 +453,12 @@ def analyze_text(log, text):
 
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
-    optGroup.add_option('--readability', type="string", dest='readability', default=None, help='Analyze a text file for readability.', metavar='FILE')
+    optGroup.add_option('--analysetext', type="string", dest='analysetext', default=None, help='Analyze a text file', metavar='FILE')
 
 
 # Return True if args/options tell us to run this module
 def check_options(log, options, args):
-    return options.readability is not None and options.readability != ''
+    return options.analysetext is not None and options.analysetext != ''
 
 
 # Checks additional arguments and prints error messages
@@ -394,12 +483,26 @@ def run(log, options, args):
     print('')
 
     # Get args
-    filename = options.readability
+    filename = options.analysetext
 
-    # Load file
+    # Load text file
     text = load_file(log, filename)
     print('')
 
+    # Analyze text
+    startTime = time.time()
     results = analyze_text(log, text)
+    timePassed = time.time() - startTime
 
-    print_results(log, results)
+    # Output results
+    print_results(log, results, excludeKeys=['tables'])
+    print('')
+    log.info('Analysis finished in ' + "{:0.3f}".format(timePassed) + ' msec')
+
+    # Write JSON file
+    print('')
+    add_labels(results)
+    pre, ext = os.path.splitext(filename)
+    jsonFilename = pre + '_meta.json'
+    log.info('Writing JSON file to: ' + jsonFilename)
+    write_results(results, jsonFilename, log)
