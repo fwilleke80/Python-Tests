@@ -25,6 +25,34 @@ vowels = 'aeiouy'
 whitespaces = string.whitespace
 
 
+resultLabels = {
+    'paragraphs' : 'Number of paragraphs',
+    'sentences'  : 'Number of sentences',
+    'words'      : 'Number of words',
+    'letters'    : 'Number of letters',
+    'words-with-at-least-3-syllables' : 'Number of words with at least 3 syllables',
+    'words-with-at-least-6-letters'   : 'Number of words with at least 6 letters',
+    'words-with-only-1-syllable'      : 'Number of words with only 1 syllable',
+    'words-per-sentence'      : 'Average words per sentence',
+    'sentences-per-paragraph' : 'Average sentences per paragraph',
+    'word-length'             : 'Average word length',
+    'syllables-per-word'      : 'Average syllables per word',
+    'fre-index'      : 'Flesch-Reading-Ease (DE) Index',
+    'fre-assessment' : 'Flesch-Reading-Ease (DE) Assessment',
+    'fgkl'           : 'Flesch-Kincaid Grade Level (US)',
+    'gfi'            : 'Gunning-Fog Index (US)',
+    'wstf-1'         : 'Erste Wiener Sachtextformel (DE)',
+    'wstf-2'         : 'Zweite Wiener Sachtextformel (DE)',
+    'wstf-3'         : 'Dritte Wiener Sachtextformel (DE)',
+    'wstf-4'         : 'Vierte Wiener Sachtextformel (DE)',
+    'word-frequencies' : 'Word frequencies',
+    'count'       : 'Count',
+    'average'     : 'Average',
+    'readability' : 'Readability',
+    'tables'      : 'Tables'
+}
+
+
 ############################################################
 #
 # File operations
@@ -49,10 +77,22 @@ def load_file(log, path):
 
 # Write results dictionary to a JSON file
 def write_results(results, filename, log):
-    log.info('Writing JSON file to: ' + filename)
-    with open(filename, 'w') as jsonFile:
-        jsonFile.write(json.dumps(results, indent=4, sort_keys=True))
-        jsonFile.close()
+    try:
+        with open(filename, 'w') as jsonFile:
+            jsonFile.write(json.dumps(results, indent=4, sort_keys=True))
+            jsonFile.close()
+    except:
+        log.error('Couldn''t write file ' + filename)
+
+
+# Inject label strings into results dictionary
+def add_labels(results):
+    for key in results:
+        value = results[key]
+        results[key] = [resultLabels[key], value]
+        # Recurse into sub dictionaries
+        if type(value) == dict:
+            add_labels(value)
 
 
 ############################################################
@@ -72,18 +112,20 @@ def print_results(log, results, excludeKeys=[]):
     # Prerun to determine max width of keys
     maxLen = 0
     for key in results.keys():
-        maxLen = max(maxLen, len(key))
+        maxLen = max(maxLen, len(resultLabels[key]))
 
     for key in sorted(results.keys()):
         if key in excludeKeys:
             continue
 
         result = results[key]
+        label = resultLabels[key]
         if type(result) == dict:
-            log.info(key + ':')
+
+            log.info(label + ':')
             print_results(log, result, excludeKeys)
         else:
-            margin = maxLen - len(key)
+            margin = maxLen - len(label)
             if type(result) == float:
                 resultStr = "{:10.3f}".format(result)
             elif type(result) == int:
@@ -91,7 +133,7 @@ def print_results(log, results, excludeKeys=[]):
             else:
                 resultStr = str(result)
 
-            line = key + (" " * margin) + ': ' + resultStr
+            line = label + (" " * margin) + ': ' + resultStr
             log.info(line)
 
 
@@ -442,14 +484,20 @@ def run(log, options, args):
     # Get args
     filename = options.analysetext
 
-    # Load file
+    # Load text file
     text = load_file(log, filename)
     print('')
 
+    # Analyze text
     results = analyze_text(log, text)
 
+    # Output results
+    print_results(log, results, excludeKeys=['tables'])
+
+    # Write JSON file
+    print('')
+    add_labels(results)
+    log.info('Writing JSON file to: ' + filename)
     pre, ext = os.path.splitext(filename)
     jsonFilename = pre + '_meta.json'
     write_results(results, jsonFilename, log)
-
-    print_results(log, results, excludeKeys=['tables'])
