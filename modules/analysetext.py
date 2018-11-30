@@ -5,6 +5,7 @@ import sys
 import string
 import operator
 import json
+import time
 
 
 # Script info
@@ -489,10 +490,14 @@ def run(log, options, args):
     print('')
 
     # Analyze text
+    startTime = time.time()
     results = analyze_text(log, text)
+    timePassed = time.time() - startTime
 
     # Output results
     print_results(log, results, excludeKeys=['tables'])
+    print('')
+    log.info('Analysis finished in ' + "{:0.3f}".format(timePassed) + ' msec')
 
     # Write JSON file
     print('')
