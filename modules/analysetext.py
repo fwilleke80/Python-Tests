@@ -497,7 +497,7 @@ def run(log, options, args):
     # Write JSON file
     print('')
     add_labels(results)
-    log.info('Writing JSON file to: ' + filename)
     pre, ext = os.path.splitext(filename)
     jsonFilename = pre + '_meta.json'
+    log.info('Writing JSON file to: ' + jsonFilename)
     write_results(results, jsonFilename, log)
