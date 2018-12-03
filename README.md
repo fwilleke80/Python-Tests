@@ -20,7 +20,7 @@ Here is a list of the included modules:
 Analyzes a plain text file and computes some statistics about it, including different readability indices, and word frequency table.
 
 Example:  
-`python test.py --analysetext /Users/somebody/Desktop/haensel_und_gretel.txt`
+`python test.py --analysetext /Users/somebody/Desktop/haensel_und_gretel.txt --writemetadata`
 
 ### artworkprice
 Calculate a suitable price if you want to sell a painting you made
