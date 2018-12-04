@@ -11,11 +11,38 @@ SCRIPTTITLE = 'Time Tracker'
 SCRIPTVERSION = '0.1'
 SCRIPTINFO = 'Keep track of what you''re doing with your time'
 
+SCRIPT_HELP = """
+Usage:
+  python test.py --timetrack [list|add|delete|help] args
+
+list [filter]
+    Lists all existing tracking points, optionally filtered by a string.
+
+add TASKNAME [message]
+    Adds a new tracking point for the current date and time. Use TASKNAME to
+    associate this point with a task (e.g. cooking, reading, project, whatever).
+    Optionally provide a message (e.g. "Trying indian curry", "name of the book", et cetera)
+
+delete [all|hash|task|before|last] [filter]
+    Delete either all tracking points, or filter by point hash or task name. You can also
+    remove all points before a defined point, or simply the last point. For the modes
+    hash, task, and before, you must provide a filter as an argument.
+
+help
+    Displays this help, so you propably already know this one.
+"""
+
 
 # Constants
 dataFilename = 'documents/timetrack_data.json'
 prefsFilename = 'documents/timetrack_prefs.json'
 
+
+###############################################################
+#
+# Helpers
+#
+###############################################################
 
 # Quick CRC32 implementation
 class HashCRC32:
@@ -27,6 +54,98 @@ class HashCRC32:
     def hexdigest(this):
         result = binascii.crc32(this.content) & 0xFFFFFFFF
         return "%08X" % result
+
+###############################################################
+#
+# Data management
+#
+###############################################################
+
+# Class that holds data of one tracking point
+class TrackingPoint:
+    datetime = ''
+    taskname = ''
+    message = ''
+    hash = ''
+
+    #
+    def __init__(self, *args, **kwargs):
+        if kwargs.get('src', None) is not None:
+            self.copy_from(src)
+        elif kwargs.get('dict', None) is not None:
+            self.set_from_dict(kwargs.get('dict'))
+        else:
+            try:
+                self.set(taskname=kwargs.get('taskname'), message=kwargs.get('message'))
+            except:
+                self.datetime = ''
+                self.taskname = ''
+                self.message = ''
+                self.hash = ''
+
+    #
+    def __str__(self):
+        return self.taskname + ' :: ' + self.datetime + ' :: ' + self.message
+
+    # 
+    def pretty_string(self):
+        return self.hash + ' :: ' + self.taskname + ' :: ' + self.datetime + '\n    ' + self.message
+
+
+    # Set data
+    def set(self, taskname, message):
+        # Set data
+        self.taskname = taskname
+        self.message = message
+
+        # Set current datetime
+        self.datetime = current_time()
+
+        # Set Hash
+        hashObject = HashCRC32()
+        hashObject.update(str(self))
+        self.hash = hashObject.hexdigest()
+
+
+    def set_from_dict(self, d):
+        self.taskname = d['taskname']
+        self.message = d['message']
+        self.datetime = d['datetime']
+        self.hash = d['hash']
+
+
+    # Return contents as dictionary
+    def get(self):
+        return {
+            'datetime' : self.datetime,
+            'taskname' : self.taskname,
+            'message'  : self.message,
+            'hash'     : self.hash
+        }
+
+
+    # 
+    def match(self, filterString, target='all', allowEmpty=False):
+        if filterString == '':
+            if allowEmpty:
+                return True
+            else:
+                return False
+        result = False
+        if target == 'all':
+            result = filterString in self.taskname \
+                or filterString in self.message \
+                or filterString in self.hash \
+                or filterString in self.datetime
+        elif 'taskname' in target:
+            result = result or (filterString in self.taskname)
+        elif 'message' in target:
+            result = result or (filterString in self.message)
+        elif 'hash' in target:
+            result = result or (filterString in self.hash)
+        elif 'datetime' in target:
+            result = result or (filterString in self.datetime)
+        return result
 
 
 # Prepare empty data
@@ -43,6 +162,12 @@ def new_prefs():
     }
     return prefs
 
+
+###############################################################
+#
+# General stuff
+#
+###############################################################
 
 def query_yes_no(question, default="yes"):
     """Ask a yes/no question via raw_input() and return their answer.
@@ -77,6 +202,19 @@ def query_yes_no(question, default="yes"):
                              "(or 'y' or 'n').\n")
 
 
+# Get current time in standard format
+def current_time():
+    now = datetime.datetime.now()
+    #print now
+    return str(now)
+
+
+###############################################################
+#
+# File operations
+#
+###############################################################
+
 # Read data from file
 def read_data(log):
     try:
@@ -84,10 +222,10 @@ def read_data(log):
             data = json.load(f)
         return data
     except:
-        log.warning('Could not load data from ' + dataFilename + '; creating empty dataset.')
-        data = new_data()
-        write_json(log, data)
-        return data
+       log.warning('Could not load data from ' + dataFilename + '; creating empty dataset.')
+       data = new_data()
+       write_json(log, dataFilename, data)
+       return data
 
 
 # Read data from file
@@ -99,67 +237,63 @@ def read_prefs(log):
     except:
         log.warning('Could not load preferences from ' + prefsFilename + '; using default settings.')
         prefs = new_prefs()
-        write_json(log, prefs)
+        write_json(log, prefsFilename, prefs)
         return prefs
 
 
 # Write data to file
-def write_json(log, data):
+def write_json(log, filename, data):
     try:
-        with open(dataFilename, 'w') as f:
-            f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
+        with open(filename, 'w') as f:
+            dataDump = json.dumps(data, sort_keys=True, indent=4, separators=(',', ': '))
+            f.write(dataDump)
     except:
         log.error('Could not write data to ' + dataFilename + '!')
 
 
-# Get current time in standard format
-def current_time():
-    now = datetime.datetime.now()
-    #print now
-    return str(now)
-
-
-def create_trackingpoint_string(datetime, task, msg, nobreaks=False):
-    return datetime + ' :: ' + task + ('\n    ' if nobreaks == False else ' :: ') + msg + ('\n' if msg != '' and nobreaks == False else '')
-
+###############################################################
+#
+# Entry points
+#
+###############################################################
 
 # Add a tracking point
 def add_trackingpoint(log, data, options, args):
-    currentTime = current_time()
-
     task = args[0]
     if len(args) > 1:
         msg = ' '.join(args[1:])
     else:
         msg = ''
 
-    trackingPointString = create_trackingpoint_string(datetime=currentTime, task=task, msg=msg, nobreaks=True)
-    hashObject = HashCRC32()
-    hashObject.update(trackingPointString)
-    trackingPointHash = hashObject.hexdigest()
+    newPoint = TrackingPoint()
+    newPoint.set(taskname=task, message=msg)
 
-    newPoint = {
-        'datetime' : currentTime,
-        'taskname' : task,
-        'message'  : msg,
-        'hash'     : trackingPointHash
-    }
-    data['datapoints'].append(newPoint)
-    log.info('Added point [' + trackingPointString + ']')
+    # Try to get list of existing datapoints
+    try:
+        dataPoints = data['datapoints']
+    except KeyError:
+        dataPoints = []
+
+    # Append new datapoints
+    dataPoints.append(newPoint.get())
+    data['datapoints'] = dataPoints
+
+    log.info('Added point [' + str(newPoint) + ']')
 
 
 # List tracking points, optionally filter by task
 def list_trackingpoints(log, data, options, args):
     filterString = args[0].upper() if len(args) > 0 else ''
-    log.info('Listing tracking points' + ((', filtering by ' + filterString + '...') if filterString != '' else '...'))
+    log.info('Listing tracking points' + ((', filtering by "' + filterString + '"...') if filterString != '' else '...'))
     print('')
     dataCount = 0
-    for dataPoint in data['datapoints']:
-        if filterString != '':
-            if filterString.upper() not in dataPoint['taskname'].upper():
-                continue
-        dataString = dataPoint['hash'] + ' :: ' + create_trackingpoint_string(datetime=dataPoint['datetime'], task=dataPoint['taskname'], msg=dataPoint['message'])
+    for dp in data['datapoints']:
+        dataPoint = TrackingPoint(dict=dp)
+        if not dataPoint.match(filterString, allowEmpty=True):
+            continue
+        dataString = dataPoint.pretty_string()
         print(dataString)
+        print('')
         dataCount += 1
     log.info('Found ' + str(dataCount) + ' tracking points.')
 
@@ -171,18 +305,24 @@ def delete_trackingpoint(log, data, options, args):
     if len(args) >= 1:
         if args[0] not in clearModes:
             log.error('Invalid clear parameter: ' + args[0])
-            return
+            log.error('Possible parameters are: ' + str(clearModes))
+            sys.exit()
 
     clearMode = ''
     clearFilter = ''
 
     if len(args) == 0:
         log.error('Arguments are required!')
+        log.error('Possible parameters are: ' + str(clearModes))
         sys.exit()
     elif len(args) > 0:
         clearMode = args[0]
         if len(args) > 1:
             clearFilter = args[1]
+
+        if (clearMode == 'hash' or clearMode == 'task' or clearMode == 'before') and clearFilter == '':
+            log.error('Arguments are required for this clear mode!')
+            sys.exit()
 
     log.debug('clearMode=' + clearMode + '; clearFilter=' + clearFilter)
 
@@ -193,29 +333,51 @@ def delete_trackingpoint(log, data, options, args):
         data['datapoints'] = []
         log.info('All tracking points were deleted!')
         return
+    elif clearMode == 'last':
+        del data['datapoints'][-1]
+        log.info('Last tracking point was deleted!')
+        return
 
-    for dataPoint in data['datapoints']:
+    deleteCount = 0
+
+    for dp in data['datapoints']:
+        dataPoint = TrackingPoint(dict=dp)
         if clearMode == 'hash':
-            dataCompare = dataPoint['hash'].upper()
+            dataCompare = dataPoint.hash.upper()
         elif clearMode == 'task':
-            dataCompare = dataPoint['taskname'].upper()
+            dataCompare = dataPoint.taskname.upper()
         else:
             log.error('Not implemented yet.')
             sys.exit()
 
         if dataCompare == clearFilter.upper():
-            data['datapoints'].remove(dataPoint)
+            data['datapoints'].remove(dp)
             log.info('Tracking point ' + clearFilter + ' deleted.')
-            return
+            deleteCount += 1
 
-    log.info('Tracking point ' + clearFilter + ' not found!')
+    if deleteCount == 0:
+        log.info('Tracking point ' + clearFilter + ' not found!')
+    else:
+        log.info('Deleted ' + str(deleteCount) + ' tracking points.')
 
 
+# 
+def print_help(log, data, options, args):
+    print get_name()
+    print SCRIPT_HELP
+
+
+###############################################################
+#
 # Prepare tracking options
+#
+###############################################################
+
 timeTrackOptions = {}
 timeTrackOptions['add'] = add_trackingpoint
 timeTrackOptions['list'] = list_trackingpoints
 timeTrackOptions['delete'] = delete_trackingpoint
+timeTrackOptions['help'] = print_help
 
 
 #####################################
@@ -299,10 +461,9 @@ def run(log, options, args):
 
     # Load existing data
     data = read_data(log)
-    #print data
 
     # Perform track option
     timeTrackOptions[trackOption](log, data, options, args)
 
     # Write data
-    write_json(log, data)
+    write_json(log, dataFilename, data)
