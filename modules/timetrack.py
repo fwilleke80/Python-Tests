@@ -36,6 +36,7 @@ help
 # Constants
 dataFilename = 'documents/timetrack_data.json'
 prefsFilename = 'documents/timetrack_prefs.json'
+stopMarker = 'STOP__'
 
 
 ###############################################################
@@ -89,7 +90,7 @@ class TrackingPoint:
 
     # 
     def pretty_string(self):
-        return self.hash + ' :: ' + self.taskname + ' :: ' + self.datetime + '\n    ' + self.message
+        return self.hash + ' :: ' + self.taskname + ' :: ' + self.datetime + (('\n    ' + self.message) if self.message != '' else '')
 
 
     # Set data
@@ -112,16 +113,6 @@ class TrackingPoint:
         self.message = d['message']
         self.datetime = d['datetime']
         self.hash = d['hash']
-
-
-    # Return contents as dictionary
-    def get(self):
-        return {
-            'datetime' : self.datetime,
-            'taskname' : self.taskname,
-            'message'  : self.message,
-            'hash'     : self.hash
-        }
 
 
     # 
@@ -275,7 +266,7 @@ def add_trackingpoint(log, data, options, args):
         dataPoints = []
 
     # Append new datapoints
-    dataPoints.append(newPoint.get())
+    dataPoints.append(newPoint.__dict__)
     data['datapoints'] = dataPoints
 
     log.info('Added point [' + str(newPoint) + ']')
@@ -361,6 +352,29 @@ def delete_trackingpoint(log, data, options, args):
         log.info('Deleted ' + str(deleteCount) + ' tracking points.')
 
 
+# Add a tracking point that stops currently running task
+def stop_task(log, data, options, args):
+    ldp = data['datapoints'][-1]
+    if ldp is None or stopMarker in ldp['taskname']:
+        log.info('Nothing to stop here.')
+        sys.exit()
+    lastDataPoint = TrackingPoint(dict=ldp)
+
+    newPoint = TrackingPoint()
+    newPoint.set(taskname=stopMarker + lastDataPoint.hash, message='')
+
+    # Try to get list of existing datapoints
+    try:
+        dataPoints = data['datapoints']
+    except KeyError:
+        dataPoints = []
+
+    # Append new datapoint
+    dataPoints.append(newPoint.__dict__)
+    data['datapoints'] = dataPoints
+
+    log.info('Stopped task ' + str(lastDataPoint))
+
 # 
 def print_help(log, data, options, args):
     print get_name()
@@ -377,6 +391,7 @@ timeTrackOptions = {}
 timeTrackOptions['add'] = add_trackingpoint
 timeTrackOptions['list'] = list_trackingpoints
 timeTrackOptions['delete'] = delete_trackingpoint
+timeTrackOptions['stop'] = stop_task
 timeTrackOptions['help'] = print_help
 
 
