@@ -6,11 +6,13 @@ import string
 import operator
 import json
 import time
+import binascii
+import hashlib
 
 
 # Script info
 SCRIPTTITLE = 'Text statistics'
-SCRIPTVERSION = '0.2'
+SCRIPTVERSION = '0.2.2'
 SCRIPTINFO = 'Analyze text files'
 
 
@@ -50,8 +52,31 @@ resultLabels = {
     'count'       : 'Count',
     'average'     : 'Average',
     'readability' : 'Readability',
-    'tables'      : 'Tables'
+    'tables'      : 'Tables',
+    'meta'        : 'Metadata',
+    'crc32'       : 'Checksum CRC32',
+    'md5'         : 'Checksum MD5',
+    'sha1'        : 'Checksum SHA1',
+    'filename'    : 'Filename'
 }
+
+
+############################################################
+#
+# Checksums
+#
+############################################################
+
+# Simple CRC32 generator
+class HashCRC32:
+    content = ''
+
+    def update(this, source):
+        this.content += source
+
+    def hexdigest(this):
+        result = binascii.crc32(this.content) & 0xFFFFFFFF
+        return "%08X" % result
 
 
 ############################################################
@@ -114,6 +139,7 @@ def print_results(log, results, excludeKeys=[]):
     maxLen = 0
     for key in results.keys():
         maxLen = max(maxLen, len(resultLabels[key]))
+
 
     for key in sorted(results.keys()):
         if key in excludeKeys:
@@ -327,9 +353,37 @@ def compute_wiener_sachtextformel(MS, SL, IW, ES):
 # Build table of word frequency
 def build_word_frequency_table(words):
     wordFrequencies = {}
+    defaultValuePair = [0, 0.0]
+
+    # Count word frequency
     for word in words:
-        wordFrequencies[word] = wordFrequencies.get(word, 0) + 1
+        wordFrequency = wordFrequencies.get(word, defaultValuePair)[0] + 1
+        valuePair = [wordFrequency, 0.0]
+        wordFrequencies[word] = valuePair
+
+    # Compute relative word frequencies
+    wordCount = len(words)
+    for item in wordFrequencies.itervalues():
+        item[1] = float(item[0]) / float(wordCount)
+
     return wordFrequencies
+
+
+# Generate general metadata about input file
+def GenerateMetadata(log, filename, text):
+    metaData = {}
+    metaData['filename'] = filename
+    crc = HashCRC32()
+    crc.update(text)
+    metaData['crc32'] = str(crc.hexdigest())
+    md5 = hashlib.md5()
+    md5.update(text)
+    metaData['md5'] = str(md5.hexdigest())
+    sha1 = hashlib.sha1()
+    sha1.update(text)
+    metaData['sha1'] = str(sha1.hexdigest())
+
+    return metaData
 
 
 # Analyze a text, return dictionary with results
@@ -454,6 +508,7 @@ def analyze_text(log, text):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--analysetext', type="string", dest='analysetext', default=None, help='Analyze a text file', metavar='FILE')
+    optGroup.add_option('--writemetadata', action='store_true', dest='analysetext_writemetadata', default=None, help='Write analysis results to JSON file')
 
 
 # Return True if args/options tell us to run this module
@@ -484,15 +539,24 @@ def run(log, options, args):
 
     # Get args
     filename = options.analysetext
+    if options.analysetext_writemetadata is not None and options.analysetext_writemetadata == True:
+        writeMetadata = True
+    else:
+        writeMetadata = False
 
     # Load text file
     text = load_file(log, filename)
+    if writeMetadata:
+        log.info('Will write metadata file.')
     print('')
 
     # Analyze text
     startTime = time.time()
     results = analyze_text(log, text)
     timePassed = time.time() - startTime
+
+    # Add general text information
+    results['meta'] = GenerateMetadata(log, filename, text)
 
     # Output results
     print_results(log, results, excludeKeys=['tables'])
@@ -503,6 +567,6 @@ def run(log, options, args):
     print('')
     add_labels(results)
     pre, ext = os.path.splitext(filename)
-    jsonFilename = pre + '_meta.json'
-    log.info('Writing JSON file to: ' + jsonFilename)
+    jsonFilename = pre + '.json'
+    log.info('Writing metadata to: ' + jsonFilename)
     write_results(results, jsonFilename, log)
