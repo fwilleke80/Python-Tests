@@ -14,6 +14,7 @@ SCRIPTINFO = 'Keep track of what you''re doing with your time'
 
 # Constants
 dataFilename = 'documents/timetrack_data.json'
+prefsFilename = 'documents/timetrack_prefs.json'
 
 
 # Quick CRC32 implementation
@@ -34,6 +35,13 @@ def new_data():
         'datapoints' : []
     }
     return data
+
+
+# Prepare default preferences
+def new_prefs():
+    prefs = {
+    }
+    return prefs
 
 
 def query_yes_no(question, default="yes"):
@@ -76,14 +84,27 @@ def read_data(log):
             data = json.load(f)
         return data
     except:
-        log.warning('Could not load data from ' + dataFilename + ', creating empty dataset')
+        log.warning('Could not load data from ' + dataFilename + '; creating empty dataset.')
         data = new_data()
-        write_data(log, data)
+        write_json(log, data)
         return data
 
 
+# Read data from file
+def read_prefs(log):
+    try:
+        with open(prefsFilename, 'r') as f:
+            prefs = json.load(f)
+        return prefs
+    except:
+        log.warning('Could not load preferences from ' + prefsFilename + '; using default settings.')
+        prefs = new_prefs()
+        write_json(log, prefs)
+        return prefs
+
+
 # Write data to file
-def write_data(log, data):
+def write_json(log, data):
     try:
         with open(dataFilename, 'w') as f:
             f.write(json.dumps(data, sort_keys=True, indent=4, separators=(',', ': ')))
@@ -215,11 +236,11 @@ timeTrackOptions['delete'] = delete_trackingpoint
 # get_info()
 #    Return the module's info string
 #
-# check_args(log, options)
+# check_options(log, options)
 #    Return True if main function can be run, depending on the command line arguments. If not dependent on any arguments, just return True
 #    logger object and command line options dictionary are passed
 #
-# check_additional_args(log, options)
+# check_additional_options(log, options)
 #    Return True if all arguments are not only set, but also make sense
 #    logger object and command line options dictionary are passed
 #
@@ -234,13 +255,13 @@ def setup_args(optGroup):
 
 
 # Return True if args/options tell us to run this module
-def check_args(log, options, args):
+def check_options(log, options, args):
     # print options
     return options.timetrack is not None
 
 
 # Checks additional arguments and prints error messages
-def check_additional_args(log, options, args):
+def check_additional_options(log, options, args):
     option = options.timetrack
 
     if option not in timeTrackOptions:
@@ -273,6 +294,9 @@ def run(log, options, args):
     # Get args
     trackOption = options.timetrack
 
+    # Get preferences
+    preferences = read_prefs(log)
+
     # Load existing data
     data = read_data(log)
     #print data
@@ -281,5 +305,4 @@ def run(log, options, args):
     timeTrackOptions[trackOption](log, data, options, args)
 
     # Write data
-    #print data
-    write_data(log, data)
+    write_json(log, data)
