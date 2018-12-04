@@ -93,6 +93,14 @@ class TrackingPoint:
         return self.hash + ' :: ' + self.taskname + ' :: ' + self.datetime + (('\n    ' + self.message) if self.message != '' else '')
 
 
+    # 
+    def copy_from(self, src):
+                self.datetime = src.datetime
+                self.taskname = src.taskname
+                self.message = src.message
+                self.hash = src.hash
+
+
     # Set data
     def set(self, taskname, message):
         # Set data
