@@ -488,7 +488,7 @@ def setup_args(optGroup):
 
 # Return True if args/options tell us to run this module
 def check_options(log, options, args):
-    return options.namegen is not None and options.namegen == True and check_additional_options(log, options)
+    return options.namegen is not None and options.namegen == True
 
 
 # Checks additional arguments and prints error messages
