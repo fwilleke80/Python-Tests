@@ -48,20 +48,6 @@ def ParseOptions(parser):
     return options, args
 
 
-# Return list of lists
-# Those sublists either contain just one single argument, or a argname/value pair
-def SeparateArgs(args):
-    resultArgs = []
-    for arg in args:
-        if '=' in arg:
-            argParts = arg.strip().split('=')
-            if len(argParts[0]) > 0 and len(argParts[1]) > 1:
-                resultArgs.append([ap.strip() for ap in argParts])
-        else:
-            resultArgs.append([arg.strip()])
-    return resultArgs
-
-
 # Set log preferences
 def SetupLogging():
     log.setLevel(LOGLEVEL)
@@ -106,9 +92,6 @@ def main():
         module.setup_args(optGroup)
         parser.add_option_group(optGroup)
     options, args = ParseOptions(parser)
-
-    # Prepare args
-    args = SeparateArgs(args)
 
     # Create log file
     if options.logfile:
