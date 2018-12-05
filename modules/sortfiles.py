@@ -2,7 +2,6 @@
 import os
 import sys
 import time
-import fnmatch
 import shutil
 
 
@@ -10,110 +9,116 @@ import shutil
 SCRIPTTITLE = 'FileSort'
 SCRIPTVERSION = '1.0'
 SCRIPTINFO = 'Sort files into subfolders by date'
+SCRIPT_HELP = """
+Usage:
+  --sortfiles [sourcefolder] [targetfolder] [filepattern] [dry]
+  --sortfiles [source=sourcefolder] [target=targetfolder] [pattern=filepattern] [dry]
+
+Examples:
+  --sortfiles
+      Moves all images and movies in the current working directory to sorted folders.
+
+  --sortfiles dry
+      Simulated moving all images and movies in the current working directory to sorted folders.
+
+  --sortfiles /Users/somebody/Desktop/newImages /Users/somebody/Pictures pattern=images
+      Moves all image files from ~/Desktop/newImages to sorted folders in ~/Pictures.
+
+source
+    Defines the source folder where the files that should be sorted are located.
+    If is either used with "source=" or "src=", or it's simply the first argument without "=".
+    If undefined, the current working directory is used.
+
+target
+    Defines the target folder where the new subfolders should be created.
+    It is either used with "target=" or "t=", or it's simply the second argument without "=".
+    If undefined, the current working directory is used.
+
+filepattern
+    Defines which files should be moved, based on their file extension.
+    It is either used with "pattern=" or it's simple the third argument without "=".
+    Either provide a comma-separated list of file extensions here (e.g. ".jpg,.tif,.bmp"),
+    or use the keywords "images", "movies", or "default" to use standard extension lists.
+    If undefined, the "default" extension list will be used, that combines all other lists.
+
+dry
+    Performs a dry run. No folder are actually created, and no files are moved.
+    Instead, for each file that would be moved, a message is printed.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 # Constants
-fileextensions = (".PNG",".png",".JPG",".jpg",".jpeg",".TIF",".tif",".CR2",".cr2",".aae",".AAE",".xmp",".XMP")#,".MP4",".mp4",".MOV",".mov")
-verboseoutput = False
+PATTERNS = {
+    'images' : ('.bmp', '.BMP', '.PNG', '.png', '.JPG', '.jpg', '.jpeg', '.JPEG', '.TIF', '.tif', '.tiff', '.TIFF', '.CR2', '.cr2', '.aae', '.AAE', '.xmp', '.XMP'),
+    'movies' : ('.MP4', '.mp4', '.MOV', '.mov', '.avi', '.AVI', '.mpg', '.MPG', '.mpeg', '.mpeg'),
+    'default' : ('.bmp', '.BMP', '.PNG', '.png', '.JPG', '.jpg', '.jpeg', '.JPEG', '.TIF', '.tif', '.tiff', '.TIFF', '.CR2', '.cr2', '.aae', '.AAE', '.xmp', '.XMP', '.MP4', '.mp4', '.MOV', '.mov', '.avi', '.AVI', '.mpg', '.MPG', '.mpeg', '.mpeg')
+}
+DRY_RUN = False
 
 
-"""
-Do stuff with file
-"""
-def HandleFile(file, parentfolder, folderlist, errorlist):
-	if verboseoutput:
-		print "\nHandling file", file, "in", parentfolder, "..."
+# Do stuff with a file
+def handle_file(log, file, sourceFolder, targetFolder, folderList, errorList, dryRun):
+    file = os.path.join(sourceFolder, file)
+    log.debug('Handling file ' + str(file) + ' in ' + str(sourceFolder) + '...')
 
-	# 1. Get file modification date
-	created_date = time.strftime("%Y-%m-%d", time.localtime(os.path.getmtime(file)))
-	if verboseoutput:
-		print "-> Date: ", created_date
+    # 1. Get file modification date
+    fileDate = time.strftime("%Y-%m-%d", time.localtime(os.path.getmtime(file)))
+    log.debug('-> Date: ' + str(fileDate))
 
-	# Create target folder name
-	targetfolder = os.path.join(parentfolder, created_date)
-	if verboseoutput:
-		print "-> Target folder: ", targetfolder
+    # Create target folder name
+    targetFolder = os.path.join(targetFolder, fileDate)
+    log.debug('-> Target folder: ' + str(targetFolder))
 
-	# Add target folder to list, if it's not already in there
-	if created_date not in folderlist:
-		folderlist.append(created_date)
+    # Add target folder to list, if it's not already in there
+    if fileDate not in folderList:
+        folderList.append(fileDate)
 
-	# 2. Check if targetfolder already exists
-	if not os.path.isdir(targetfolder):
-		# Create it, if necessary
-		if verboseoutput:
-			print "-> -> Creating folder"
-		try:
-			os.mkdir(targetfolder)
-		except Exception:
-			errorstring = "Could not create folder: " + targetfolder
-			errorlist.append(errorstring)
-			return folderlist, 0, errorlist
+    # 2. Check if targetFolder already exists
+    if not os.path.exists(targetFolder):
+        # Create it, if necessary
+        log.debug('-> -> Creating folder')
+        try:
+            if dryRun == False:
+                os.makedirs(targetFolder)
+        except Exception:
+            errorList.append('Could not create folder: ' + str(targetFolder))
+            return folderList, False, errorList
 
-	# 3. Move file to target folder
-	if verboseoutput:
-		print "-> Moving file..."
-	try:
-		shutil.move(file, targetfolder)
-	except Exception:
-		errorstring = "File already exists: " + os.path.join(targetfolder, file)
-		errorlist.append(errorstring)
-		return folderlist, 0, errorlist
-
-	return folderlist, 1, errorlist
+    # 3. Move file to target folder
+    log.debug('-> Moving file...')
+    if dryRun:
+        log.info('DRY RUN: Moving ' + str(file) + ' --> ' + str(targetFolder))
+    try:
+        if dryRun == False:
+            shutil.move(file, targetFolder)
+    except Exception:
+        errorList.append('File already exists: ' + os.path.join(targetFolder, file))
+        return folderList, False, errorList
+    return folderList, True, errorList
 
 
-"""
-Iterate over all files in a folder
-"""
-def IterateFiles(folder, mask):
-	count_files = 0
-	file_moved = 0
-	folderlist = []
-	errorlist = []
-	if verboseoutput:
-		print "Iterating: ", folder, "..."
+# Iterate over all files in a folder
+def iterate_files(log, sourceFolder, targetFolder, filePattern, dryRun):
+    fileCount = 0
+    folderList = []
+    errorList = []
+    log.debug('Iterating: ' + str(sourceFolder) + '...')
 
-	# Iterate files in folder
-	for file in os.listdir(folder):
-		if file.endswith(mask):
-			if verboseoutput:
-				print "File found: ", file
+    # Iterate files in folder
+    for file in os.listdir(sourceFolder):
+        if file.endswith(filePattern):
+            # Process file
+            folderlist, fileMoved, errorList = handle_file(log, file, sourceFolder, targetFolder, folderList, errorList, dryRun)
+            # Set counter of processed files
+            fileCount += (1 if fileMoved else 0)
 
-			# Process file
-			folderlist, file_moved, errorlist = HandleFile(file, folder, folderlist, errorlist)
-			count_files += file_moved
+    if dryRun:
+        print('')
 
-	return count_files,folderlist,errorlist
-
-
-"""
-Kick off the shit!
-"""
-def main():
-	# Current directory
-	folder = os.getcwd()
-
-	# Print settings
-	errorlist = []
-	print versionstring, "\n"
-	print "File Extensions:", fileextensions, "\n"
-
-	# Iterate files in folder
-	count_files,folderlist,errorlist = IterateFiles(folder, fileextensions)
-
-	# Print summary
-	print "\n", count_files, "files moved into", len(folderlist), "folders."
-	if len(folderlist) > 0:
-		for folder in folderlist:
-			print folder
-
-	if len(errorlist) > 0:
-		print "\n", len(errorlist), " errors have occurred:"
-		for errorstring in errorlist:
-			print errorstring
-	else:
-		print "\nNo errors occurred.\n"
+    return fileCount, folderList, errorList
 
 
 #####################################
@@ -179,15 +184,30 @@ def run(log, options, args):
     log.info(get_name())
     print('')
 
+    # Default args
+    filePattern = PATTERNS['default']
     sourceFolder = os.getcwd()
     targetFolder = ''
+    dryRun = DRY_RUN
 
+    # Parse args
     if len(args) > 0:
         for argIndex, arg in enumerate(args):
             if (arg[:3].upper() == 'SRC' or arg[:6].upper() == 'SOURCE') and '=' in arg:
                 sourceFolder = arg.split('=')[1]
             elif (arg[0].upper() == 'T' or arg[:6].upper() == 'TARGET') and '=' in arg:
                 targetFolder = arg.split('=')[1]
+            elif (arg[0].upper() == 'P' or arg[:7].upper() == 'PATTERN') and '=' in arg:
+                patternString = arg.split('=')[1]
+                if patternString.lower() in PATTERNS.keys():
+                    filePattern = PATTERNS[patternString]
+                else:
+                    filePattern = patternString.split(',')
+            elif (arg.upper() == 'DRY'):
+                dryRun = True
+            elif (arg.upper() == 'HELP'):
+                print(SCRIPT_HELP)
+                sys.exit()
             elif '=' in arg:
                 log.error('Invalid argument syntax!')
                 sys.exit()
@@ -196,12 +216,41 @@ def run(log, options, args):
                     sourceFolder = arg
                 if argIndex == 1:
                     targetFolder = arg
+                if argIndex == 2:
+                    patternString = arg
+                    if patternString.lower() in PATTERNS.keys():
+                        filePattern = PATTERNS[patternString]
+                    else:
+                        filePattern = patternString.split(',')
 
     if targetFolder == '':
         targetFolder = sourceFolder
 
+    # Make filePattern a tuple, in case it's a list
+    if type(filePattern) == list:
+        filePattern = tuple(filePattern)
+
+    # Print settings
     log.info('Source folder: ' + sourceFolder)
     log.info('Target folder: ' + targetFolder)
+    log.info('File Extensions: ' + str(filePattern))
+    if dryRun:
+        log.info('Performing DRY RUN, not actually moving or creating anything!')
+    print('')
 
-    # Get args
-    return
+    # Iterate files in folder
+    fileCount, folderList, errorList = iterate_files(log, sourceFolder, targetFolder, filePattern, dryRun)
+
+    # Print summary
+    log.info(str(fileCount) + ' files moved into ' + str(len(folderList)) + ' folders.')
+    if len(folderList) > 0:
+        for folder in folderList:
+            print folder
+
+    if len(errorList) > 0:
+        log.error(str(len(errorList)) + ' errors have occurred')
+        print('')
+        for errorString in errorList:
+            log.error(errorString)
+    else:
+        log.info('No errors occurred.')
