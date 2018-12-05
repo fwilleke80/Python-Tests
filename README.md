@@ -168,7 +168,7 @@ Examples:
 
 ## Luxury setup
 How to make using the scripts even easier...
-### Mac OS
+### Mac OS Terminal usage
 * Open Terminal:  
     Press `CMD+SPACE`  
     Type `Terminal`
@@ -184,3 +184,12 @@ How to make using the scripts even easier...
     Type `source ~/.bash_profile`
 * Now you can run the script form anywhere like this:  
     Type `ftools --hash md5 "Hello World"`
+
+### Mac OS call via shell script on double-click
+* Create a file with extension ".sh"
+* Edit the file, and add the following lines:  
+    `#!/bin/bash` 
+    `python "/Users/somebody/Documents/Python Tests/test.py" --sortfiles /Users/somebody/Pictures pattern=images`
+* In the Terminal, make the file executable with:  
+    `chmod a+x myfile.sh`
+* Open the file's Information and set "Terminal" as the default application
