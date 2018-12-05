@@ -132,6 +132,29 @@ Generates a pronouncable password of variable length
 Example:  
 `python test.py --pwgen`
 
+### sortfiles
+A handy tool to sort multiple files into subfolders, based on their modification date.  
+Especially useful, e.g. to sort imported images from your phone or camera.  
+It also supports dry run, to simulate the result without actually changing anything.  
+Call with "help" argument to get detailled usage instructions.
+
+Examples:  
+`python test.py --sortfiles`  
+`python test.py --sortfiles /Users/somebody/Desktop/newImages /Users/somebody/Pictures pattern=images`  
+`python test.py --sortfiles help`
+
+### timetrack
+A useful tool to track what you're doing with your time.  
+With one command you can tell it what you're doing, and the tool will keep track of your times.  
+You can also review your activities and generate reports.  
+Quite useful if you're working on multiple different projects and want to know how much time you spend on each one.  
+Call with "help" argument to get detailled usage instructions.
+
+Example:  
+`python test.py --timetrack add Programming "Fixing bugs today"`  
+`python test.py --timetrack list`  
+`python test.py --timetrack help`
+
 ### waves
 Calculates folded waveforms on the basis of sine waves modulating each other.
 
