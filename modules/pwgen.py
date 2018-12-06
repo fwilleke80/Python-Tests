@@ -9,6 +9,23 @@ import time
 SCRIPTTITLE = 'Pronouncable Password Generator'
 SCRIPTVERSION = '0.1.3'
 SCRIPTINFO = 'Generate a pronouncable password'
+SCRIPT_HELP = """
+Usage:
+  --pwgen [length=n] [help]
+
+Examples:
+  --pwgen
+      Generates a password of default length 4.
+
+  --pwgen length=8
+      Generates a password of length 8.
+
+length
+    Optionally define a password length. Default is 4.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 # Initial consonants
@@ -80,7 +97,6 @@ def gibberish(wordcount, wordlist=syllables):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--pwgen', action='store_true', dest='pwgen', default=None, help=SCRIPTINFO)
-    optGroup.add_option('--pwlen', type='int', dest='pwlen', default=4, help='Length of pronouncable password', metavar='LENGTH')
 
 
 # Return True if args/options tell us to run this module
@@ -90,9 +106,6 @@ def check_options(log, options, args):
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
-    if options.pwlen is None or options.pwlen < 1:
-        log.error('LENGTH must be > 1')
-        return False
     return True
 
 
@@ -110,9 +123,19 @@ def get_info():
 def run(log, options, args):
     # Welcome
     log.info(get_name())
+    print('')
 
-    # Get args
-    pwLen = options.pwlen
+    # Parse args
+    pwLen = 4
+    for arg in args:
+      arg = arg.upper()
+      if (arg[0] == 'L' or arg[:6] == 'LENGTH') and '=' in arg:
+        pwLen = int(arg.split('=')[1])
+      elif arg == 'HELP':
+        print(SCRIPT_HELP)
+      else:
+        log.error('Unsupported argument: ' + arg)
+        print('')
 
     # Seed random generator
     random.seed(time.time())
