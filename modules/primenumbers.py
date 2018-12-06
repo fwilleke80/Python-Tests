@@ -5,8 +5,25 @@ import math
 
 # Script info
 SCRIPTTITLE = 'Sieve of Eratosthenes'
-SCRIPTVERSION = '0.2.6'
+SCRIPTVERSION = '0.3'
 SCRIPTINFO = 'Calculate prime numbers using an ancient technique'
+SCRIPT_HELP = """
+Usage:
+  --primenumbers COUNT [print] [help]
+
+Examples:
+  --primenumbers 50000 print
+      Calculate prime numbers up to 50000 and print them on screen
+
+  --primenumbers 1000000
+      Silently calculate prime number up to 1000000
+
+print
+    All found prime numbers will be printed on screen
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 def sieve_of_eratosthenes(limit):
@@ -91,7 +108,18 @@ def get_info():
 def run(log, options, args):
     # Get arguments
     limit = options.primenumbers
-    printPrimes = options.printoutput
+    printPrimes = False
+
+    # Parse args
+    for arg in args:
+        arg = arg.upper()
+        if arg == 'HELP':
+            print(SCRIPT_HELP)
+        elif arg == 'PRINT':
+            printPrimes = True
+        else:
+            log.error('Unsupported argument: ' + arg)
+            print('')
 
     # Welcome
     log.info(get_name())
