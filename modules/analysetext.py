@@ -14,6 +14,26 @@ import hashlib
 SCRIPTTITLE = 'Text statistics'
 SCRIPTVERSION = '0.2.2'
 SCRIPTINFO = 'Analyze text files'
+SCRIPT_HELP = """
+Usage:
+  --analysetext FILENAME [write] [help]
+
+Examples:
+  --analysetext "/Users/somebody/Documents/some_text.txt"
+      Analyses the specified text file
+
+  --analysetext "/Users/somebody/Documents/some_text.txt" write
+      Analyses the specified text file and writes the metadata to a JSON file
+
+FILENAME
+    You must define the full absolute path to a plain text file to analyse.
+
+write
+    If provided, a companion file in JSON format with metadata will be written.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 ############################################################
@@ -370,7 +390,7 @@ def build_word_frequency_table(words):
 
 
 # Generate general metadata about input file
-def GenerateMetadata(log, filename, text):
+def generate_metadata(log, filename, text):
     metaData = {}
     metaData['filename'] = filename
     crc = HashCRC32()
@@ -508,7 +528,6 @@ def analyze_text(log, text):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--analysetext', type="string", dest='analysetext', default=None, help='Analyze a text file', metavar='FILE')
-    optGroup.add_option('--writemetadata', action='store_true', dest='analysetext_writemetadata', default=None, help='Write analysis results to JSON file')
 
 
 # Return True if args/options tell us to run this module
@@ -537,12 +556,18 @@ def run(log, options, args):
     log.info(get_name())
     print('')
 
-    # Get args
+    # Parse args
     filename = options.analysetext
-    if options.analysetext_writemetadata is not None and options.analysetext_writemetadata == True:
-        writeMetadata = True
-    else:
-        writeMetadata = False
+    writeMetadata = False
+    for arg in args:
+        arg = arg.upper()
+        if (arg[0] == 'W' or arg[:5] == 'WRITE') and '=' in arg:
+            writeMetadata = True
+        elif arg == 'HELP':
+            print(SCRIPT_HELP)
+        else:
+            log.error('Unsupported argument: ' + arg)
+            print('')
 
     # Load text file
     text = load_file(log, filename)
@@ -556,7 +581,7 @@ def run(log, options, args):
     timePassed = time.time() - startTime
 
     # Add general text information
-    results['meta'] = GenerateMetadata(log, filename, text)
+    results['meta'] = generate_metadata(log, filename, text)
 
     # Output results
     print_results(log, results, excludeKeys=['tables'])
@@ -564,9 +589,10 @@ def run(log, options, args):
     log.info('Analysis finished in ' + "{:0.3f}".format(timePassed) + ' msec')
 
     # Write JSON file
-    print('')
-    add_labels(results)
-    pre, ext = os.path.splitext(filename)
-    jsonFilename = pre + '.json'
-    log.info('Writing metadata to: ' + jsonFilename)
-    write_results(results, jsonFilename, log)
+    if writeMetadata:
+        print('')
+        add_labels(results)
+        pre, ext = os.path.splitext(filename)
+        jsonFilename = pre + '.json'
+        log.info('Writing metadata to: ' + jsonFilename)
+        write_results(results, jsonFilename, log)
