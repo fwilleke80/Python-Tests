@@ -6,10 +6,35 @@ import random
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.4.2'
+SCRIPTVERSION = '1.5'
 SCRIPTINFO = 'Generate a funny german name'
+SCRIPT_HELP = """
+Usage:
+  --namegen [count=n] [gender=female|male|random] [stats] [help]
+  --namegen [c=n] [g=female|male|random] [s] [help]
+
+Examples:
+  --namegen
+      Generates a random name of random gender
+
+  --namegen gender=female cuont=20
+      Generated 20 random female names
+
+count
+    Provide a number > 0 here and this many names will be generated
+
+gender
+    Specify a gender here
+
+stats
+    Display statistics about the number of possible name combinations
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
+# Class that does all the name generation work
 class NameGenerator:
     # Thresholds
     threshExtraFirstnameSyllable = 0.68
@@ -420,11 +445,20 @@ class NameGenerator:
         return newName.title()
 
 
-    def safe_gender(this, log, gender):
+    def safe_gender(this, log, theGender):
+        # Support abbreviated genders
+        if theGender == 'f':
+            theGender = 'female'
+        elif theGender == 'm':
+            theGender = 'male'
+        elif theGender == 'r':
+            theGender = 'random'
+
         # Detect unsupported gender
-        theGender = gender.lower()
         if theGender not in list(this.firstNameSyllables) and theGender != 'random':
-            log.error('Gender '' + gender + '' not implemented yet. Using random gender instead.')
+            log.error('Gender "' + theGender + '" not implemented yet. Sorry about that. Using random gender instead.')
+            log.info('Supported genders: ' + str(list(this.firstNameSyllables)) + '.')
+            print('')
             theGender = 'random'
 
         # If random gender desired, pick an available one
@@ -434,9 +468,9 @@ class NameGenerator:
         return theGender
 
 
-    def generate(this, log, gender):
+    def generate(this, log, theGender):
         # Detect unsupported gender
-        theGender = this.safe_gender(log, gender)
+        theGender = this.safe_gender(log, theGender)
 
         log.debug('Gender: ' + theGender.title())
 
@@ -481,9 +515,6 @@ class NameGenerator:
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--namegen', action='store_true', dest='namegen', default=None, help=SCRIPTINFO)
-    optGroup.add_option('--gender', type='string', dest='namegen_gender', default='random', help='Specify gender of firstname (''male'' or ''female'' or ''random'')', metavar='GENDER')
-    optGroup.add_option('--namecount', type='int', dest='namegen_count', default=1, help='Specify how many names should be generated with COUNT', metavar='COUNT')
-    optGroup.add_option('--stats', action='store_true', dest='namegen_stats', default=None, help='Show statistics about the possible name combinations')
 
 
 # Return True if args/options tell us to run this module
@@ -493,9 +524,6 @@ def check_options(log, options, args):
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
-    if options.namegen_gender is None or options.namegen_count is None or options.namegen_count < 1:
-        log.error('Invalid name generator arguments!')
-        return False
     return True
 
 
@@ -521,13 +549,27 @@ def run(log, options, args):
     # Seed random generator
     random.seed(time.time())
 
-    # Print stats
-    printStats = options.namegen_stats
-    if printStats is not None and printStats == True:
-        nameGen.print_statistics(log, nameGen.compute_stats())
-        print('')
-        sys.exit()
+    # Parse args
+    nameGender = 'random'
+    nameCount = 1
+    for argIndex, arg in enumerate(args):
+        arg = arg.upper()
+        if (arg[0] == 'G' or arg[:6] == 'GENDER') and '=' in arg:
+            # Set gender
+            nameGender = arg.split('=')[1].lower()
+        elif (arg[0] == 'C' or arg[:5] == 'COUNT') and '=' in arg:
+            # Set name count
+            nameCount = int(arg.split('=')[1])
+        elif arg[0] =='S' or arg[:5] == 'STATS':
+            # Print statistics
+            nameGen.print_statistics(log, nameGen.compute_stats())
+            print('')
+        elif (arg == 'HELP'):
+            print(SCRIPT_HELP)
+        else:
+            log.error('Unsupported argument: ' + arg)
+            print('')
 
     # Generate name(s)
-    for i in range(options.namegen_count):
-        log.info((str(i + 1) + '. ' if options.namegen_count > 1 else '') + nameGen.generate(log, options.namegen_gender))
+    for i in range(nameCount):
+        log.info((str(i + 1) + '. ' if nameCount > 1 else '') + nameGen.generate(log, nameGender))
