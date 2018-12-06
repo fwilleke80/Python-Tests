@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import sys
 import time
 import random
 import math
@@ -9,6 +10,35 @@ import multiprocessing as mp
 SCRIPTTITLE = 'Benchmarks'
 SCRIPTVERSION = '0.3.2'
 SCRIPTINFO = 'Yield the full power of your machine and perform some multithreaded benchmarks!'
+SCRIPT_HELP = """
+Usage:
+  --benchmarks [tests=n] [threads=n] [timelimit=n] [intensity=n] [help]
+
+Examples:
+  --benchmarks
+      Perform all benchmarks with default settings
+
+  --benchmarks tests=sin,matrix threads=4
+      Perform sine and matrix benchmarks, limited to 4 threads
+
+  --benchmarks intensity=100000
+      Perform all benchmarks with very high intensity
+
+tests
+    A comma separated list with the tests that should be performed.
+
+threads
+    Specify maximum number of threads for benchmarks. Default is the number of physical CPUs in your machine.
+
+timelimit
+    Specify a time limit in seconds for each benchmark to run. Default is 2.
+
+intensity
+    Specify an optional intensity for the benchmarks. Default is 1000.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 # Generate MP speedup message
@@ -378,10 +408,6 @@ def perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity=
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option("--benchmarks", action="store_true", dest="benchmarks", default=None, help="Perform some multithreading tests")
-    optGroup.add_option("--threadcount", type="int", dest="threadcount", default=0, help="Force number of threads to COUNT", metavar="COUNT")
-    optGroup.add_option("--timelimit", type="float", dest="timelimit", default=2.0, help="Set time limit for benchmarks to LIMIT", metavar="LIMIT")
-    optGroup.add_option("--tests", type="string", dest="threadingtests", default="all", help="Specify comma-separated list of tests to perform (possible values: " + str(tests.keys()) + ")", metavar="LIST")
-    optGroup.add_option("--testintensity", type="int", dest="testintensity", default=100, help="Test intensity", metavar="INTENSITY")
 
 
 # Return True if args/options tell us to run this module
@@ -391,22 +417,6 @@ def check_options(log, options, args):
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
-    if options.threadcount is None or options.threadcount < 0:
-        log.error('Invalid threadcount specified!')
-        return False
-
-    if options.timelimit is None or options.timelimit <= 0.0:
-        log.error('Invalid time limit specified!')
-        return False
-
-    if options.threadingtests is None or options.threadingtests == '':
-        log.error('Invalid tests specified!')
-        return False
-
-    if options.testintensity is None or options.testintensity < 1:
-        log.error('Invalid test intensity specified!')
-        return False
-
     return True
 
 
@@ -425,20 +435,46 @@ def run(log, options, args):
     # Welcome
     log.info(get_name())
 
-    threadCount = options.threadcount
-    if threadCount == 0:
-        threadCount = mp.cpu_count()
+    # Parse args
+    threadCount = mp.cpu_count()
+    timeLimit = 2.0
+    performTests = ['all']
+    testIntensity = 1000
 
-    timeLimit = options.timelimit
-    if timeLimit <= 0.0:
-        timeLimit = 2.0
-
-    if options.threadingtests.lower() == 'all':
-        performTests = ['all']
-    else:
-        performTests = options.threadingtests.split(',')
-
-    testIntensity = options.testintensity
+    for arg in args:
+        arg = arg.upper()
+        if arg[:7] == 'THREADS' and '=' in arg:
+            threadCount = int(arg.split('=')[1])
+            if threadCount < 0:
+                log.error('Invalid threadcount specified! Using system maximum instead.')
+                threadCount = mp.cpu_count()
+            else:
+                threadCount = min(threadCount, mp.cpu_count())
+        elif arg[:9] == 'TIMELIMIT' and '=' in arg:
+            timeLimit = float(arg.split('=')[1])
+            if timeLimit <= 0.0:
+                log.error('Invalid time limit specified! Using default instead.')
+                timeLimit = 2.0
+        elif arg[:5] == 'TESTS' and '=' in arg:
+            performTests = arg.split('=')[1].lower()
+            performTests = performTests.split(',')
+            if len(performTests) == 0 or (performTests not in tests.keys() and set(performTests).issubset(tests.keys()) == False):
+                log.error('Invalid tests specified: "' + str(performTests) + '". Possible options: ' + str(tests.keys()))
+                print('')
+                sys.exit()
+        elif arg[:9] == 'INTENSITY' and '=' in arg:
+            testIntensity = float(arg.split('=')[1])
+            if testIntensity < 1:
+                log.error('Invalid test intensity specified! Using default instead.')
+                testintensity = 1000
+        elif arg == 'HELP':
+            print(SCRIPT_HELP)
+            print('')
+            sys.exit()
+        else:
+            log.error('Unsupported argument: ' + arg + '. Use "help" instead to get instructions.')
+            print('')
+            sys.exit()
 
     print('')
     perform_benchmarks(log, threadCount, timeLimit, performTests, testIntensity)
