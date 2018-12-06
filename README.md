@@ -26,8 +26,9 @@ Example:
 Calculate a suitable price if you want to sell a painting you made
 
 Examples:  
-`python test.py --artworkprice --dimensions A4`  
-`python test.py --artworkprice --dimensions 46x60 --artfactor 5`
+`python test.py --artworkprice A4`  
+`python test.py --artworkprice 46x60 5`  
+`pytohn test.py --artworkprice dimensions=A3 factor=7`
 
 ### asciiart
 Generate ASCII art from image files
@@ -36,15 +37,16 @@ This module is dependend on the *Pillow* library!
 Get it here: https://python-pillow.org  
 Or install via pip: `sudo pip install Pillow`
 
-Example:  
-`python test.py --asciiart /Users/somebody/Desktop/my_portrait.jpg`
+Examples:  
+`python test.py --asciiart /Users/somebody/Desktop/my_portrait.jpg`  
+`python test.py --asciiart /Users/somebody/Desktop/my_portrait.jpg /Users/somebody/Desktop/my_portrait.txt`
 
 ### benchmarks
 Perform different benchmarks single- and multithreaded, get results, see multiprocessing speedup factor.
 
 Examples:  
 `python test.py --benchmarks`  
-`python test.py --benchmarks --testintensity=50000 --timelimit=10 --tests=sin,matrix`
+`python test.py --benchmarks intensity=50000 timelimit=10 tests=sin,matrix threads=4`
 
 ### dice
 Throw a W6!
@@ -97,7 +99,7 @@ Examples:
 Throws a coin and tells you whether it's heads or tails.
 
 Example:  
-`python test.py -headsortails`
+`python test.py --headsortails`
 
 ### location
 Retrieves and prints geolocation information based on current IP
@@ -118,19 +120,20 @@ The names will sound funniest to german ears, I suppose.
 
 Examples:  
 `python test.py --namegen`  
-`python test.py --namegen --gender female --namecount 20`
+`python test.py --namegen gender=female --count=20`
 
 ### primenumbers
 Calculates all prime numbers up to a given limit
 
 Example:  
-`python test.py --primenumbers 100000 -v`
+`python test.py --primenumbers 100000 print`
 
 ### pwgen
 Generates a pronouncable password of variable length
 
-Example:  
-`python test.py --pwgen`
+Examples:  
+`python test.py --pwgen`  
+`python test.py --pwgen length=8`
 
 ### sortfiles
 A handy tool to sort multiple files into subfolders, based on their modification date.  
@@ -164,7 +167,8 @@ Or install via pip: `sudo pip install colorama`
 
 Examples:  
 `python test.py --waves`  
-`python test.py --waves --wavesparams 20.0 15.0 0.5 20.0`
+`python test.py --waves 20.0 15.0 0.5 20.0`  
+`python text.py --waves speed=30 scale1=12.5 scale2=0.7 fold=30`
 
 ## Luxury setup
 How to make using the scripts even easier...
