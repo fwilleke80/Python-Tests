@@ -214,9 +214,9 @@ def run(log, options, args):
             else:
                 if argIndex == 0:
                     sourceFolder = arg
-                if argIndex == 1:
+                elif argIndex == 1:
                     targetFolder = arg
-                if argIndex == 2:
+                elif argIndex == 2:
                     patternString = arg
                     if patternString.lower() in PATTERNS.keys():
                         filePattern = PATTERNS[patternString]

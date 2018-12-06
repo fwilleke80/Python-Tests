@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import sys
 import optparse
 from PIL import Image
 
@@ -14,6 +15,26 @@ from PIL import Image
 SCRIPTTITLE = 'ASCII Art Generator'
 SCRIPTVERSION = '0.1.1'
 SCRIPTINFO = 'Generate ASCII Art from an image file'
+SCRIPT_HELP = """
+Usage:
+  --asciiart INPUTFILE [outputfile]
+
+Examples:
+  --asciiart /Users/somebody/Desktop/portrait.jpg
+      Generate ASCII art from the specified JPG file.
+
+  --asciiart /Users/somebody/Desktop/portrait.jpg /Users/somebody/Desktop/portrait_ascii.txt
+      Generate ASCII art from the specified JPG file, and store it in the specified TXT file
+
+INPUTFILE
+    You must provide the full absolute path to an image file to generate ASCII art from.
+
+outputfile
+    Optionally, specify a full absolute path to write a text file with the generated ascii art.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 ASCII_CHARS = [ '#', '?', '%', '.', 'S', '+', '.', '*', ':', ',', '@']
@@ -112,7 +133,6 @@ def WriteOutputFile(filename, ascii, log):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--asciiart', type='string', dest='asciiart', default=None, help=SCRIPTINFO, metavar='INPUTFILE')
-    optGroup.add_option('--asciifile', type='string', dest='asciifile', default=None, help='Write ASCII art to this file', metavar='OUTPUTFILE')
 
 
 # Return True if args/options tell us to run this module
@@ -122,9 +142,6 @@ def check_options(log, options, args):
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
-    if options.asciifile is not None and options.asciifile == '':
-        log.error('When using --asciifile, you need to specify a filename!')
-        return False
     return True
 
 
@@ -144,8 +161,15 @@ def run(log, options, args):
     log.info(get_name())
     print('')
 
+    # Parse args
     fileName = options.asciiart
-    outputFile = options.asciifile
+    outputFile = None
+    for arg in args:
+        if arg.upper() == 'HELP':
+            print(SCRIPT_HELP)
+            print('')
+            sys.exit()
+        outputFile = arg
 
     log.info('Creating ASCII art from ' + fileName)
 

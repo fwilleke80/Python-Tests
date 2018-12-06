@@ -1,10 +1,37 @@
 #!/usr/bin/python
+import sys
 
 
 # Script info
 SCRIPTTITLE = 'Artwork price calculator'
 SCRIPTVERSION = '0.1.1'
 SCRIPTINFO = 'Calculate a reasonable price for selling an artwork (painting or photo print)'
+SCRIPT_HELP = """
+Usage:
+  --artworkprice [d] [f] [help]
+  --artworkprice [dimensions=n] [factor=n] [help]
+
+Examples:
+  --artworkprice A4 6.5
+      Calculate the price for an artwork in A4 format with factor 6.5
+
+  --artworkprice 40x30
+      Calculate the price for an artwork in 40x30 cm with default factor
+
+  --artworkprice dimensions=90x180 factor=8
+      Calculate the price for an artwork in 90x180 cm with factor 8
+
+dimensions
+    You must define the dimensions of the artwork in order to calculate its sale price.
+    Either use a DIN A format (A0, A1, A2, ... A10) or specify size in centimeters (e.g. 40x30, 90x100).
+
+factor
+    This factor kind of defines how good/famous/hip/deluded you are as an artist.
+    For a good artist, 5 is quite ok. 1 is really expensive, and 1 is rediculously cheap.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 din_a_formats = { 'A00' : (118.9, 168.2), \
@@ -104,8 +131,6 @@ def calculate_price(log, width, height, factor):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--artworkprice', action='store_true', dest='artworkprice', help=SCRIPTINFO)
-    optGroup.add_option('--dimensions', type='string', dest='artworkdimensions', help='Size of the artwork (e.g. ''29x21'' or ''A3'')', metavar='DIMENSIONS')
-    optGroup.add_option('--artfactor', type='float', dest='artworkfactor', default='6.0', help='Artwork price factor (beginners: 5..10, )', metavar='FACTOR')
 
 
 # Return True if args/options tell us to run this module
@@ -115,12 +140,6 @@ def check_options(log, options, args):
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
-    if options.artworkdimensions is None or options.artworkdimensions == '':
-        log.error('Need artwork dimensions!')
-        return False
-    if options.artworkfactor is None or options.artworkfactor < 1.0:
-        log.error('Need art factor!')
-        return False
     return True
 
 
@@ -140,15 +159,40 @@ def run(log, options, args):
     log.info(get_name())
     print('')
 
-    # Get args
-    artFactor = options.artworkfactor
-    (artWidth, artHeight) = get_dimensions(log, options.artworkdimensions)
-    sizeStr = options.artworkdimensions
+    # Parse args
+    artFactor = 6.0
+    artworkDimensions = ''
+
+    for argIndex, arg in enumerate(args):
+        arg = arg.upper()
+
+        if (arg[0] == 'D' or arg[:10] == 'DIMENSIONS') and '=' in arg:
+            artworkDimensions = arg.split('=')[1]
+        elif (arg[0] == 'F' or arg[:6] == 'FACTOR') and '=' in arg:
+            artFactor = float(arg.split('=')[1])
+        elif arg == 'HELP':
+            print(SCRIPT_HELP)
+            print('')
+        else:
+            if argIndex == 0:
+                artworkDimensions = arg
+            elif argIndex == 1:
+                artFactor = float(arg)
+
+    # Cancel if no size specified
+    if artworkDimensions == '':
+        log.error('You have to specify a size for the artwork (e.g. "A4" or "40x30")!')
+        print('')
+        sys.exit()
+
+    # Make sure we have a valid dimensions definition
+    (artWidth, artHeight) = get_dimensions(log, artworkDimensions)
+    sizeStr = artworkDimensions
     if is_din_a_format(sizeStr):
         sizeStr = sizeStr + ' (' + str(artWidth) + ' x ' + str(artHeight) + ' cm)'
 
     # Here we go
-    log.info('Calculating sales price for artwork of size ' + sizeStr + ' with factor ' + str(options.artworkfactor))
+    log.info('Calculating sales price for artwork of size ' + sizeStr + ' with factor ' + str(artFactor))
     print('')
     log.info('Sell the artwork for ' + str(calculate_price(log, artWidth, artHeight, artFactor)) + ' EUR')
     print('')

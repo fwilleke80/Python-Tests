@@ -7,8 +7,31 @@ import googletrans
 
 # Script info
 SCRIPTTITLE = 'Google Translate'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.2'
 SCRIPTINFO = 'Translate text from and to any language.'
+SCRIPT_HELP = """
+Usage:
+  --translate TEXT [source=lang] [dest=lang]
+
+Examples:
+  --translate "Guten Tag, bitte geben Sie mir einen Regenschirm."
+      Translate the provided sentence from any language to English.
+
+  --translate "Guten Tag, bitte geben Sie mir einen Regenschirm." dest=it
+      Translate the provided sentence from any language to the specified language (in this case Italian).
+
+TEXT
+    Any text to translate.
+
+source
+    Optionally, specify the source language here, if automatic recognition fails.
+
+dest
+    Optionally, specify teh destination language.
+
+help
+    Displays this help, so you propably already know this one.
+"""
 
 
 def validate_language(lang):
@@ -66,8 +89,6 @@ def google_translate(fromLang, toLang, text, log):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--translate', type='string', dest='googletranslate', default=None, help='Translate a text using Google Translate', metavar='TEXT')
-    optGroup.add_option('--source', type='string', dest='googletranslate_source', default='auto', help='Source language (default=auto; examples: de, en, fr, ...)', metavar='SOURCE')
-    optGroup.add_option('--dest', type='string', dest='googletranslate_dest', default='en', help='Destination language (default=en', metavar='DEST')
 
 
 # Return True if args/options tell us to run this module
@@ -96,10 +117,20 @@ def run(log, options, args):
     log.info(get_name())
     print('')
 
-    # Get args
-    fromLang = options.googletranslate_source
-    toLang = options.googletranslate_dest
+    # Parse args
     text = options.googletranslate
+    fromLang = 'auto'
+    toLang = 'en'
+    for arg in args:
+        arg = arg.upper()
+        if (arg[0] == 'S' or arg[:6] == 'SOURCE') and '=' in arg:
+            fromLang = arg.split('=')[1].lower()
+        elif (arg[0] == 'D' or arg[:4] == 'DEST') and '=' in arg:
+            toLang = arg.split('=')[1].lower()
+        elif arg == 'HELP':
+            print(SCRIPT_HELP)
+            print('')
+            sys.exit()
 
     if not validate_language(fromLang):
         log.error('Invalid source language!')

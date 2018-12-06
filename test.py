@@ -37,7 +37,6 @@ def ImportModules(log):
 
 # Set up command line argument options for main script
 def SetupOptions(parser):
-    parser.add_option('-v', '--verbose', action='store_true', dest='printoutput', default=False, help='Print verbose outputs (not relevant for all modules)')
     parser.add_option('-l', '--listmodules', action='store_true', dest='listmodules', default=False, help='List registered test modules')
     parser.add_option('-f', '--logfile', action='store_true', dest='logfile', default=False, help='Create log file')
 

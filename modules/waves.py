@@ -1,9 +1,9 @@
 #!/usr/bin/python
 import os
-import binascii
+import sys
 import time
 import math
-import sys
+import binascii
 import random
 
 # Dependency library!
@@ -15,6 +15,41 @@ from colorama import Fore, Style
 SCRIPTTITLE = 'Waves'
 SCRIPTVERSION = '0.4.6'
 SCRIPTINFO = 'Draw colorful folded waveforms'
+SCRIPT_HELP = """
+Usage:
+  --waves [speed=n] [scale1=n] [scale2=n] [fold=n]
+  --waves [n1] [n2] [n3] [n4]
+
+Examples:
+  --waves
+      Draw waves with default parameters
+
+  --waves speed=30
+      Draw waves with default parameters, but a speed of 30
+
+  --waves 17 8 0.2 25
+      Draw waves with specific parameters
+
+  --waves speed=15 scale1=10 scale2=0.1 fold=30
+      Draw waves with specific parameters
+
+speed
+    Drawing speed. Higher values draw faster
+
+scale1
+    Scale factor 1
+
+scale2
+    Scale factor 2
+
+fold
+    Fold value (higher values create additional details in derived curves)
+
+help
+    Displays this help, so you propably already know this one.
+"""
+
+
 
 
 # Default parameters
@@ -100,7 +135,7 @@ def print_waveform_line(i, param1, param2, param3):
 # Add command line arguments for this script to args parser
 def setup_args(optGroup):
     optGroup.add_option('--waves', action='store_true', dest='waves', default=None, help=SCRIPTINFO)
-    optGroup.add_option('--wavesparams', type='float', dest='wavesparams', default=defaultParams, nargs=4, help='Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0', metavar='SPEED SCALE1 SCALE2 FOLD')
+    #optGroup.add_option('--wavesparams', type='float', dest='wavesparams', default=defaultParams, nargs=4, help='Custom parameters for folded waveforms: SPEED, SCALE1, SCALE2, and FOLD. Example: -w -- waveparams 15.0 10.0 0.1 30.0', metavar='SPEED SCALE1 SCALE2 FOLD')
 
 
 # Return True if args/options tell us to run this module
@@ -110,26 +145,6 @@ def check_options(log, options, args):
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
-    if options.wavesparams is None:
-        log.error('No wave parameters provided!')
-        return False
-
-    if type(options.wavesparams[0]) is not float or options.wavesparams[0] <= 0.0:
-        log.error('SPEED must be a float value > 0.0')
-        return False
-
-    if type(options.wavesparams[1]) is not float or options.wavesparams[1] <= 0.0:
-        log.error('SCALE1 must be a float value > 0.0')
-        return False
-
-    if type(options.wavesparams[2]) is not float or options.wavesparams[2] <= 0.0:
-        log.error('SCALE2 must be a float value > 0.0')
-        return False
-
-    if type(options.wavesparams[3]) is not float or options.wavesparams[3] <= 0.0:
-        log.error('FOLD must be a float value > 0.0')
-        return False
-
     return True
 
 
@@ -145,12 +160,34 @@ def get_info():
 
 # Calculate prime numbers op to limit
 def run(log, options, args):
-    # Get arguments
-    args = options.wavesparams
-    argSpeed = args[0]
-    argScale1 = args[1]
-    argScale2 = args[2]
-    argFold = args[3]
+    # Parse args
+    argSpeed = defaultParams[0]
+    argScale1 = defaultParams[1]
+    argScale2 = defaultParams[2]
+    argFold = defaultParams[3]
+    for argIndex, arg in enumerate(args):
+        arg = arg.upper()
+        if (arg[:2] == 'SP' or arg[:5] == 'SPEED') and '=' in arg:
+            argSpeed = float(arg.split('=')[1])
+        elif (arg[:2] == 'S1' or arg[:6] == 'SCALE1') and '=' in arg:
+            argScale1 = float(arg.split('=')[1])
+        elif (arg[:2] == 'S2' or arg[:6] == 'SCALE2') and '=' in arg:
+            argScale2 = float(arg.split('=')[1])
+        elif (arg[0] == 'F' or arg[:4] == 'FOLD') and '=' in arg:
+            argFold = float(arg.split('=')[1])
+        elif arg == 'HELP':
+            print(SCRIPT_HELP)
+            print('')
+            sys.exit()
+        else:
+            if argIndex == 0:
+                argSpeed = float(arg)
+            elif argIndex == 1:
+                argScale1 = float(arg)
+            elif argIndex == 2:
+                argScale2 = float(arg)
+            elif argIndex == 3:
+                argFold = float(arg)
 
     speedFactor = 1.0 / max(argSpeed, 0.001)
 
