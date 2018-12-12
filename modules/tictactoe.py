@@ -9,7 +9,7 @@ import platform
 
 # Script info
 SCRIPTTITLE = 'Tic Tac Toe'
-SCRIPTVERSION = '0.9'
+SCRIPTVERSION = '0.9.2'
 SCRIPTINFO = 'Play a round of classic Tic Tac Toe'
 SCRIPT_HELP = """
 Usage:
@@ -396,6 +396,7 @@ class TicTacToeEngine():
         _ = raw_input('Press ENTER to start the game...')
 
         # Game loop
+        startTime = time.time()
         while True:
             clear_screen()
             if turnCount > 0:
@@ -448,11 +449,12 @@ class TicTacToeEngine():
         # The game is over
         # Did the active player win?
         clear_screen()
-        print('Other player played: ' + str(previousField))
         if playerHasWon:
             log.info(self._players[activePlayerId].get_name() + ' has won the game!!')
         else:
             log.info('It´s a tie! Noboy has won.')
+        timeMin, timeSec = divmod(round(time.time() - startTime), 60)
+        log.info('The game lasted for ' + str(turnCount) + ' turns, and took ' + "%02d:%02d"%(timeMin, timeSec) + ' minutes.')
         print('')
 
         # Draw final board state
@@ -495,10 +497,8 @@ def run_tictactoe(log, args):
         if len(args) == 3:
             player2Name = args[2]
 
-    # Create game object
-    game = TicTacToeEngine()
-
     # Set up game
+    game = TicTacToeEngine()
     if game.setup_game(log, playerName=playerName, playerLetter=playerLetter, player2Name=player2Name):
         # Start game
         game.run_game(log)
