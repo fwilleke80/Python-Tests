@@ -146,6 +146,14 @@ Examples:
 `python test.py --sortfiles /Users/somebody/Desktop/newImages /Users/somebody/Pictures pattern=images`  
 `python test.py --sortfiles help`
 
+### tictactoe
+A simple implementation of a classic game. Play against the computer or against a friend!
+
+Examples:  
+`python test.py --tictactoe`  
+`python test.py --tictactoe John X`  
+`python test.py --tictactoe John X Kevin`
+
 ### timetrack
 A useful tool to track what you're doing with your time.  
 With one command you can tell it what you're doing, and the tool will keep track of your times.  
