@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 import os
 import sys
 import time
@@ -11,7 +12,13 @@ SCRIPTVERSION = '0.1'
 SCRIPTINFO = 'Play a round of classic Tic Tac Toe'
 SCRIPT_HELP = """
 Usage:
-  --tictactoe [help]
+  --tictactoe [playername] [playerletter] [help]
+
+playername
+    Optionally provide your name here
+
+playerletter
+    Optionally provide your letter here ("X" or "O")
 
 help
     Displays this help, so you propably already know this one.
@@ -33,54 +40,44 @@ class TicTacToeEngine():
             self.set_name(kwargs.get('name', ''))
             self._letter = kwargs.get('letter', TicTacToeEngine.Player.letters[0])
 
-
         def __str__(self):
-            return ((self._name + ' ') if self._name != '' else 'PLAYER ') + '[type=' + self._type + ', score=' + str(self._score) + ']'
-
+            return ((self._name + ' ') if self._name != '' else 'PLAYER ') + '[type=' + self._type + ', score=' + str(self._score) + ', letter=' + self._letter + ']'
 
         # Return player type
         def get_type(self):
             return self._type
 
-
         # Return player score
         def get_score(self):
             return self._score
-
 
         # Return player name
         def get_name(self):
             return self._name
 
-
         # Return player letter
         def get_letter(self):
             return self._letter
 
-
         # Set player type
         def set_type(self, playertype):
             if playertype.lower() not in TicTacToeEngine.Player.types:
-                raise ValueError('Unknow player type: ' + playertype.lower())
+                raise ValueError('Unknown player type: ' + playertype.lower())
             self._type = playertype.lower()
-
 
         # Set player score
         def set_score(self, score):
             self._score = score
 
-
         # Set player name
         def set_name(self, name):
             self._name = name
-
 
         # Set player letter
         def set_letter(self, letter):
             if letter.upper() not in TicTacToeEngine.Player.letters:
                 raise ValueError('Invalid player letter: ' + letter.upper())
             self._letter = letter.uper()
-
 
         # Make a move
         def make_move(self, board):
@@ -91,14 +88,12 @@ class TicTacToeEngine():
             else:
                 pass
 
-
     # The game board
     class Board():
 
         # Initialize board
         def __init__(self):
             self.clear()
-
 
         # Clear board
         def clear(self):
@@ -119,7 +114,7 @@ class TicTacToeEngine():
                 raise ValueError('Invalid field number: ' + str(fieldId))
             if playerId < 0 or playerId > 2:
                 raise ValueError('Invalid playerId: ' + str(playerId))
-            board[fieldId] = playerId
+            self._board[fieldId] = playerId
 
         # Set a field, if empty
         def set_field_safe(self, fieldId, playerId):
@@ -129,21 +124,23 @@ class TicTacToeEngine():
             else:
                 return False
 
-
         # Get board state
         def get_state(self):
             return self._board
 
-
         # Get contents of a field
-        def get_field_str(self, fieldId):
+        def get_field_str(self, fieldId, players):
             if fieldId < 0 or fieldId > len(self._board):
                 raise ValueError('Invalid field number: ' + str(fieldId))
             if self._board[fieldId] is None:
                 return ' '
             else:
-                return self._board[fieldId]
+                return players[self._board[fieldId]].get_letter()
 
+        # 
+        def check_combination(self, combination):
+            return self._board[combination[0]] == self._board[combination[1]] and \
+                    self._board[combination[0]] == self._board[combination[2]]
 
         # Given a board and a player's letter, this function returns True if that player has won.
         # We use bo instead of board and le instead of letter so we don't have to type as much.
@@ -167,8 +164,7 @@ class TicTacToeEngine():
             # Check winning combinations
             for combination in winning_combinations:
                 # If all fields in a combination are owned by the same player
-                if self._board[combination[0]] == self._board[combination[1]] and \
-                    self._board[combination[0]] == self._board[combination[2]]:
+                if self.check_combination(combination):
                     # Return ID of player who owns the combination
                     return self._board[combination[0]]
 
@@ -182,7 +178,6 @@ class TicTacToeEngine():
             else:
                 return False
 
-
         # Return True if all fields in the board are owned by one of the players
         def is_full(self):
             for field in self._board:
@@ -190,57 +185,90 @@ class TicTacToeEngine():
                     return False
             return True
 
-
         # Draw board
-        def draw(self):
+        def draw(self, players):
             print('   A   B   C')
             print('')
             print('     |   |')
-            print('1  ' + self.get_field_str(0) + ' | ' + self.get_field_str(1) + ' | ' + self.get_field_str(2))
+            print('1  ' + self.get_field_str(0, players) + ' | ' + self.get_field_str(1, players) + ' | ' + self.get_field_str(2, players))
             print('     |   |')
             print('  ---+---+---')
             print('     |   |')
-            print('2  ' + self.get_field_str(3) + ' | ' + self.get_field_str(4) + ' | ' + self.get_field_str(5))
+            print('2  ' + self.get_field_str(3, players) + ' | ' + self.get_field_str(4, players) + ' | ' + self.get_field_str(5, players))
             print('     |   |')
             print('  ---+---+---')
             print('     |   |')
-            print('3  ' + self.get_field_str(6) + ' | ' + self.get_field_str(7) + ' | ' + self.get_field_str(8))
+            print('3  ' + self.get_field_str(6, players) + ' | ' + self.get_field_str(7, players) + ' | ' + self.get_field_str(8, players))
             print('     |   |')
-
 
     # Choose the player who goes first
     # Returns player ID
     @staticmethod
     def decide_start_player(playerId = None):
-        if playerId < -1 or playerId > 1:
-            raise ValueError('Invalid playerId: ' + str(playerId))
-
         if playerId is None:
             return random.randint(0, 1)
-        else:
-            return playerId
+        if playerId < -1 or playerId > 1:
+            raise ValueError('Invalid playerId: ' + str(playerId))
+        return playerId
 
-
-    @ staticmethod
+    # Gives the ID of the player that was *not* specified
+    @staticmethod
     def other_player_id(playerId):
         if playerId == 0:
             return 1
         else:
             return 0
 
+    # Parses the input of a player (e.g. "B3")
+    # Returns field ID (e.g. 7)
+    @staticmethod
+    def parse_player_input(playerInput):
+        # Abort if invalid input
+        if TicTacToeEngine.validate_player_input(playerInput) == False:
+            return None
+
+        # Make input upper case
+        playerInput = playerInput.upper()
+
+        # Calculate fieldId
+        row = int(playerInput[1]) - 1
+        col = ord(playerInput[0]) - 65
+
+        return row * 3 + col
+
+    # Checks if the player has made a valid input (e.g. "A1 or C2")
+    # Returns True if valid, otherwise False
+    @staticmethod
+    def validate_player_input(playerInput):
+        # Check input type
+        if type(playerInput) != str:
+            return False
+
+        # Check input length
+        if len(playerInput) != 2:
+            return False
+
+        # Check for letter
+        if playerInput[0].upper() not in 'ABC':
+            return False
+
+        # Check for number
+        if playerInput[1] not in '123':
+            return False
+
+        # Input seems to be valid
+        return True
 
     # Initialize game
     def __init__(self):
         self._players = [None] * 2
         self._board = TicTacToeEngine.Board()
 
-
     # Add a player
     def add_player(self, player, playerId):
         if playerId < 0 or playerId > 1:
             raise ValueError('Invalid player id')
         self._players[playerId] = player
-
 
     # Suggest a move
     # TODO: Only create board copy if necessary
@@ -253,7 +281,7 @@ class TicTacToeEngine():
             # Is the current field empty?
             if tmpBoard.is_empty_field(fieldId):
                 # Make a move on this field
-                tmpBoard.set_field(playerId, fieldId)
+                tmpBoard.set_field(fieldId, playerId)
                 # Check if we win with this move
                 if tmpBoard.get_winner_id() == playerId:
                     return fieldId
@@ -263,7 +291,7 @@ class TicTacToeEngine():
             # Create a copy of the board, to try out moves
             tmpBoard = self._board.get_copy()
             if tmpBoard.is_empty_field(fieldId):
-                tmpBoard.set_field(playerId, fieldId)
+                tmpBoard.set_field(fieldId, playerId)
                 if tmpBoard.get_winner_id() == TicTacToeEngine.other_player_id(playerId):
                     return fieldId
 
@@ -278,7 +306,6 @@ class TicTacToeEngine():
         for fieldId in [1, 3, 5, 7]:
             if tmpBoard.is_empty_field(fieldId):
                 return fieldId
-
 
     # Have the user set up the game
     def setup_game(self, log, auto=False):
@@ -297,14 +324,11 @@ class TicTacToeEngine():
                     break
             newPlayer = TicTacToeEngine.Player(type='human', name=playerName, letter=playerLetter)
 
-            if playerLetter == 'X':
-                playerLetter = 'O'
-            else:
-                playerLetter = 'X'
+            # Get letter for other player
+            playerLetterIndex = TicTacToeEngine.other_player_id(TicTacToeEngine.Player.letters.index(playerLetter))
             newPlayer = TicTacToeEngine.Player(type='human', name='Computer', letter=playerLetter)
 
         return True
-
 
     # Run the game
     def run_game(self, log):
@@ -313,22 +337,73 @@ class TicTacToeEngine():
         # Prepare
         self._board.clear()
 
-        # Game loop
-        gameRunning = True
-        while gameRunning:
-            gameRunning = False
-
+        # Print players
         log.info('Player 1: ' + str(self._players[0]))
         log.info('Player 2: ' + str(self._players[1]))
-        self._board.draw()
 
+        # Set initial state
+        activePlayerId = TicTacToeEngine.decide_start_player()
+        playerHasWon = False
+
+        log.info(self._players[activePlayerId].get_name() + ' will go first!')
+        print('')
+
+        # Game loop
+        while True:
+            # Draw board state
+            self._board.draw(self._players)
+            print('')
+
+            # Get what the player wants to do
+            if self._players[activePlayerId].get_type() == 'computer':
+                fieldId = self.suggest_move(activePlayerId)
+            else:
+                inputOk = False
+                while inputOk == False:
+                    playerInput = raw_input('Which field do you want to play: ')
+                    if TicTacToeEngine.validate_player_input(playerInput):
+                        inputOk = True
+                fieldId = TicTacToeEngine.parse_player_input(playerInput)
+
+            # Now that we have the fieldId the player wants to play, apply it on the board
+            self._board.set_field(fieldId, activePlayerId)
+
+            # Check if player has won the game
+            winnerId = self._board.get_winner_id()
+            if winnerId is not None and winnerId == activePlayerId:
+                # Player has won!
+                playerHasWon = True
+                break
+            elif self._board.is_full():
+                # It's a tie!
+                break
+            else:
+                # Game is not over yet
+                # Next player's turn
+                activePlayerId = TicTacToeEngine.other_player_id(activePlayerId)
+
+        # Draw final board state
+        self._board.draw(self._players)
+        print('')
+
+        # The game is over
+        # Did the active player win?
+        if playerHasWon:
+            log.info(self._players[activePlayerId].get_name() + ' has won the game!!')
+        else:
+            log.info('It´s a tie! Noboy has won.')
+
+        # That's all, folks!
         log.info('Game over')
 
-
-def run_tictactoe(log):
+# Create & kick off game
+def run_tictactoe(log, args):
+    # Create game object
     game = TicTacToeEngine()
 
+    # Set up game
     if game.setup_game(log, auto=True):
+        # Start game
         game.run_game(log)
     else:
         log.error('Game setup not successful!')
@@ -369,31 +444,26 @@ def run_tictactoe(log):
 def setup_args(optGroup):
     optGroup.add_option('--tictactoe', action='store_true', dest='tictactoe', help=SCRIPTINFO)
 
-
 # Return True if args/options tell us to run this module
 def check_options(log, options, args):
     return options.tictactoe is not None and options.tictactoe == True
-
 
 # Checks additional arguments and prints error messages
 def check_additional_options(log, options, args):
     return True
 
-
 # Return module name
 def get_name():
     return SCRIPTTITLE + ' ' + SCRIPTVERSION
-
 
 # Return module info
 def get_info():
     return SCRIPTINFO
 
-
-# Perform Encryption test
+# run the module
 def run(log, options, args):
     # Welcome
     log.info(get_name())
     print('')
 
-    run_tictactoe(log)
+    run_tictactoe(log, args)
