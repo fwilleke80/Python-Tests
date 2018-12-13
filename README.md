@@ -152,7 +152,8 @@ A simple implementation of a classic game. Play against the computer or against 
 Examples:  
 `python test.py --tictactoe`  
 `python test.py --tictactoe John X`  
-`python test.py --tictactoe John X Kevin`
+`python test.py --tictactoe John X Kevin`  
+`python test.py --tictactoe highscores`
 
 ### timetrack
 A useful tool to track what you're doing with your time.  
