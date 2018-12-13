@@ -148,6 +148,7 @@ Examples:
 
 ### tictactoe
 A simple implementation of a classic game. Play against the computer or against a friend!
+Keep track of played and won games using the highscore feature! Careful, the computer plays well!
 
 Examples:  
 `python test.py --tictactoe`  
