@@ -3,13 +3,14 @@
 import os
 import sys
 import time
+import json
 import random
 import platform
 
 
 # Script info
 SCRIPTTITLE = 'Tic Tac Toe'
-SCRIPTVERSION = '0.9.2'
+SCRIPTVERSION = '0.9.3'
 SCRIPTINFO = 'Play a round of classic Tic Tac Toe'
 SCRIPT_HELP = """
 Usage:
@@ -44,6 +45,8 @@ help
 # Constants
 CLEARSCREEN = True
 PLATFORM = platform.system().upper()
+SCRIPTPATH = os.path.dirname(os.path.abspath(os.path.join(__file__, os.pardir)))
+HIGHSCOREFILE = 'tictactoe_highscores.json'
 
 
 # The game engine
@@ -283,6 +286,36 @@ class TicTacToeEngine():
             return False
         return True
 
+    # Write highscores
+    @staticmethod
+    def write_highscores(log, highscores):
+        path = os.path.join(SCRIPTPATH, HIGHSCOREFILE)
+        try:
+            with open(path, 'w') as highscoreFile:
+                highscoreDump = json.dumps(highscores, indent=4, separators=(',',': '))
+                highscoreFile.write(highscoreDump)
+                highscoreFile.close()
+        except:
+            log.error('Could not write highscore file: ' + path)
+            return False
+
+        return True
+
+    # Load highscores
+    @staticmethod
+    def load_highscores(log):
+        path = os.path.join(SCRIPTPATH, HIGHSCOREFILE)
+        try:
+            with open(path, 'r') as highscoreFile:
+                highscores = json.load(highscoreFile)
+                highscoreFile.close()
+        except:
+            log.info('Could not load highscores. Creating new file at ' + path)
+            highscores = []
+            TicTacToeEngine.write_highscores(log, highscores)
+
+        return highscores
+
     # Initialize game
     def __init__(self):
         self._players = [None] * 2
@@ -341,6 +374,29 @@ class TicTacToeEngine():
         if len(possibleFields) > 0:
             fieldId = random.choice(possibleFields)
             return fieldId
+
+    # Update highscores data with new game results
+    def update_highscores(self, highscores, playerHasWon, activePlayerId):
+        for playerId, player in enumerate(self._players):
+            found = False
+
+            # Look for existing entry
+            for entry in highscores:
+                if entry['name'] == player.get_name():
+                    found = True
+                    entry['played'] = int(entry['played']) + 1
+                    if playerId == activePlayerId and playerHasWon:
+                        entry['won'] = int(entry['won']) + 1
+
+            # If not found, create new entry
+            if found == False:
+                entry = {
+                    'name' : player.get_name(),
+                    'played' : 1,
+                    'won' : 1 if (playerId == activePlayerId and playerHasWon) else 0
+                }
+                highscores.append(entry)
+
 
     # Have the user set up the game
     def setup_game(self, log, playerName='', playerLetter='', player2Name=''):
@@ -461,6 +517,11 @@ class TicTacToeEngine():
         self._board.draw(self._players)
         print('')
 
+        # Highscores
+        highscores = TicTacToeEngine.load_highscores(log)
+        self.update_highscores(highscores, playerHasWon, activePlayerId)
+        TicTacToeEngine.write_highscores(log, highscores)
+
         # That's all, folks!
         log.info('Game over')
 
@@ -504,6 +565,21 @@ def run_tictactoe(log, args):
         game.run_game(log)
     else:
         log.error('Game setup not successful!')
+
+# Print highscores to screen
+def print_highscores(log, highscores):
+    if len(highscores) == 0:
+        print('No highscores yet. Play some rounds!')
+        return
+
+    sortedHighscores = sorted(highscores, key=lambda k: k['won'])
+    sortedHighscores.reverse()
+
+    print '{:15}'.format('NAME') + '{:>6}'.format('PLAYED') + '{:>6}'.format('WON')
+    print '=' * 27
+    for item in sortedHighscores:
+        print '{:15}'.format(item['name']) + '{:6d}'.format(item['played']) + '{:6d}'.format(item['won'])
+    print ''
 
 
 #####################################
@@ -566,6 +642,10 @@ def run(log, options, args):
     for arg in args:
         if arg.upper() == 'HELP':
             print(SCRIPT_HELP)
+            sys.exit()
+        elif arg.upper() == 'HIGHSCORES':
+            highscores = TicTacToeEngine.load_highscores(log)
+            print_highscores(log, highscores)
             sys.exit()
 
     run_tictactoe(log, args)
