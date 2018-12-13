@@ -165,7 +165,7 @@ class TicTacToeEngine():
                 return players[self._board[fieldId]].get_letter()
 
         # Return True if given combination (list of 3 fieldIds) is owned
-		# by one single player. Otherwise return False
+        # by one single player. Otherwise return False
         def check_combination(self, combination):
             checkResult = self._board[combination[0]] == self._board[combination[1]] and \
                           self._board[combination[0]] == self._board[combination[2]] and \
