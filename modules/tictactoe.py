@@ -10,7 +10,7 @@ import platform
 
 # Script info
 SCRIPTTITLE = 'Tic Tac Toe'
-SCRIPTVERSION = '0.9.3'
+SCRIPTVERSION = '0.9.4'
 SCRIPTINFO = 'Play a round of classic Tic Tac Toe'
 SCRIPT_HELP = """
 Usage:
@@ -59,21 +59,16 @@ class TicTacToeEngine():
 
         # Initialize player
         def __init__(self, *args, **kwargs):
-            self._score = 0
             self.set_type(kwargs.get('type', TicTacToeEngine.Player.types[0]))
             self.set_name(kwargs.get('name', ''))
-            self._letter = kwargs.get('letter', TicTacToeEngine.Player.letters[0])
+            self.set_letter(kwargs.get('letter', TicTacToeEngine.Player.letters[0]))
 
         def __str__(self):
-            return ((self._name + ' ') if self._name != '' else 'PLAYER ') + '[type=' + self._type + ', score=' + str(self._score) + ', letter=' + self._letter + ']'
+            return ((self._name + ' ') if self._name != '' else 'PLAYER ') + '[type=' + self._type + ', letter=' + self._letter + ']'
 
         # Return player type
         def get_type(self):
             return self._type
-
-        # Return player score
-        def get_score(self):
-            return self._score
 
         # Return player name
         def get_name(self):
@@ -89,10 +84,6 @@ class TicTacToeEngine():
                 raise ValueError('Unknown player type: ' + playertype.lower())
             self._type = playertype.lower()
 
-        # Set player score
-        def set_score(self, score):
-            self._score = score
-
         # Set player name
         def set_name(self, name):
             self._name = name
@@ -101,16 +92,7 @@ class TicTacToeEngine():
         def set_letter(self, letter):
             if letter.upper() not in TicTacToeEngine.Player.letters:
                 raise ValueError('Invalid player letter: ' + letter.upper())
-            self._letter = letter.uper()
-
-        # Make a move
-        def make_move(self, board):
-            # Human player
-            if self._type == Player.types[0]:
-                pass
-            # Computer player
-            else:
-                pass
+            self._letter = letter.upper()
 
     # The game board
     class Board():
