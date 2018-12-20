@@ -6,7 +6,7 @@ import random
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.5'
+SCRIPTVERSION = '1.5.5'
 SCRIPTINFO = 'Generate a funny german name'
 SCRIPT_HELP = """
 Usage:
@@ -21,7 +21,7 @@ Examples:
       Generated 20 random female names
 
 count
-    Provide a number > 0 here and this many names will be generated
+    Provide a number n > 0 here and that many names will be generated
 
 gender
     Specify a gender here
@@ -40,6 +40,7 @@ class NameGenerator:
     threshExtraFirstnameSyllable = 0.68
     threshDoubleLastName = 0.82
     threshLongerLastName = 0.7
+    threshNobility = 0.7
 
     # Limits / Ranges
     minLastnameSyllables = 2
@@ -246,6 +247,8 @@ class NameGenerator:
 
     lastNameSyllables = ['knu', \
                             'per', \
+                            'nagel', \
+                            'rubbel', \
                             'helm', \
                             'malo', \
                             'zak', \
@@ -315,9 +318,35 @@ class NameGenerator:
                             'pampel', \
                             'burg', \
                             'hans', \
+                            'hausen', \
+                            'weyhe', \
+                            'wey', \
+                            'he', \
                             'tr' + u'\u00f6' + 'del', \
                             'paff']
 
+    nobilityPrefixes = {    'male' : \
+                                [ \
+                                    'von', \
+                                    'zu',  \
+                                    'Freiherr von', \
+                                    'von und zu', \
+                                    'Graf von', \
+                                    'Erzherzog', \
+                                    'Markgraf', \
+                                    'F' + u'\u00fc' + 'rst'
+                                ],
+                            'female' : \
+                                [ \
+                                    'von', \
+                                    'zu',  \
+                                    'von und zu', \
+                                    'Gr' + u'\u00e4' + 'fin von', \
+                                    'Erzherzogin', \
+                                    'Markgr' + u'\u00e4' + 'fin'
+                                ]
+
+    }
 
     # Compute number of possible names
     def compute_stats(this):
@@ -333,14 +362,19 @@ class NameGenerator:
 
         numberOfFirstNames = numberOfFemaleFirstnames + numberOfMaleFirstnames
 
+        # Number of nobility titles
+        numberOfFemaleNobilityTitles = len(this.nobilityPrefixes['female'])
+        numberOfMaleNobilityTitles = len(this.nobilityPrefixes['male'])
+        numberOfNobilityTitles = numberOfFemaleNobilityTitles + numberOfMaleNobilityTitles
+
         # Number of possible lastnames
-        numberOfLastNames_short = len(this.lastNameSyllables) ** 2
-        numberOfLastNames_long = len(this.lastNameSyllables) ** 3
+        numberOfLastNames_short = len(this.lastNameSyllables) ** 2 * (numberOfNobilityTitles + 1)
+        numberOfLastNames_long = len(this.lastNameSyllables) ** 3 * (numberOfNobilityTitles + 1)
         numberOfLastnames = numberOfLastNames_short + numberOfLastNames_long
 
         # Total number of firstname/lastname combinations
-        numberOfMaleNames = numberOfMaleFirstnames * numberOfLastnames
-        numberOfFemaleNames = numberOfFemaleFirstnames * numberOfLastnames
+        numberOfMaleNames = numberOfMaleFirstnames * numberOfLastnames * (numberOfMaleNobilityTitles + 1)
+        numberOfFemaleNames = numberOfFemaleFirstnames * numberOfLastnames * (numberOfFemaleNobilityTitles + 1)
         numberOfNames = numberOfMaleNames + numberOfFemaleNames
 
         # Now build dictionary
@@ -362,6 +396,11 @@ class NameGenerator:
                 'short' : numberOfLastNames_short,
                 'long'  : numberOfLastNames_long,
                 'total' : numberOfLastnames
+            },
+            'nobility' : {
+                'female' : numberOfFemaleNobilityTitles,
+                'male'   : numberOfMaleNobilityTitles,
+                'total'  : numberOfNobilityTitles
             },
             'female': numberOfFemaleNames,
             'male'  : numberOfMaleNames,
@@ -390,9 +429,15 @@ class NameGenerator:
         print('')
         log.info('Lastnames:')
         print('----------------')
-        log.info('Short lastnames      : ' + "{:8,}".format(stats['lastnames']['short']))
-        log.info('Long lastnames       : ' + "{:8,}".format(stats['lastnames']['long']))
-        log.info('Lastnames in total   : ' + "{:8,}".format(stats['lastnames']['total']))
+        log.info('Short lastnames         : ' + "{:8,}".format(stats['lastnames']['short']))
+        log.info('Long lastnames          : ' + "{:8,}".format(stats['lastnames']['long']))
+        log.info('Lastnames in total      : ' + "{:8,}".format(stats['lastnames']['total']))
+        print('')
+        log.info('Nobility titles:')
+        print('----------------')
+        log.info('Female nobility titles  : ' + "{:8,}".format(stats['nobility']['female']))
+        log.info('Male nobility titles    : ' + "{:8,}".format(stats['nobility']['male']))
+        log.info('Nobility titles in total: ' + "{:8,}".format(stats['nobility']['total']))
         print('')
         log.info('Total:')
         print('------------')
@@ -445,6 +490,11 @@ class NameGenerator:
         return newName.title()
 
 
+    # Get nobility title
+    def get_nobility_prefix(this, gender='male'):
+        return random.choice(this.nobilityPrefixes[gender])
+
+
     def safe_gender(this, log, theGender):
         # Support abbreviated genders
         if theGender == 'f':
@@ -480,6 +530,10 @@ class NameGenerator:
         # Double lastname?
         if random.random() > this.threshDoubleLastName:
             lastName += '-' + this.generate_lastname()
+
+        # Nobility?
+        if random.random() > this.threshNobility:
+            lastName = this.get_nobility_prefix(theGender) + ' ' + lastName
 
         return firstName + ' ' + lastName
 
