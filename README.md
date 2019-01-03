@@ -166,18 +166,6 @@ Examples:
 `python test.py --tictactoe John X Kevin`  
 `python test.py --tictactoe highscores`
 
-### timetrack
-A useful tool to track what you're doing with your time.  
-With one command you can tell it what you're doing, and the tool will keep track of your times.  
-You can also review your activities and generate reports.  
-Quite useful if you're working on multiple different projects and want to know how much time you spend on each one.  
-Call with "help" argument to get detailled usage instructions.
-
-Example:  
-`python test.py --timetrack add Programming "Fixing bugs today"`  
-`python test.py --timetrack list`  
-`python test.py --timetrack help`
-
 ### waves
 Calculates folded waveforms on the basis of sine waves modulating each other.
 
