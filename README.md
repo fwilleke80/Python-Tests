@@ -146,6 +146,16 @@ Examples:
 `python test.py --sortfiles /Users/somebody/Desktop/newImages /Users/somebody/Pictures pattern=images`  
 `python test.py --sortfiles help`
 
+### speak
+Uses the system's Text-to-Speech engine to speak text out loud.
+
+This module is dependend on the *pyttsx* library!  
+Get it here: https://pypi.org/project/pyttsx/#files  
+Or install via pip: `sudo pip install pyttsx`
+
+Example:  
+`python test.py --speak "Hello World"`
+
 ### tictactoe
 A simple implementation of a classic game. Play against the computer or against a friend!
 Keep track of played and won games using the highscore feature! Careful, the computer plays well!
