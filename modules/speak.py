@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import os
 import sys
 import platform
@@ -9,7 +10,7 @@ import pyttsx
 
 # Script info
 SCRIPTTITLE = 'Text-to-Speech'
-SCRIPTVERSION = '0.1'
+SCRIPTVERSION = '0.1.1'
 SCRIPTINFO = 'Speak text out loud'
 SCRIPT_HELP = """
 Usage:
@@ -123,6 +124,14 @@ def parse_engine_properties(engine, args):
     return properties
 
 
+def remove_umlauts(text):
+    text = text.replace('ö', 'oe')
+    text = text.replace('ä', 'ae')
+    text = text.replace('ü', 'ue')
+    text = text.replace('ß', 'ss')
+    return text
+
+
 def speak(engine, text):
     """
     """
@@ -213,11 +222,11 @@ def run(log, options, args):
 
     if os.path.exists(args[0]):# and os.path.isfile(arg[0]):
         # First argument is filename of file to open and speak
-        text = open_textfile(log, args[0])
+        text = remove_umlauts(open_textfile(log, args[0]))
         log.info('Speaking contents of ' + args[0] + '...')
     else:
         # First argument is the text to speak
-        text = args[0]
+        text = remove_umlauts(args[0])
         log.info('Speaking ' + text + '...')
 
     # Set engine properties according to args
