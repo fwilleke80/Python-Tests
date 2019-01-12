@@ -8,11 +8,11 @@ import random
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.6'
+SCRIPTVERSION = '1.6.1'
 SCRIPTINFO = 'Generate a funny german name'
 SCRIPT_HELP = """
 Usage:
-  --namegen [count=n] [gender=female|male|random] [stats] [help]
+  --namegen [count=n] [gender=female|male|random] [firstname] [lastname] [stats] [help]
   --namegen [c=n] [g=female|male|random] [s] [help]
 
 Examples:
@@ -20,13 +20,22 @@ Examples:
       Generates a random name of random gender
 
   --namegen gender=female count=20
-      Generated 20 random female names
+      Generates 20 random female names
+
+  --namegen count=40 lastname
+      Generates 40 lastnames
 
 count
     Provide a number n > 0 here and that many names will be generated
 
 gender
     Specify a gender here
+
+firstname
+    Add this argument to only generate a firstname, without lastname and nobility titles
+
+lastname
+    Add this argument to only generate a lastname and maybe nobility title, without firstname
 
 stats
     Display statistics about the number of possible name combinations
@@ -237,24 +246,44 @@ class NameGenerator:
         return theGender
 
 
-    def generate(this, log, theGender):
+    def generate(this, log, theGender, nameGenerateMode=0):
         # Detect unsupported gender
         theGender = this.safe_gender(log, theGender)
 
         log.debug('Gender: ' + theGender.title())
 
-        firstName = this.generate_firstname(theGender)
-        lastName = this.generate_lastname()
+        # Full name
+        if nameGenerateMode == 0:
+            firstName = this.generate_firstname(theGender)
+            lastName = this.generate_lastname()
 
-        # Double lastname?
-        if random.random() < this.threshDoubleLastName:
-            lastName += '-' + this.generate_lastname()
+            # Double lastname?
+            if random.random() < this.threshDoubleLastName:
+                lastName += '-' + this.generate_lastname()
 
-        # Nobility?
-        if random.random() < this.threshNobility:
-            lastName = this.get_nobility_prefix(theGender) + ' ' + lastName
+            # Nobility?
+            if random.random() < this.threshNobility:
+                lastName = this.get_nobility_prefix(theGender) + ' ' + lastName
 
-        return firstName + ' ' + lastName
+            return firstName + ' ' + lastName
+
+        # Firstname only
+        if nameGenerateMode == 1:
+            return this.generate_firstname(theGender)
+
+        # Lastname only
+        if nameGenerateMode == 2:
+            lastName = this.generate_lastname()
+
+            # Double lastname?
+            if random.random() < this.threshDoubleLastName:
+                lastName += '-' + this.generate_lastname()
+
+            # Nobility?
+            if random.random() < this.threshNobility:
+                lastName = this.get_nobility_prefix(theGender) + ' ' + lastName
+
+            return lastName
 
 
 
@@ -329,6 +358,7 @@ def run(log, options, args):
     # Parse args
     nameGender = 'random'
     nameCount = 1
+    nameGenerateMode = 0
     for argIndex, arg in enumerate(args):
         arg = arg.upper()
         if (arg[0] == 'G' or arg[:6] == 'GENDER') and '=' in arg:
@@ -341,12 +371,18 @@ def run(log, options, args):
             # Print statistics
             nameGen.print_statistics(log, nameGen.compute_stats())
             print('')
+            sys.exit()
+        elif (arg == 'FIRSTNAME'):
+            nameGenerateMode = 1
+        elif (arg == 'LASTNAME'):
+            nameGenerateMode = 2
         elif (arg == 'HELP'):
             print(SCRIPT_HELP)
+            sys.exit()
         else:
             log.error('Unsupported argument: ' + arg)
             print('')
 
     # Generate name(s)
     for i in range(nameCount):
-        log.info((str(i + 1) + '. ' if nameCount > 1 else '') + nameGen.generate(log, nameGender))
+        log.info((str(i + 1) + '. ' if nameCount > 1 else '') + nameGen.generate(log, nameGender, nameGenerateMode))
