@@ -38,8 +38,6 @@ help
 DATAFILENAME = 'namegen_data.json'
 
 
-
-
 # Class that does all the name generation work
 class NameGenerator:
     # Thresholds
