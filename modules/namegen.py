@@ -1,12 +1,14 @@
 #!/usr/bin/python
+import os
 import sys
+import json
 import time
 import random
 
 
 # Script info
 SCRIPTTITLE = 'German Name Generator'
-SCRIPTVERSION = '1.5.5'
+SCRIPTVERSION = '1.6'
 SCRIPTINFO = 'Generate a funny german name'
 SCRIPT_HELP = """
 Usage:
@@ -17,7 +19,7 @@ Examples:
   --namegen
       Generates a random name of random gender
 
-  --namegen gender=female cuont=20
+  --namegen gender=female count=20
       Generated 20 random female names
 
 count
@@ -32,321 +34,40 @@ stats
 help
     Displays this help, so you propably already know this one.
 """
+# Data file name
+DATAFILENAME = 'namegen_data.json'
+
+
 
 
 # Class that does all the name generation work
 class NameGenerator:
     # Thresholds
-    threshExtraFirstnameSyllable = 0.68
-    threshDoubleLastName = 0.82
-    threshLongerLastName = 0.7
-    threshNobility = 0.7
+    threshExtraFirstnameSyllable = 0.32
+    threshDoubleLastName = 0.18
+    threshLongerLastName = 0.3
+    threshNobility = 0.3
 
     # Limits / Ranges
     minLastnameSyllables = 2
     maxLastnameSyllables = 4
 
     # Syllable lists
-    firstNameSyllables = { 'male' : \
-                            [ \
-                                ['kno', \
-                                    'ro', \
-                                    'hu', \
-                                    'schnurr', \
-                                    'knurr', \
-                                    'bern', \
-                                    'rein', \
-                                    'bro', \
-                                    'hab', \
-                                    'brot', \
-                                    'bratz', \
-                                    'knack', \
-                                    'her', \
-                                    'brumm', \
-                                    'volk', \
-                                    'ha', \
-                                    'lad', \
-                                    'brat', \
-                                    'atz', \
-                                    'horst', \
-                                    'christ', \
-                                    'det', \
-                                    'krumm', \
-                                    'pups', \
-                                    'stink', \
-                                    'knall', \
-                                    'ekko', \
-                                    'mal', \
-                                    'mar', \
-                                    'gram', \
-                                    'dussel', \
-                                    'd'+u'\u00fc'+'mpel', \
-                                    'gronko', \
-                                    'gro', \
-                                    'jan', \
-                                    'bums', \
-                                    'niete', \
-                                    'brom', \
-                                    'brumm', \
-                                    'step', \
-                                    'ali', \
-                                    'schno', \
-                                    'sack', \
-                                    'kack', \
-                                    'jo', \
-                                    'ru', \
-                                    'det', \
-                                    'ost', \
-                                    'nord', \
-                                    'trelle', \
-                                    'wern'], \
-                                \
-                                ['bol', \
-                                    'bul', \
-                                    'bom', \
-                                    'bart', \
-                                    'o', \
-                                    'ba', \
-                                    'bo', \
-                                    'bu', \
-                                    'bi', \
-                                    'is', \
-                                    'see', \
-                                    'stump', \
-                                    'honk', \
-                                    'parz', \
-                                    'a', \
-                                    'stu', \
-                                    'hann'], \
-                                \
-                                ['bert', \
-                                    'bart', \
-                                    'hahn', \
-                                    'hardt', \
-                                    'ald', \
-                                    'bald', \
-                                    'rald', \
-                                    'tav', \
-                                    'lav', \
-                                    'mann', \
-                                    'er', \
-                                    'beus', \
-                                    'ius', \
-                                    'kus', \
-                                    'os', \
-                                    'lev', \
-                                    'belli', \
-                                    'zahn', \
-                                    'gar', \
-                                    'bold', \
-                                    'trutz', \
-                                    'fried', \
-                                    'sack', \
-                                    'bi', \
-                                    'en', \
-                                    'rich', \
-                                    'er'] \
-                            ], \
-                            \
-                            'female' : \
-                                [ \
-                                    ['kuni',
-                                        'berta', \
-                                        'her', \
-                                        'da', \
-                                        'ba', \
-                                        'na', \
-                                        'dani', \
-                                        'ker', \
-                                        'klara', \
-                                        'ju', \
-                                        'gud', \
-                                        'su', \
-                                        'i', \
-                                        'a', \
-                                        'e', \
-                                        'o', \
-                                        'u', \
-                                        'her', \
-                                        'sa', \
-                                        'bri', \
-                                        'lau', \
-                                        'chris'
-                                        'eva', \
-                                        'lise', \
-                                        'frau', \
-                                        'wieb', \
-                                        'manu', \
-                                        'emanu', \
-                                        'theo', \
-                                        'lena', \
-                                        'ol', \
-                                        'na', \
-                                        'cor', \
-                                        'pene', \
-                                        'mag', \
-                                        'magda', \
-                                        'jas', \
-                                        'alex', \
-                                        'bar', \
-                                        'klo'], \
-                                        \
-                                    ['gata', \
-                                        'beta', \
-                                        'trabo', \
-                                        'phe', \
-                                        'ba', \
-                                        'da', \
-                                        'bumbo', \
-                                        'braba', \
-                                        'gret', \
-                                        'ta', \
-                                        'mi', \
-                                        'bi'], \
-                                        \
-                                    ['gunde', \
-                                        'tilde', \
-                                        'lia', \
-                                        'lena', \
-                                        'rune', \
-                                        'lope', \
-                                        'bette', \
-                                        'andra', \
-                                        'tha', \
-                                        'min', \
-                                        'run', \
-                                        'dora', \
-                                        'ke', \
-                                        'elle', \
-                                        'ela', \
-                                        'ella', \
-                                        'scha', \
-                                        'ga', \
-                                        'na', \
-                                        'ne', \
-                                        'ra', \
-                                        'bella', \
-                                        'maria', \
-                                        'nelia', \
-                                        'stin', \
-                                        'berta', \
-                                        'scha', \
-                                        'a', \
-                                        'e', \
-                                        'mine', \
-                                        'bine', \
-                                        'brina', \
-                                        'sanne', \
-                                        'gitte', \
-                                        'lotte', \
-                                        'grunde', \
-                                        'lia', \
-                                        'hilde']
-                                ] \
-                            }
+    firstNameSyllables = {}
+    lastNameSyllables = []
+    nobilityPrefixes = {}
 
-    lastNameSyllables = ['knu', \
-                            'per', \
-                            'nagel', \
-                            'rubbel', \
-                            'helm', \
-                            'malo', \
-                            'zak', \
-                            'sack', \
-                            'abo', \
-                            'wonk', \
-                            'hag', \
-                            'kovsky', \
-                            'hump', \
-                            'rid', \
-                            'ski', \
-                            'mann', \
-                            'boff', \
-                            'woll', \
-                            'wolle', \
-                            'wulle', \
-                            'k'+u'\u00f6'+'l', \
-                            'ratz', \
-                            'wicz', \
-                            'bert', \
-                            'horst', \
-                            'kotte', \
-                            'tab', \
-                            'trabo', \
-                            'grump', \
-                            'porn', \
-                            'bl' + u'\u00fc' + 'mel', \
-                            'k' + u'\u00fc' + 'l', \
-                            'k' + u'\u00fc' + 'bl', \
-                            'b' + u'\u00f6' + 'ck', \
-                            'g' + u'\u00f6' + 'bel', \
-                            'k' + u'\u00e4' + 's', \
-                            'k' + u'\u00e4' + 'se', \
-                            'trump', \
-                            'niete', \
-                            'zing', \
-                            'koc', \
-                            'will', \
-                            'eke', \
-                            'merkel', \
-                            'kohl', \
-                            'bums', \
-                            'ak', \
-                            'krach', \
-                            'kel', \
-                            'hel', \
-                            'sin', \
-                            'ra', \
-                            'tu', \
-                            'meier', \
-                            'meyer',  \
-                            'mayer', \
-                            'bronko' \
-                            'trelle', \
-                            'born', \
-                            'fan', \
-                            'ler', \
-                            'bumper', \
-                            'schlimper', \
-                            'schiefel', \
-                            'bein', \
-                            'kug', \
-                            'te', \
-                            'le', \
-                            'pan', \
-                            'piese', \
-                            'pampel', \
-                            'burg', \
-                            'hans', \
-                            'hausen', \
-                            'weyhe', \
-                            'wey', \
-                            'he', \
-                            'tr' + u'\u00f6' + 'del', \
-                            'paff']
-
-    nobilityPrefixes = {    'male' : \
-                                [ \
-                                    'von', \
-                                    'zu',  \
-                                    'Freiherr von', \
-                                    'von und zu', \
-                                    'Graf von', \
-                                    'Erzherzog', \
-                                    'Markgraf', \
-                                    'F' + u'\u00fc' + 'rst'
-                                ],
-                            'female' : \
-                                [ \
-                                    'von', \
-                                    'zu',  \
-                                    'von und zu', \
-                                    'Gr' + u'\u00e4' + 'fin von', \
-                                    'Erzherzogin', \
-                                    'Markgr' + u'\u00e4' + 'fin'
-                                ]
-
-    }
+    def load_data(this, file, log):
+        try:
+            with open(file, 'r') as jsonFile:
+                jsonData = json.load(jsonFile)
+                this.firstNameSyllables = jsonData['firstNameSyllables']
+                this.lastNameSyllables = jsonData['lastNameSyllables']
+                this.nobilityPrefixes = jsonData['nobilityPrefixes']
+        except:
+            log.error("Couldn't find data file: " + file)
+            return False
+        return True
 
     # Compute number of possible names
     def compute_stats(this):
@@ -452,7 +173,7 @@ class NameGenerator:
         newName = random.choice(this.firstNameSyllables[gender][0])
 
         # Add extra syllable
-        if random.random() > this.threshExtraFirstnameSyllable:
+        if random.random() < this.threshExtraFirstnameSyllable:
             newName += random.choice(this.firstNameSyllables[gender][1])
 
         # Add last syllable
@@ -465,7 +186,7 @@ class NameGenerator:
     # Generate random lastname
     def generate_lastname(this):
         # Determine lengh of lastname
-        if random.random() > this.threshLongerLastName:
+        if random.random() < this.threshLongerLastName:
             numberOfSyllables = random.randrange(this.minLastnameSyllables, this.maxLastnameSyllables)
         else:
             numberOfSyllables = this.minLastnameSyllables
@@ -478,7 +199,7 @@ class NameGenerator:
             newSyllableIndex = -1
 
             # Make sure the same syllable isn't used twice in a row
-            while True:                
+            while True:
                 newSyllableIndex = random.randrange(0, len(this.lastNameSyllables) - 1)
                 if newSyllableIndex != lastSyllableIndex:
                     break;
@@ -528,11 +249,11 @@ class NameGenerator:
         lastName = this.generate_lastname()
 
         # Double lastname?
-        if random.random() > this.threshDoubleLastName:
+        if random.random() < this.threshDoubleLastName:
             lastName += '-' + this.generate_lastname()
 
         # Nobility?
-        if random.random() > this.threshNobility:
+        if random.random() < this.threshNobility:
             lastName = this.get_nobility_prefix(theGender) + ' ' + lastName
 
         return firstName + ' ' + lastName
@@ -599,6 +320,10 @@ def run(log, options, args):
 
     # Create new NameGenerator object
     nameGen = NameGenerator()
+
+    dataFile = os.path.join(os.path.dirname(os.path.realpath(__file__)), DATAFILENAME)
+    if nameGen.load_data(dataFile, log) == False:
+        sys.exit()
 
     # Seed random generator
     random.seed(time.time())
